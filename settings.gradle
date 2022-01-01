@@ -8,3 +8,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "HiHello"
 include ':app'
+include ':auth'
+include ':pojo'
