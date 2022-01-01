@@ -1,4 +1,5 @@
-package com.example.auth
+package com.example.auth.datasource
+import com.example.auth.User
 import com.example.pojo.Result
 
 interface UserDataSource {

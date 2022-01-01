@@ -5,8 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import android.R.id.message
-import com.example.auth.User
-import com.example.auth.UserRemoteDataSource
+import com.example.auth.datasource.UserFirebaseDataSource
 import com.example.pojo.Result
 import kotlinx.coroutines.*
 import okhttp3.*
@@ -20,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     private val secondId =
         "cH6Oz_DDRHeekfj6MlKnwE:APA91bGxebnnE3HWKswNRM67Ys_LtwiE52XmDyPiOnEea0pw0e2fjFAnRy32nABtgndF-NPZMOuyBC2gipgFvzsmf-cHWL7REQZU4_SG3V82qgxAxL9y5MCipFAmo_Kvt8ZW4lFrq8G8"
-    private val userDataSource = UserRemoteDataSource()
+    private val userDataSource = UserFirebaseDataSource()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

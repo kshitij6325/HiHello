@@ -1,5 +1,6 @@
-package com.example.auth
+package com.example.auth.datasource
 
+import com.example.auth.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -9,7 +10,7 @@ import com.example.pojo.Result
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
-class UserRemoteDataSource : UserDataSource {
+class UserFirebaseDataSource : UserDataSource {
 
     private val firebaseInstanceRef by lazy {
         FirebaseDatabase.getInstance().getReference("user")
