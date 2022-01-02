@@ -8,9 +8,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity(tableName = "users")
 data class User(
-    @PrimaryKey @ColumnInfo(name = "user_name") val userName: String? = null,
+    @PrimaryKey @ColumnInfo(name = "user_name") val userName: String = "",
     @ColumnInfo(name = "fcm_token") val fcmToken: String? = null,
     @ColumnInfo(name = "first_name") val firstName: String? = null,
     @ColumnInfo(name = "last_name") val lastName: String? = null,
-    @ColumnInfo(name = "mobile_number") val mobileNumber: Long? = null
+    @ColumnInfo(name = "mobile_number") val mobileNumber: Long? = null,
+    @ColumnInfo(name = "profile_url") val profileUrl: String? = null
 )

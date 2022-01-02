@@ -5,7 +5,13 @@ import android.os.Bundle
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import android.R.id.message
+import android.media.MediaDataSource
+import androidx.room.Room
+import com.example.auth.User
+import com.example.auth.datasource.MeLocalDataSource
 import com.example.auth.datasource.UserFirebaseDataSource
+import com.example.auth.datasource.UserRoomDataSource
+import com.example.auth.repo.UserRepository
 import com.example.pojo.Result
 import kotlinx.coroutines.*
 import okhttp3.*
@@ -23,13 +29,46 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val roomDb = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "hihello"
+        ).build()
+
+        val userRepo = UserRepository(
+            userFirebaseDataSource = UserFirebaseDataSource(),
+            userRoomDataSource = UserRoomDataSource(roomDb.getUserDao()),
+            meDataSource = MeLocalDataSource(
+                getSharedPreferences(
+                    "hihello_shared_perf",
+                    MODE_PRIVATE
+                )
+            )
+        )
+
         CoroutineScope(Job()).launch {
-            sendMessageToDevice(secondId)
-            val res = userDataSource.getUser("kshitij6325")
+            val res =
+                userRepo.signUpUser(
+                    User(
+                        "kshitij6325",
+                        secondId,
+                        "Rahul",
+                        "Sharma",
+                        8888888888,
+                        "url"
+                    )
+                )
 
             when (res) {
                 is Result.Failure -> Log.e("RES :: ", res.exception.message.toString())
-                is Result.Success -> Log.e("SUCC :: ", "${res.data.mobileNumber}")
+                is Result.Success -> Log.e(
+                    "SUCC :: ", "${
+                        when (val resE = userRepo.getLoggedInUser()) {
+                            is Result.Success -> resE.data.firstName
+                            is Result.Failure -> resE.exception.message
+
+                        }
+                    }"
+                )
             }
         }
     }
