@@ -12,6 +12,9 @@ interface UserDao {
     @Query("Select * from users where user_name=:userId")
     suspend fun getUser(userId: String): User
 
+    @Query("Select * from users where mobile_number=:mobileNumber")
+    suspend fun getUserByIdAndMobile(mobileNumber: Long?): User?
+
     @Insert
     suspend fun insertUser(user: User)
 

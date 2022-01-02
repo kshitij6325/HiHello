@@ -1,5 +1,6 @@
 package com.example.auth.datasource
 
+import com.example.auth.NoSuchUserException
 import com.example.auth.User
 import com.example.auth.room.UserDao
 import com.example.pojo.Result
@@ -34,4 +35,18 @@ class UserRoomDataSource(private val dao: UserDao) : UserDataSource {
             Result.Failure(e)
         }
     }
+
+    override suspend fun getUserByMobile(mobile: Long): Result<User> =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                dao.getUserByIdAndMobile(mobile)?.run { Result.Success(this) } ?: Result.Failure(
+                    NoSuchUserException()
+                )
+
+            } catch (e: Exception) {
+                Result.Failure(e)
+            }
+        }
+
+
 }

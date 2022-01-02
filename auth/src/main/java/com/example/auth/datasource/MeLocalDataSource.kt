@@ -2,6 +2,7 @@ package com.example.auth.datasource
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import com.example.auth.NoSuchUserException
 import com.example.auth.User
 import com.example.pojo.Result
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,7 @@ class MeLocalDataSource(private val sharedPref: SharedPreferences) : UserDataSou
         return@withContext try {
             sharedPref.getString(loggedInUserKey, null)
                 ?.run { Result.Success(Json.decodeFromString(this)) }
-                ?: Result.Failure(Exception("user was null"))
+                ?: Result.Failure(NoSuchUserException())
         } catch (e: Exception) {
             Result.Failure(e)
         }
@@ -38,4 +39,6 @@ class MeLocalDataSource(private val sharedPref: SharedPreferences) : UserDataSou
     }
 
     override suspend fun updateUser(user: User): Result<User> = createUser(user)
+
+    override suspend fun getUserByMobile(mobile: Long) = getUser("")
 }

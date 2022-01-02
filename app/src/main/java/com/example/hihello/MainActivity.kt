@@ -6,12 +6,14 @@ import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import android.R.id.message
 import android.media.MediaDataSource
+import android.widget.Toast
 import androidx.room.Room
 import com.example.auth.User
 import com.example.auth.datasource.MeLocalDataSource
 import com.example.auth.datasource.UserFirebaseDataSource
 import com.example.auth.datasource.UserRoomDataSource
 import com.example.auth.repo.UserRepository
+import com.example.auth.usecase.SignUpUseCase
 import com.example.pojo.Result
 import kotlinx.coroutines.*
 import okhttp3.*
@@ -45,31 +47,16 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
+        val usecase = SignUpUseCase(userRepo)
+
         CoroutineScope(Job()).launch {
-            val res =
-                userRepo.signUpUser(
-                    User(
-                        "kshitij6325",
-                        secondId,
-                        "Rahul",
-                        "Sharma",
-                        8888888888,
-                        "url"
-                    )
-                )
-
-            when (res) {
-                is Result.Failure -> Log.e("RES :: ", res.exception.message.toString())
-                is Result.Success -> Log.e(
-                    "SUCC :: ", "${
-                        when (val resE = userRepo.getLoggedInUser()) {
-                            is Result.Success -> resE.data.firstName
-                            is Result.Failure -> resE.exception.message
-
-                        }
-                    }"
-                )
-            }
+            usecase.invoke(User("Rahul12345576", secondId, 9953319600, null, "ramesh"), {
+                Toast.makeText(this@MainActivity, "user signed up successfully", Toast.LENGTH_LONG)
+                    .show()
+            }, {
+                Toast.makeText(this@MainActivity, it.message, Toast.LENGTH_LONG)
+                    .show()
+            })
         }
     }
 
