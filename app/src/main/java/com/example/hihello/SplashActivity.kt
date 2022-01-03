@@ -27,19 +27,23 @@ class SplashActivity : AppCompatActivity() {
         CoroutineScope(Job()).launch {
             signUpUseCase.invoke(
                 User(
-                    "Rahul123444455765",
-                    mobileNumber = 9923339600,
+                    "Rahul123444445576590",
+                    mobileNumber = 9123339600,
                     profileUrl = "ramesh"
                 ), {
-                    Toast.makeText(
-                        this@SplashActivity,
-                        it.fcmToken,
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            this@SplashActivity,
+                            it.fcmToken,
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                    }
                 }, {
-                    Toast.makeText(this@SplashActivity, it.message, Toast.LENGTH_LONG)
-                        .show()
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@SplashActivity, it.message, Toast.LENGTH_LONG)
+                            .show()
+                    }
                 })
         }
     }

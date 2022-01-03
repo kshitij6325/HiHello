@@ -14,6 +14,7 @@ import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import kotlin.coroutines.resume
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -29,22 +30,17 @@ class UserFirebaseDataSource @Inject constructor() : UserDataSource {
     override suspend fun getUser(userId: String): Result<User> =
         withContext(Dispatchers.IO) {
             return@withContext suspendCancellableCoroutine<Result<User>> {
-                firebaseInstanceRef.child(userId).run {
-                    addValueEventListener(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val res = snapshot.getValue(User::class.java)
-                            if (res != null) {
-                                it.resume(Result.Success(res)) {}
-                            } else it.resume(Result.Failure(NoSuchUserException())) {}
-                            removeEventListener(this)
+                firebaseInstanceRef.child(userId).get().run {
+                    addOnSuccessListener { snapshot ->
+                        val res = snapshot.getValue(User::class.java)
+                        if (res != null) {
+                            it.resume(Result.Success(res))
+                        } else it.resume(Result.Failure(NoSuchUserException()))
+                    }
 
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            it.resume(Result.Failure(error.toException())) {}
-                        }
-
-                    })
+                    addOnFailureListener { exception ->
+                        it.resume(Result.Failure(exception))
+                    }
                 }
             }
         }
@@ -53,38 +49,32 @@ class UserFirebaseDataSource @Inject constructor() : UserDataSource {
         withContext(Dispatchers.IO) {
             return@withContext suspendCancellableCoroutine<Result<User>> { continuation ->
                 firebaseInstanceRef.child(user.userName).setValue(user).addOnSuccessListener {
-                    continuation.resume(Result.Success(user)) {}
+                    continuation.resume(Result.Success(user))
                 }.addOnFailureListener {
-                    continuation.resume(Result.Failure(it)) {}
+                    continuation.resume(Result.Failure(it))
                 }
             }
         }
 
-    override suspend fun updateUser(user: User): Result<User> =
-        withContext(Dispatchers.IO) {
-            return@withContext createUser(user)
-        }
+    override suspend fun updateUser(user: User): Result<User> = createUser(user)
+
 
     override suspend fun getUserByMobile(mobile: Long): Result<User> =
         withContext(Dispatchers.IO) {
             return@withContext suspendCancellableCoroutine<Result<User>> {
-                firebaseInstanceRef.orderByChild("mobileNumber").equalTo(mobile.toDouble()).run {
-                    addValueEventListener(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
+                firebaseInstanceRef.orderByChild("mobileNumber").equalTo(mobile.toDouble()).get()
+                    .run {
+                        addOnSuccessListener { snapshot ->
                             val res = snapshot.getValue(User::class.java)
                             if (res != null) {
-                                it.resume(Result.Success(res)) {}
-                            } else it.resume(Result.Failure(NoSuchUserException())) {}
-                            removeEventListener(this)
-
+                                it.resume(Result.Success(res))
+                            } else it.resume(Result.Failure(NoSuchUserException()))
                         }
 
-                        override fun onCancelled(error: DatabaseError) {
-                            it.resume(Result.Failure(error.toException())) {}
+                        addOnFailureListener { exception ->
+                            it.resume(Result.Failure(exception))
                         }
-
-                    })
-                }
+                    }
             }
         }
 
