@@ -26,17 +26,12 @@ class SignUpUseCase @Inject constructor(private val userRepository: UserReposito
                 onFailure(UserAlreadyExitsException())
             }
             else -> {
-                when (val tokenRes = userRepository.getFirebaseToken()) {
-                    is Result.Failure -> runOnMain {
-                        onFailure(tokenRes.exception)
+                userRepository.getFirebaseToken().map {
+                    userRepository.signUpUser(user.copy(fcmToken = it)).also { successRes ->
+                        runOnMain { successRes.onSuccess(onSuccess) }
                     }
-                    is Result.Success -> when (val res =
-                        userRepository.signUpUser(user.copy(fcmToken = tokenRes.data))) {
-                        is Result.Failure -> runOnMain {
-                            onFailure(res.exception)
-                        }
-                        is Result.Success -> runOnMain { onSuccess(res.data) }
-                    }
+                }.catch {
+                    onFailure(it)
                 }
             }
 

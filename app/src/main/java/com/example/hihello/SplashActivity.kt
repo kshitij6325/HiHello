@@ -27,8 +27,8 @@ class SplashActivity : AppCompatActivity() {
         CoroutineScope(Job()).launch {
             signUpUseCase.invoke(
                 User(
-                    "Rahul123455765",
-                    mobileNumber = 9953339600,
+                    "Rahul123444455765",
+                    mobileNumber = 9923339600,
                     profileUrl = "ramesh"
                 ), {
                     Toast.makeText(
