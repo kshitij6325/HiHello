@@ -2,13 +2,21 @@ package com.example.auth.repo
 
 import com.example.auth.User
 import com.example.auth.WrongPasswordException
+import com.example.auth.datasource.MeLocalDataSourceType
 import com.example.auth.datasource.UserDataSource
+import com.example.auth.datasource.UserFirebaseDataSourceType
+import com.example.auth.datasource.UserRoomDataSourceType
 import com.example.pojo.Result
+import javax.inject.Inject
+import javax.inject.Singleton
 
-
-class UserRepository(
+@Singleton
+class UserRepository @Inject constructor(
+    @UserFirebaseDataSourceType
     private val userFirebaseDataSource: UserDataSource,
+    @UserRoomDataSourceType
     private val userRoomDataSource: UserDataSource,
+    @MeLocalDataSourceType
     private val meDataSource: UserDataSource
 ) {
 

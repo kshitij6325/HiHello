@@ -7,8 +7,16 @@ import com.example.pojo.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.Exception
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
-class UserRoomDataSource(private val dao: UserDao) : UserDataSource {
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class UserRoomDataSourceType
+
+@Singleton
+class UserRoomDataSource @Inject constructor(private val dao: UserDao) : UserDataSource {
 
     override suspend fun getUser(userId: String): Result<User> = withContext(Dispatchers.IO) {
         return@withContext try {

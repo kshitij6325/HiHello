@@ -11,8 +11,17 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.lang.Exception
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
-class MeLocalDataSource(private val sharedPref: SharedPreferences) : UserDataSource {
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class MeLocalDataSourceType
+
+@Singleton
+class MeLocalDataSource @Inject constructor(private val sharedPref: SharedPreferences) :
+    UserDataSource {
 
     private val loggedInUserKey = "logged_in_user_info"
 

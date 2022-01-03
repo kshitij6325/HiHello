@@ -11,8 +11,16 @@ import com.example.pojo.Result
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.lang.Exception
+import javax.inject.Inject
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
-class UserFirebaseDataSource : UserDataSource {
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class UserFirebaseDataSourceType
+
+@Singleton
+class UserFirebaseDataSource @Inject constructor() : UserDataSource {
 
     private val firebaseInstanceRef by lazy {
         FirebaseDatabase.getInstance().getReference("user")

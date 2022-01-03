@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlinx-serialization'
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -56,6 +57,11 @@ dependencies {
 
     //serialization/de-serialization
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2"
+
+    //hilt
+    implementation "com.google.dagger:hilt-android:2.38.1"
+    kapt "com.google.dagger:hilt-compiler:2.38.1"
+
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

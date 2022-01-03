@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import android.R.id.message
-import android.media.MediaDataSource
 import android.widget.Toast
 import androidx.room.Room
 import com.example.auth.User
@@ -14,47 +13,38 @@ import com.example.auth.datasource.UserFirebaseDataSource
 import com.example.auth.datasource.UserRoomDataSource
 import com.example.auth.repo.UserRepository
 import com.example.auth.usecase.SignUpUseCase
-import com.example.pojo.Result
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import okhttp3.*
 import org.json.JSONArray
 
 import org.json.JSONObject
+import javax.inject.Inject
 
-
-class MainActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class SplashActivity : AppCompatActivity() {
     private val firebaseInstance = FirebaseMessaging.getInstance()
+
+    @Inject
+    lateinit var signUpUseCase: SignUpUseCase
 
     private val secondId =
         "cH6Oz_DDRHeekfj6MlKnwE:APA91bGxebnnE3HWKswNRM67Ys_LtwiE52XmDyPiOnEea0pw0e2fjFAnRy32nABtgndF-NPZMOuyBC2gipgFvzsmf-cHWL7REQZU4_SG3V82qgxAxL9y5MCipFAmo_Kvt8ZW4lFrq8G8"
-    private val userDataSource = UserFirebaseDataSource()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val roomDb = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "hihello"
-        ).build()
-
-        val userRepo = UserRepository(
-            userFirebaseDataSource = UserFirebaseDataSource(),
-            userRoomDataSource = UserRoomDataSource(roomDb.getUserDao()),
-            meDataSource = MeLocalDataSource(
-                getSharedPreferences(
-                    "hihello_shared_perf",
-                    MODE_PRIVATE
-                )
-            )
-        )
-
-        val usecase = SignUpUseCase(userRepo)
 
         CoroutineScope(Job()).launch {
-            usecase.invoke(User("Rahul12345576", secondId, 9953319600, null, "ramesh"), {
-                Toast.makeText(this@MainActivity, "user signed up successfully", Toast.LENGTH_LONG)
+            signUpUseCase.invoke(User("Rahul12345576", secondId, 9953319600, null, "ramesh"), {
+                Toast.makeText(
+                    this@SplashActivity,
+                    "user signed up successfully",
+                    Toast.LENGTH_LONG
+                )
                     .show()
             }, {
-                Toast.makeText(this@MainActivity, it.message, Toast.LENGTH_LONG)
+                Toast.makeText(this@SplashActivity, it.message, Toast.LENGTH_LONG)
                     .show()
             })
         }

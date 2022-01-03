@@ -7,8 +7,11 @@ import com.example.auth.repo.UserRepository
 import com.example.pojo.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SignUpUseCase(private val userRepository: UserRepository) {
+@Singleton
+class SignUpUseCase @Inject constructor(private val userRepository: UserRepository) {
 
     suspend operator fun invoke(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         when {
