@@ -2,10 +2,7 @@ package com.example.auth.repo
 
 import com.example.auth.User
 import com.example.auth.WrongPasswordException
-import com.example.auth.datasource.MeLocalDataSourceType
-import com.example.auth.datasource.UserDataSource
-import com.example.auth.datasource.UserFirebaseDataSourceType
-import com.example.auth.datasource.UserRoomDataSourceType
+import com.example.auth.datasource.*
 import com.example.pojo.Result
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -17,7 +14,8 @@ class UserRepository @Inject constructor(
     @UserRoomDataSourceType
     private val userRoomDataSource: UserDataSource,
     @MeLocalDataSourceType
-    private val meDataSource: UserDataSource
+    private val meDataSource: UserDataSource,
+    private val firebaseDataSource: FirebaseDataSource
 ) {
 
     suspend fun signUpUser(user: User): Result<User> {
@@ -34,6 +32,10 @@ class UserRepository @Inject constructor(
     suspend fun getRemoteUserByPhone(user: User): Result<User> {
         return userFirebaseDataSource.getUserByMobile(mobile = user.mobileNumber ?: 0)
     }
+
+    suspend fun getAppSecret() = firebaseDataSource.getAppSecret()
+
+    suspend fun getFirebaseToken() = firebaseDataSource.getFirebaseToken()
 
     suspend fun loginUser(user: User, password: String): Result<User> {
         return when (val res = userFirebaseDataSource.getUser(user.userName)) {

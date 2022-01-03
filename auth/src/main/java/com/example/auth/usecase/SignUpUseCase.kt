@@ -13,7 +13,11 @@ import javax.inject.Singleton
 @Singleton
 class SignUpUseCase @Inject constructor(private val userRepository: UserRepository) {
 
-    suspend operator fun invoke(user: User, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+    suspend operator fun invoke(
+        user: User,
+        onSuccess: (User) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
         when {
             !validateMobileNumber(user) -> runOnMain {
                 onFailure(InvalidPhoneNumberException())
@@ -21,12 +25,21 @@ class SignUpUseCase @Inject constructor(private val userRepository: UserReposito
             isUserAlreadyExists(user) -> runOnMain {
                 onFailure(UserAlreadyExitsException())
             }
-            else -> when (val res = userRepository.signUpUser(user)) {
-                is Result.Failure -> runOnMain {
-                    onFailure(res.exception)
+            else -> {
+                when (val tokenRes = userRepository.getFirebaseToken()) {
+                    is Result.Failure -> runOnMain {
+                        onFailure(tokenRes.exception)
+                    }
+                    is Result.Success -> when (val res =
+                        userRepository.signUpUser(user.copy(fcmToken = tokenRes.data))) {
+                        is Result.Failure -> runOnMain {
+                            onFailure(res.exception)
+                        }
+                        is Result.Success -> runOnMain { onSuccess(res.data) }
+                    }
                 }
-                is Result.Success -> runOnMain { onSuccess() }
             }
+
         }
     }
 
