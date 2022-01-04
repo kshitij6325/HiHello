@@ -8,4 +8,5 @@ interface UserDataSource {
     suspend fun createUser(user: User): Result<User>
     suspend fun updateUser(user: User): Result<User>
     suspend fun getUserByMobile(mobile: Long): Result<User>
+    suspend fun deleteUser(userId: String): Result<Boolean>
 }

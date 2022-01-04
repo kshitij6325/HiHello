@@ -16,9 +16,3 @@ data class User(
     @ColumnInfo(name = "profile_url") var profileUrl: String? = null,
     @Ignore var password: String? = null
 )
-
-
-class NoSuchUserException : Exception("No such user found")
-class WrongPasswordException : Exception("Wrong password")
-class UserAlreadyExitsException : Exception("User already exits")
-class InvalidPhoneNumberException : Exception("Invalid mobile number")

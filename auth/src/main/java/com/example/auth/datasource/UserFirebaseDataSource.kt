@@ -2,25 +2,21 @@ package com.example.auth.datasource
 
 import com.example.auth.NoSuchUserException
 import com.example.auth.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import com.example.pojo.Result
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Qualifier
-import javax.inject.Singleton
 import kotlin.coroutines.resume
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class UserFirebaseDataSourceType
 
-@Singleton
+@ViewModelScoped
 class UserFirebaseDataSource @Inject constructor() : UserDataSource {
 
     private val firebaseInstanceRef by lazy {
@@ -78,5 +74,18 @@ class UserFirebaseDataSource @Inject constructor() : UserDataSource {
             }
         }
 
+    override suspend fun deleteUser(userId: String): Result<Boolean> = withContext(Dispatchers.IO) {
+        return@withContext suspendCancellableCoroutine<Result<Boolean>> {
+            firebaseInstanceRef.child(userId).removeValue()
+                .run {
+                    addOnSuccessListener { _ ->
+                        it.resume(Result.Success(true))
+                    }
 
+                    addOnFailureListener { exception ->
+                        it.resume(Result.Failure(exception))
+                    }
+                }
+        }
+    }
 }

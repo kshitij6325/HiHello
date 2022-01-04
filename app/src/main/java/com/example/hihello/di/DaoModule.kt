@@ -12,7 +12,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object DaoModule {
     @Provides
-    fun getAppdatabase(application: Application) = Room.databaseBuilder(
+    fun getAppDatabase(application: Application) = Room.databaseBuilder(
         application.applicationContext,
         AppDatabase::class.java, "hihello"
     ).build()

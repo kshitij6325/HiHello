@@ -6,12 +6,22 @@ sealed class Result<T> {
     class Success<T>(val data: T) : Result<T>()
     class Failure<T>(val exception: Exception) : Result<T>()
 
-    suspend fun onSuccess(callback: suspend (T) -> Unit) {
+    suspend fun onSuccess(callback: suspend (T) -> Unit): Result<T> {
         when (this) {
             is Success -> callback(data)
             else -> {// no op}
             }
         }
+        return this
+    }
+
+    suspend fun onFailure(callback: suspend (Exception) -> Unit): Result<T> {
+        when (this) {
+            is Failure -> callback(exception)
+            else -> {// no op}
+            }
+        }
+        return this
     }
 
     suspend fun <P> map(mapper: suspend (T) -> Result<P>): Result<P> {

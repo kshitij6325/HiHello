@@ -1,50 +1,34 @@
 package com.example.hihello
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.example.auth.User
-import com.example.auth.usecase.SignUpUseCase
+import androidx.activity.viewModels
+import com.example.pojo.UIState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
-import okhttp3.*
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
-    //private val firebaseInstance = FirebaseMessaging.getInstance()
 
-    @Inject
-    lateinit var signUpUseCase: SignUpUseCase
-
-    // private val secondId =
-    //    "cH6Oz_DDRHeekfj6MlKnwE:APA91bGxebnnE3HWKswNRM67Ys_LtwiE52XmDyPiOnEea0pw0e2fjFAnRy32nABtgndF-NPZMOuyBC2gipgFvzsmf-cHWL7REQZU4_SG3V82qgxAxL9y5MCipFAmo_Kvt8ZW4lFrq8G8"
+    private val viewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        CoroutineScope(Job()).launch {
-            signUpUseCase.invoke(
-                User(
-                    "Rahul123444445576590",
-                    mobileNumber = 9123339600,
-                    profileUrl = "ramesh"
-                ), {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            this@SplashActivity,
-                            it.fcmToken,
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
+        viewModel.isUserLoggedInLiveData.observe(this) {
+            when (it) {
+                is UIState.Failure -> Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                is UIState.Success -> {
+                    if (it.data) {
+                        Toast.makeText(this, "work in progress", Toast.LENGTH_SHORT).show()
+                    } else {
+                        startActivity(Intent(this, AuthActivity::class.java))
+                        finish()
                     }
-                }, {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@SplashActivity, it.message, Toast.LENGTH_LONG)
-                            .show()
-                    }
-                })
+                }
+                else -> {} // no-op
+            }
         }
     }
 

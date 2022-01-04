@@ -1,9 +1,6 @@
 package com.example.auth.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.example.auth.User
 
 @Dao
@@ -20,4 +17,7 @@ interface UserDao {
 
     @Update
     suspend fun updateUser(user: User)
+
+    @Delete
+    suspend fun deleteUser(vararg users: User)
 }
