@@ -1,9 +1,6 @@
 package com.example.auth.usecase
 
-import com.example.auth.InvalidPhoneNumberException
-import com.example.auth.NoSuchUserException
-import com.example.auth.User
-import com.example.auth.UserAlreadyExitsException
+import com.example.auth.*
 import com.example.auth.repo.UserRepository
 import com.example.pojo.BaseUseCase
 import com.example.pojo.Result
@@ -19,8 +16,9 @@ class SignUpUseCase @Inject constructor(private val userRepository: UserReposito
 
     suspend operator fun invoke(user: User) {
         when {
+            user.userName.isEmpty() -> onFailure?.invoke(EmptyUserNameException())
+            user.password.isNullOrEmpty() -> onFailure?.invoke(EmptyPasswordException())
             !validateMobileNumber(user) -> onFailure?.invoke(InvalidPhoneNumberException())
-
             else -> {
                 userRepository.isNewUser(user).map {
                     userRepository.getFirebaseToken().map {

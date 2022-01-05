@@ -1,30 +1,29 @@
 package com.example.hihello
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.navigation.findNavController
 import com.example.pojo.UIState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SplashActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity() {
 
-    private val viewModel: SplashViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewModel.isUserLoggedInLiveData.observe(this) {
             when (it) {
-                is UIState.Failure -> Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                is UIState.Failure -> showToast(it.message)
                 is UIState.Success -> {
                     if (it.data) {
-                        Toast.makeText(this, "work in progress", Toast.LENGTH_SHORT).show()
-                    } else {
-                        startActivity(Intent(this, AuthActivity::class.java))
-                        finish()
+                        val action = HomeFragmentDirections.actionMoveToHome()
+                        findNavController(R.id.nav_host_fragment).navigate(action)
                     }
                 }
                 else -> {} // no-op
