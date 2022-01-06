@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
+import com.example.basefeature.showToast
 import com.example.pojo.UIState
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,16 +19,13 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewModel.isUserLoggedInLiveData.observe(this) {
-            when (it) {
-                is UIState.Failure -> showToast(it.message)
-                is UIState.Success -> {
-                    if (it.data) {
-                        val action = HomeFragmentDirections.actionMoveToHome()
-                        findNavController(R.id.nav_host_fragment).navigate(action)
-                    }
+            it.onSuccess { isLoggedIn ->
+                if (isLoggedIn) {
+                    val action = HomeFragmentDirections.actionMoveToHome()
+                    findNavController(R.id.nav_host_fragment).navigate(action)
                 }
-                else -> {} // no-op
-            }
+            }.onFailure { message -> showToast(message) }
+
         }
     }
 

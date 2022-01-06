@@ -43,15 +43,20 @@ class UserRepository @Inject constructor(
 
     suspend fun isNewUser(user: User): Result<Boolean> {
         val res = userFirebaseDataSource.getUser(user.userName)
-        if (!(res is Result.Failure && res.exception is NoSuchUserException)) {
-            return Result.Failure(UserAlreadyExitsException())
+        return when {
+            res is Result.Success -> Result.Failure(UserAlreadyExitsException())
+            res is Result.Failure && res.exception !is NoSuchUserException -> Result.Failure(res.exception)
+            else -> {
+                val resPhone = userFirebaseDataSource.getUserByMobile(user.mobileNumber ?: 0)
+                return when {
+                    resPhone is Result.Success -> Result.Failure(UserAlreadyExitsException())
+                    resPhone is Result.Failure && resPhone.exception !is NoSuchUserException -> Result.Failure(
+                        resPhone.exception
+                    )
+                    else -> Result.Success(true)
+                }
+            }
         }
-
-        val resPhone = userFirebaseDataSource.getUserByMobile(user.mobileNumber ?: 0)
-        if (!(resPhone is Result.Failure && res.exception is NoSuchUserException)) {
-            return Result.Failure(UserAlreadyExitsException())
-        }
-        return Result.Success(true)
     }
 
     suspend fun updateLoggedInUser(user: User): Result<User> {

@@ -63,6 +63,7 @@ dependencies {
     //auth module
     implementation project(":auth")
     implementation project(":pojo")
+    implementation project(":baseFeature")
 
     // navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"

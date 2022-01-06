@@ -17,8 +17,8 @@ class SignUpUseCase @Inject constructor(private val userRepository: UserReposito
     suspend operator fun invoke(user: User) {
         when {
             user.userName.isEmpty() -> onFailure?.invoke(EmptyUserNameException())
-            user.password.isNullOrEmpty() -> onFailure?.invoke(EmptyPasswordException())
             !validateMobileNumber(user) -> onFailure?.invoke(InvalidPhoneNumberException())
+            user.password.isNullOrEmpty() -> onFailure?.invoke(EmptyPasswordException())
             else -> {
                 userRepository.isNewUser(user).map {
                     userRepository.getFirebaseToken().map {

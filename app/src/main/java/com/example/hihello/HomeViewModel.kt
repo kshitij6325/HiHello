@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.example.auth.User
 import com.example.auth.usecase.IsUserLoggedInUseCase
 import com.example.auth.usecase.LoginUseCase
+import com.example.auth.usecase.LogoutUseCase
 import com.example.auth.usecase.SignUpUseCase
 import com.example.pojo.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
     private val loginUseCase: LoginUseCase,
-    private val signUpUseCase: SignUpUseCase
+    private val signUpUseCase: SignUpUseCase,
+    private val logOutUseCase: LogoutUseCase
 
 ) : ViewModel() {
 
@@ -26,6 +28,9 @@ class HomeViewModel @Inject constructor(
 
     private val _signUpLiveData = MutableLiveData<UIState<User>>()
     val signUpLiveData: LiveData<UIState<User>> = _signUpLiveData
+
+    private val _logOutLiveData = MutableLiveData<UIState<Boolean>>()
+    val logoutLiveData: LiveData<UIState<Boolean>> = _logOutLiveData
 
     init {
         isUserLoggedIn()
@@ -66,6 +71,18 @@ class HomeViewModel @Inject constructor(
                 _signInLiveData.postValue(UIState.Failure(it.message.toString()))
             }
         }.invoke(userId, password)
+    }
+
+    fun logOut() = viewModelScope.launch {
+        _logOutLiveData.postValue(UIState.Loading())
+        logOutUseCase.apply {
+            onSuccess = {
+                _logOutLiveData.postValue(UIState.Success(it))
+            }
+            onFailure = {
+                _logOutLiveData.postValue(UIState.Failure(it.message.toString()))
+            }
+        }.invoke()
     }
 
 }
