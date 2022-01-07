@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
@@ -26,6 +29,10 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
     fun navigate(direction: NavDirections) {
         findNavController().navigate(direction)
+    }
+
+    fun launch(block: suspend CoroutineScope.() -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch(block = block)
     }
 
     override fun onDestroyView() {

@@ -1,12 +1,19 @@
-package com.example.hihello
+package com.example.hihello.home.homefragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.basefeature.BaseFragment
 import com.example.basefeature.showToast
 import com.example.hihello.databinding.FragmentHomeBinding
+import com.example.hihello.home.HomeViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
@@ -21,11 +28,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             viewModel.logOut()
         }
 
-        viewModel.logoutLiveData.observe(this) {
-            it.onSuccess {
-                navigate(HomeFragmentDirections.actionHomeFragmentToSignInFragment())
-            }.onFailure { message ->
-                showToast(message)
+        launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.homeFragUiStateLiveData.map { it.isLoggedOut }
+                    .distinctUntilChanged()
+                    .collect {
+                        if (it) {
+                            navigate(HomeFragmentDirections.actionHomeFragmentToSignInFragment())
+                        }
+                    }
             }
         }
     }

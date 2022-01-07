@@ -1,13 +1,19 @@
-package com.example.hihello
+package com.example.hihello.home.auth.login
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.basefeature.BaseFragment
 import com.example.basefeature.showToast
+import com.example.hihello.home.HomeViewModel
 import com.example.hihello.databinding.FragmentSignInBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignInFragment : BaseFragment<FragmentSignInBinding>() {
@@ -23,12 +29,22 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
         super.onViewCreated(view, savedInstanceState)
         binding?.btnLogin?.setOnClickListener(this::signIn)
         binding?.tvSignUp?.setOnClickListener(this::moveToSignUp)
-        viewModel.signInLiveData.observe(this) {
-            it.onSuccess {
-                navigate(SignInFragmentDirections.actionSignInFragmentToHomeFragment())
-            }.onFailure { message ->
-                requireActivity().showToast(message)
+
+        launch {
+
+            //observe signIn state
+            viewModel.signInScreenUiStateLiveData.map { it.isSuccess }.collect {
+                if (it) {
+                    navigate(SignInFragmentDirections.actionSignInFragmentToHomeFragment())
+                }
             }
+
+            //show error toast
+            viewModel.signInScreenUiStateLiveData.map { it.error }
+                .distinctUntilChanged()
+                .collect {
+                    showToast(it)
+                }
         }
     }
 
