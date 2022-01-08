@@ -1,10 +1,10 @@
 package com.example.auth.repo
 
-import com.example.auth.datasource.IFirebaseDataSource
+import com.example.auth.datasource.FirebaseDataSource
 import com.example.pojo.Result
 import java.lang.Exception
 
-class FakeFirebaseDataSource : IFirebaseDataSource {
+class FakeFirebaseDataSource : FirebaseDataSource {
 
     var fail = false
 

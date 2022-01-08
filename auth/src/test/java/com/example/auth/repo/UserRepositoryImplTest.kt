@@ -3,11 +3,8 @@ package com.example.auth.repo
 import com.example.auth.NoSuchUserException
 import com.example.auth.User
 import com.example.auth.UserAlreadyExitsException
-import com.example.auth.WrongPasswordException
 import com.example.auth.datasource.FirebaseDataSource
-import com.example.auth.datasource.IFirebaseDataSource
 import com.example.auth.datasource.UserDataSource
-import com.example.auth.usecase.SignUpUseCase
 import com.example.pojo.Result
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -15,7 +12,7 @@ import org.junit.Before
 import org.junit.Test
 
 
-class UserRepositoryTest {
+class UserRepositoryImplTest {
 
     private val myUser = User(
         userName = "kshitij6325",
@@ -51,9 +48,9 @@ class UserRepositoryTest {
     private lateinit var userFirebaseDataSource: UserDataSource
     private lateinit var meDataSource: UserDataSource
     private lateinit var userRoomDataSource: UserDataSource
-    private lateinit var firebaseDataSource: IFirebaseDataSource
+    private lateinit var firebaseDataSource: FirebaseDataSource
 
-    private lateinit var repo: UserRepository
+    private lateinit var repo: UserRepositoryImpl
 
     @Before
     @After
@@ -62,7 +59,7 @@ class UserRepositoryTest {
         meDataSource = FakeMeDataSource()
         userRoomDataSource = FakeUserDataSource(localUserList.toMutableList())
         firebaseDataSource = FakeFirebaseDataSource()
-        repo = UserRepository(
+        repo = UserRepositoryImpl(
             userFirebaseDataSource = userFirebaseDataSource,
             meDataSource = meDataSource,
             userRoomDataSource = userRoomDataSource,
