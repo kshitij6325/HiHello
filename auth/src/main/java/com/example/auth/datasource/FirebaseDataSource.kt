@@ -11,9 +11,9 @@ import javax.inject.Singleton
 import kotlin.coroutines.resume
 
 @Singleton
-class FirebaseDataSource @Inject constructor() {
+class FirebaseDataSource @Inject constructor() : IFirebaseDataSource {
 
-    suspend fun getAppSecret(): Result<String> = withContext(Dispatchers.IO) {
+    override suspend fun getAppSecret(): Result<String> = withContext(Dispatchers.IO) {
         return@withContext suspendCancellableCoroutine { continuation ->
             FirebaseDatabase.getInstance().getReference("app_secret").get()
                 .addOnSuccessListener {
@@ -25,7 +25,7 @@ class FirebaseDataSource @Inject constructor() {
         }
     }
 
-    suspend fun getFirebaseToken(): Result<String> = withContext(Dispatchers.IO) {
+    override suspend fun getFirebaseToken(): Result<String> = withContext(Dispatchers.IO) {
         return@withContext suspendCancellableCoroutine { continuation ->
             FirebaseMessaging.getInstance().token
                 .addOnSuccessListener {
