@@ -6,14 +6,12 @@ import com.example.auth.usecase.IsUserLoggedInUseCase
 import com.example.auth.usecase.LoginUseCase
 import com.example.auth.usecase.LogoutUseCase
 import com.example.auth.usecase.SignUpUseCase
+import com.example.basefeature.update
 import com.example.hihello.home.homeactivity.HomeUIState
 import com.example.hihello.home.auth.login.SignInUiState
 import com.example.hihello.home.auth.signup.SignUpUiState
 import com.example.hihello.home.homefragment.HomeFragUiState
-import com.example.pojo.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,77 +21,83 @@ class HomeViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val signUpUseCase: SignUpUseCase,
     private val logOutUseCase: LogoutUseCase
-
 ) : ViewModel() {
-    private val homeScreenUiState = HomeUIState()
-    private val signInScreenUiState = SignInUiState()
-    private val signUpScreenUiState = SignUpUiState()
-    private val homeFragUiState = HomeFragUiState()
 
-    private val _signInScreenUiState = MutableStateFlow(signInScreenUiState)
-    val signInScreenUiStateLiveData: StateFlow<SignInUiState> = _signInScreenUiState
+    private val _signInScreenUiState = MutableLiveData(SignInUiState())
+    val signInScreenUiStateLiveData: LiveData<SignInUiState> = _signInScreenUiState
 
-    private val _signUpScreenUiState = MutableStateFlow(signUpScreenUiState)
-    val signUpScreenUiStateLiveData: StateFlow<SignUpUiState> = _signUpScreenUiState
+    private val _signUpScreenUiState = MutableLiveData(SignUpUiState())
+    val signUpScreenUiStateLiveData: LiveData<SignUpUiState> = _signUpScreenUiState
 
-    private val _homeActivityUiState = MutableStateFlow(homeScreenUiState)
-    val homeActivityUiStateLiveData: StateFlow<HomeUIState> = _homeActivityUiState
+    private val _homeActivityUiState = MutableLiveData(HomeUIState())
+    val homeActivityUiStateLiveData: LiveData<HomeUIState> = _homeActivityUiState
 
-    private val _homeFragUiState = MutableStateFlow(homeFragUiState)
-    val homeFragUiStateLiveData: StateFlow<HomeFragUiState> = _homeFragUiState
+    private val _homeFragUiState = MutableLiveData(HomeFragUiState())
+    val homeFragUiStateLiveData: LiveData<HomeFragUiState> = _homeFragUiState
 
     fun isUserLoggedIn() = viewModelScope.launch {
-        _homeActivityUiState.value = homeScreenUiState.setLoading(true)
+        _homeActivityUiState.update {
+            it?.copy(isLoading = true)
+        }
         isUserLoggedInUseCase.apply {
-            onSuccess = {
-                _homeActivityUiState.value = homeScreenUiState.isLoggedIn(it)
-                _homeActivityUiState.value = homeScreenUiState.setLoading(false)
+            onSuccess = { isLoggedIn ->
+                _homeActivityUiState.update {
+                    it?.copy(isLoading = false, isLoggedIn = isLoggedIn)
+                }
             }
-            onFailure = {
-                _homeActivityUiState.value = homeScreenUiState.setLoggedInError(it.message)
-                _homeActivityUiState.value = homeScreenUiState.setLoading(false)
+            onFailure = { ex ->
+                _homeActivityUiState.update {
+                    it?.copy(isLoading = false, isLoggedInError = ex.message)
+                }
             }
         }.invoke()
     }
 
     fun signUpUser(user: User) = viewModelScope.launch {
-        _signUpScreenUiState.value = signUpScreenUiState.setLoading(true)
+        _signUpScreenUiState.update {
+            it?.copy(isLoading = true)
+        }
         signUpUseCase.apply {
             onSuccess = {
-                _signUpScreenUiState.value = signUpScreenUiState.setSuccess(true)
-                _signUpScreenUiState.value = signUpScreenUiState.setLoading(false)
+                _signUpScreenUiState.update {
+                    it?.copy(isSuccess = true, isLoading = false)
+                }
             }
-            onFailure = {
-                _signUpScreenUiState.value = signUpScreenUiState.setError(it.message)
-                _signUpScreenUiState.value = signUpScreenUiState.setLoading(false)
+            onFailure = { ex ->
+                _signUpScreenUiState.update {
+                    it?.copy(error = ex.message, isLoading = false)
+                }
             }
         }.invoke(user)
     }
 
+
     fun signInUser(userId: String, password: String) = viewModelScope.launch {
-        _signInScreenUiState.value = signInScreenUiState.setLoading(true)
+        _signInScreenUiState.update { it?.copy(isLoading = true) }
         loginUseCase.apply {
             onSuccess = {
-                _signInScreenUiState.value = signInScreenUiState.setSuccess(true)
-                _signInScreenUiState.value = signInScreenUiState.setLoading(true)
+                _signInScreenUiState.update { it?.copy(isLoading = false, isSuccess = true) }
             }
-            onFailure = {
-                _signInScreenUiState.value = signInScreenUiState.setError(it.message)
-                _signInScreenUiState.value = signInScreenUiState.setLoading(true)
+            onFailure = { error ->
+                _signInScreenUiState.update { it?.copy(isLoading = false, error = error.message) }
             }
         }.invoke(userId, password)
     }
 
     fun logOut() = viewModelScope.launch {
-        _homeFragUiState.value = homeFragUiState.setLoading(true)
+        _homeFragUiState.update {
+            it?.copy(isLogOutLoading = true)
+        }
         logOutUseCase.apply {
-            onSuccess = {
-                _homeFragUiState.value = homeFragUiState.isLoggedOut(it)
-                _homeFragUiState.value = homeFragUiState.setLoading(false)
+            onSuccess = { loggedOut ->
+                _homeFragUiState.update {
+                    it?.copy(isLogOutLoading = false, isLoggedOut = loggedOut)
+                }
             }
-            onFailure = {
-                _homeFragUiState.value = homeFragUiState.setLogOutError(it.message)
-                _homeFragUiState.value = homeFragUiState.setLoading(false)
+            onFailure = { ex ->
+                _homeFragUiState.update {
+                    it?.copy(isLogOutLoading = false, errorLogOut = ex.message)
+                }
             }
         }.invoke()
     }

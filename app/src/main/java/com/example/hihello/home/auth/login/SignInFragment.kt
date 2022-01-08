@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.map
 import com.example.basefeature.BaseFragment
 import com.example.basefeature.showToast
 import com.example.hihello.home.HomeViewModel
@@ -23,29 +26,29 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
         get() = FragmentSignInBinding::inflate
 
 
-    private val viewModel: HomeViewModel by activityViewModels()
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.btnLogin?.setOnClickListener(this::signIn)
         binding?.tvSignUp?.setOnClickListener(this::moveToSignUp)
 
-        launch {
-
-            //observe signIn state
-            viewModel.signInScreenUiStateLiveData.map { it.isSuccess }.collect {
+        //observe signIn state
+        viewModel.signInScreenUiStateLiveData
+            .map { it.isSuccess }
+            .distinctUntilChanged()
+            .observe(this) {
                 if (it) {
                     navigate(SignInFragmentDirections.actionSignInFragmentToHomeFragment())
                 }
             }
 
-            //show error toast
-            viewModel.signInScreenUiStateLiveData.map { it.error }
-                .distinctUntilChanged()
-                .collect {
-                    showToast(it)
-                }
-        }
+        //show error toast
+        viewModel.signInScreenUiStateLiveData.map { it.error }
+            .distinctUntilChanged()
+            .observe(this) {
+                showToast(it)
+            }
     }
 
     private fun signIn(view: View) {

@@ -3,19 +3,14 @@ package com.example.hihello.home.homeactivity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.map
 import androidx.navigation.findNavController
 import com.example.basefeature.showToast
 import com.example.hihello.R
 import com.example.hihello.home.HomeViewModel
 import com.example.hihello.home.homefragment.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
@@ -25,32 +20,22 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        lifecycleScope.launch {
+        viewModel.homeActivityUiStateLiveData
+            .map { it.isLoggedIn }
+            .distinctUntilChanged()
+            .observe(this@HomeActivity) {
+                if (it) {
+                    findNavController(R.id.nav_host_fragment).navigate(HomeFragmentDirections.actionMoveToHome())
+                }
 
-            // observing error message
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.homeActivityUiStateLiveData.map { it.isLoggedIn }
-                    .distinctUntilChanged()
-                    .collect {
-                        findNavController(R.id.nav_host_fragment).navigate(
-                            if (it) {
-                                HomeFragmentDirections.actionMoveToHome()
-                            } else {
-                                HomeFragmentDirections.actionMoveToSignup()
-                            }
-                        )
-
-                    }
-
-                // show error message toast when lifecycle state it at-least started
-                viewModel.homeActivityUiStateLiveData.map { it.isLoggedInError }
-                    .distinctUntilChanged()
-                    .collect {
-                        showToast(it)
-                    }
             }
-        }
 
+        // show error message toast when lifecycle state it at-least started
+        viewModel.homeActivityUiStateLiveData.map { it.isLoggedInError }
+            .distinctUntilChanged()
+            .observe(this) {
+                showToast(it)
+            }
         viewModel.isUserLoggedIn()
     }
 

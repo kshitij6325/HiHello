@@ -1,7 +1,7 @@
 package com.example.hihello.home.auth.signup
 
 data class SignUpUiState(
-    val error: String? = null, val isSuccess: Boolean = true, val isLoading: Boolean = false
+    val error: String? = null, val isSuccess: Boolean = false, val isLoading: Boolean = false
 ) {
 
     fun setError(error: String?): SignUpUiState {
