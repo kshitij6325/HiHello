@@ -3,6 +3,7 @@ package com.example.auth.datasource
 import com.example.pojo.Result
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessaging
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -10,7 +11,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 
-@Singleton
+@ViewModelScoped
 class FirebaseDataSourceImpl @Inject constructor() : FirebaseDataSource {
 
     override suspend fun getAppSecret(): Result<String> = withContext(Dispatchers.IO) {

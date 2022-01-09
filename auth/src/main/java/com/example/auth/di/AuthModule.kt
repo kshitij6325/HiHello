@@ -1,6 +1,8 @@
 package com.example.auth.di
 
 import com.example.auth.datasource.*
+import com.example.auth.repo.UserRepository
+import com.example.auth.repo.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -21,4 +23,10 @@ abstract class AuthModule {
     @Binds
     @UserRoomDataSourceType
     abstract fun getUserRoomDatasource(dataSource: UserRoomDataSource): UserDataSource
+
+    @Binds
+    abstract fun getFirebaseDataSource(dataSource: FirebaseDataSourceImpl): FirebaseDataSource
+
+    @Binds
+    abstract fun getUserRepo(repo: UserRepositoryImpl): UserRepository
 }

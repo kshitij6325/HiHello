@@ -1,5 +1,6 @@
 package com.example.auth.repo
 
+import com.example.auth.FakeDataProvider
 import com.example.auth.NoSuchUserException
 import com.example.auth.User
 import com.example.auth.UserAlreadyExitsException
@@ -14,63 +15,18 @@ import org.junit.Test
 
 class UserRepositoryImplTest {
 
-    private val myUser = User(
-        userName = "kshitij6325",
-        mobileNumber = 9953319602,
-        profileUrl = "https://google.com.jpeg",
-        password = "abcd"
-    )
-
-    private val user1 = User(
-        userName = "harshit3344",
-        mobileNumber = 9953319605,
-        profileUrl = "https://google.com.jpeg",
-        password = "abcd"
-    )
-
-    private val user2 = User(
-        userName = "beena345",
-        mobileNumber = 9953219602,
-        profileUrl = "https://google.com.jpeg",
-        password = "abcd"
-    )
-
-    private val user3 = User(
-        userName = "surendra6677",
-        mobileNumber = 9151319602,
-        profileUrl = "https://google.com.jpeg",
-        password = "abcd"
-    )
-
-    private val remoteUserList = listOf(user1, user2, user3)
-    private val localUserList = listOf<User>()
-
-    private lateinit var userFirebaseDataSource: UserDataSource
-    private lateinit var meDataSource: UserDataSource
-    private lateinit var userRoomDataSource: UserDataSource
-    private lateinit var firebaseDataSource: FirebaseDataSource
-
-    private lateinit var repo: UserRepositoryImpl
+    private lateinit var repo: UserRepository
 
     @Before
     @After
     fun initRepo() {
-        userFirebaseDataSource = FakeUserDataSource(remoteUserList.toMutableList())
-        meDataSource = FakeMeDataSource()
-        userRoomDataSource = FakeUserDataSource(localUserList.toMutableList())
-        firebaseDataSource = FakeFirebaseDataSource()
-        repo = UserRepositoryImpl(
-            userFirebaseDataSource = userFirebaseDataSource,
-            meDataSource = meDataSource,
-            userRoomDataSource = userRoomDataSource,
-            firebaseDataSource = firebaseDataSource
-        )
+        repo = FakeDataProvider.initDataAndRepo()
     }
 
     @Test
     fun givenRepo_fetchRemoteUser() = runBlocking {
-        val resCreate = repo.getRemoteUser(user1.userName)
-        assert(resCreate is Result.Success && resCreate.data.userName == user1.userName)
+        val resCreate = repo.getRemoteUser(FakeDataProvider.user1.userName)
+        assert(resCreate is Result.Success && resCreate.data.userName == FakeDataProvider.user1.userName)
     }
 
     @Test
@@ -81,9 +37,9 @@ class UserRepositoryImplTest {
 
     @Test
     fun givenRepo_testLoggedInUser() = runBlocking {
-        repo.crateLoggedInUser(myUser)
+        repo.crateLoggedInUser(FakeDataProvider.myUser)
         val loggedInUser = repo.getLoggedInUser()
-        assert(loggedInUser is Result.Success && loggedInUser.data.userName == myUser.userName)
+        assert(loggedInUser is Result.Success && loggedInUser.data.userName == FakeDataProvider.myUser.userName)
     }
 
     @Test
@@ -94,13 +50,13 @@ class UserRepositoryImplTest {
 
     @Test
     fun givenRepo_testUserExists() = runBlocking {
-        val user = repo.isNewUser(myUser)
+        val user = repo.isNewUser(FakeDataProvider.myUser)
         assert(user is Result.Failure && user.exception is UserAlreadyExitsException)
     }
 
     @Test
     fun givenRepo_testLogout() = runBlocking {
-        val resCreate = repo.crateLoggedInUser(myUser)
+        val resCreate = repo.crateLoggedInUser(FakeDataProvider.myUser)
         val resLogout = repo.deleteLocalUser()
         assert(resCreate is Result.Success && resLogout is Result.Success)
     }
