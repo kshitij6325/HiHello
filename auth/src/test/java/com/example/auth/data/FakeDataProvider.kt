@@ -1,5 +1,6 @@
-package com.example.auth
+package com.example.auth.data
 
+import com.example.auth.User
 import com.example.auth.datasource.FirebaseDataSource
 import com.example.auth.datasource.UserDataSource
 import com.example.auth.repo.*

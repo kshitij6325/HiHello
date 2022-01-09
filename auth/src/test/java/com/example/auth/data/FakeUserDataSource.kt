@@ -1,4 +1,4 @@
-package com.example.auth.repo
+package com.example.auth.data
 
 import com.example.auth.NoSuchUserException
 import com.example.auth.User

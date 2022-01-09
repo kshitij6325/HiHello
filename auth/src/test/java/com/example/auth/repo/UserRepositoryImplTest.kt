@@ -1,11 +1,8 @@
 package com.example.auth.repo
 
-import com.example.auth.FakeDataProvider
+import com.example.auth.data.FakeDataProvider
 import com.example.auth.NoSuchUserException
-import com.example.auth.User
 import com.example.auth.UserAlreadyExitsException
-import com.example.auth.datasource.FirebaseDataSource
-import com.example.auth.datasource.UserDataSource
 import com.example.pojo.Result
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -51,7 +48,7 @@ class UserRepositoryImplTest {
     @Test
     fun givenRepo_testUserExists() = runBlocking {
         val user = repo.isNewUser(FakeDataProvider.myUser)
-        assert(user is Result.Failure && user.exception is UserAlreadyExitsException)
+        assert(user is Result.Success)
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.example.auth.usecase
 
 import com.example.auth.*
+import com.example.auth.data.FakeDataProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
