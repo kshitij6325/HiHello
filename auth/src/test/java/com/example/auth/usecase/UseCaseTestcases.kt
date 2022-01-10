@@ -2,12 +2,14 @@ package com.example.auth.usecase
 
 import com.example.auth.*
 import com.example.auth.data.FakeDataProvider
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-class UsecaseTestcases {
+@ExperimentalCoroutinesApi
+class UseCaseTestcases {
 
     private lateinit var isUserLoggedInUseCase: IsUserLoggedInUseCase
     private lateinit var loginUseCase: LoginUseCase
@@ -26,7 +28,7 @@ class UsecaseTestcases {
 
 
     @Test
-    fun loggInUser_IfUserNotExists() = runBlocking {
+    fun loggInUser_IfUserNotExists() = runTest {
         loginUseCase.apply {
             onSuccess = {
                 assert(false)
@@ -39,7 +41,7 @@ class UsecaseTestcases {
     }
 
     @Test
-    fun loggInUser_IfUserExists_wrongPassword() = runBlocking {
+    fun loggInUser_IfUserExists_wrongPassword() = runTest {
         loginUseCase.apply {
             onSuccess = {
                 assert(false)
@@ -48,11 +50,11 @@ class UsecaseTestcases {
                 assert(it is WrongPasswordException)
             }
 
-        }.invoke(FakeDataProvider.user1.userName, "iuiuiuiuiui")
+        }.invoke(FakeDataProvider.user1.userName, "Wrong password")
     }
 
     @Test
-    fun checkIsLoggedIn_withoutLogin() = runBlocking {
+    fun checkIsLoggedIn_withoutLogin() = runTest {
         isUserLoggedInUseCase.apply {
             onSuccess = {
                 assert(!it)
@@ -64,7 +66,7 @@ class UsecaseTestcases {
     }
 
     @Test
-    fun checkIsLoggedIn_withLogin() = runBlocking {
+    fun checkIsLoggedIn_withLogin() = runTest {
 
         loginUseCase.apply {
             onSuccess = {
@@ -87,7 +89,7 @@ class UsecaseTestcases {
     }
 
     @Test
-    fun checkIsLoggedIn_withSignUp() = runBlocking {
+    fun checkIsLoggedIn_withSignUp() = runTest {
 
         signUpUseCase.apply {
             onSuccess = {
@@ -110,7 +112,7 @@ class UsecaseTestcases {
     }
 
     @Test
-    fun checkSignUp_alreadyExitingUser() = runBlocking {
+    fun checkSignUp_alreadyExitingUser() = runTest {
         signUpUseCase.apply {
             onSuccess = {
                 assert(false)
@@ -123,7 +125,7 @@ class UsecaseTestcases {
     }
 
     @Test
-    fun checkSignUp_withWrongUserDetails() = runBlocking {
+    fun checkSignUp_withWrongUserDetails() = runTest {
         signUpUseCase.apply {
             onSuccess = {
                 assert(false)
@@ -156,7 +158,7 @@ class UsecaseTestcases {
     }
 
     @Test
-    fun checkSignUp_success() = runBlocking {
+    fun checkSignUp_success() = runTest {
         signUpUseCase.apply {
             onSuccess = {
                 assert(it.userName == FakeDataProvider.myUser.userName)
