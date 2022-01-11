@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
 import com.example.auth_feature.AuthViewModel
+import com.example.auth_feature.R
 import com.example.auth_feature.databinding.FragmentSignInBinding
 import com.example.basefeature.BaseFragment
 import com.example.basefeature.showToast
@@ -33,7 +34,7 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
             .distinctUntilChanged()
             .observe(this) {
                 if (it) {
-                    //navigate(SignInFragmentDirections.actionSignInFragmentToHomeFragment())
+                    navigate(requireActivity().resources.getString(R.string.home_frag_deeplink_string))
                 }
             }
 

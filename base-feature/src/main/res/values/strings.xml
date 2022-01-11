@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">HiHello</string>
-    <string name="hi_hello">Hi,Hello</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_frag_deeplink_string">app://com.example.hihello/home_fragment</string>
 </resources>

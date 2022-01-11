@@ -12,6 +12,7 @@
         android:name="com.example.hihello.home.homefragment.HomeFragment"
         android:label="fragment_home2"
         tools:layout="@layout/fragment_home">
+        <deepLink app:uri="@string/home_frag_deeplink_string" />
         <action
             android:id="@+id/action_homeFragment_to_auth_nav"
             app:destination="@id/auth_nav"

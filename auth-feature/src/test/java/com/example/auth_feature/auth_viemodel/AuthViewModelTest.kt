@@ -33,9 +33,7 @@ class AuthViewModelTest {
     @After
     fun initialize() {
         val repo = FakeDataProvider.initDataAndRepo()
-        val isUserLoggedInUseCase = IsUserLoggedInUseCase(repo)
         val loginUseCase = LoginUseCase(repo)
-        val logoutUseCase = LogoutUseCase(repo)
         val signUpUseCase = SignUpUseCase(repo)
         viewmodel = AuthViewModel(
             loginUseCase = loginUseCase,

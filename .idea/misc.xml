@@ -12,6 +12,7 @@
         <entry key="app/src/main/res/layout/fragment_sign_in.xml" value="0.19701086956521738" />
         <entry key="app/src/main/res/layout/fragment_sign_up.xml" value="0.19701086956521738" />
         <entry key="auth-feature/src/main/res/layout/fragment_sign_in.xml" value="0.16530797101449277" />
+        <entry key="auth-feature/src/main/res/layout/fragment_sign_up.xml" value="0.16530797101449277" />
         <entry key="auth-feature/src/main/res/layout/layout.xml" value="0.16530797101449277" />
         <entry key="base-feature/src/main/res/font/kk.xml" value="0.35801838610827375" />
       </map>

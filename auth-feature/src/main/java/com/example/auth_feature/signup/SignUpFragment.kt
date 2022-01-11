@@ -4,11 +4,14 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
+import androidx.navigation.NavDeepLinkRequest
 import com.example.auth.User
 import com.example.auth_feature.AuthViewModel
+import com.example.auth_feature.R
 import com.example.auth_feature.databinding.FragmentSignUpBinding
 import com.example.basefeature.BaseFragment
 import com.example.basefeature.showIf
@@ -43,7 +46,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>() {
         viewModel.signUpScreenUiStateLiveData.map { it.isSuccess }
             .distinctUntilChanged().observe(this) {
                 if (it) {
-                    //navigate(SignUpFragmentDirections.actionSignUpFragmentToHomeFragment())
+                    navigate(requireActivity().resources.getString(R.string.home_frag_deeplink_string))
                 }
             }
 
