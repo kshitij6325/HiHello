@@ -1,5 +1,6 @@
 package com.example.auth.datasource
 
+import android.util.Log
 import com.example.auth.NoSuchUserException
 import com.example.auth.User
 import com.example.auth.room.UserDao
@@ -20,7 +21,9 @@ class UserRoomDataSource @Inject constructor(private val dao: UserDao) : UserDat
 
     override suspend fun getUser(userId: String): Result<User> = withContext(Dispatchers.IO) {
         return@withContext try {
-            Result.Success(dao.getUser(userId))
+            dao.getUser(userId)?.let {
+                Result.Success(it)
+            } ?: Result.Failure(NoSuchUserException())
         } catch (e: Exception) {
             Result.Failure(e)
         }

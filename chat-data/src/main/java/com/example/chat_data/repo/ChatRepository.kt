@@ -1,0 +1,25 @@
+package com.example.chat_data.repo
+
+import com.example.auth.User
+import com.example.chat_data.Chat
+import com.example.chat_data.datasource.ChatDatasource
+import com.example.pojo.Result
+import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Inject
+
+@ViewModelScoped
+class ChatRepository @Inject constructor(
+    private val remoteChatHelper: RemoteChatHelper,
+    private val chatRoomDatasource: ChatDatasource
+) {
+
+    suspend fun sendChat(user: User, appSecret: String, chat: Chat): Result<String> =
+        remoteChatHelper.sendMessageToDevice(user, appSecret, chat)
+
+    suspend fun addChat(chat: Chat) = chatRoomDatasource.addChats(chat)
+
+    suspend fun updateChatSuccess(chat: String, success: Boolean) =
+        chatRoomDatasource.updateChatSuccessState(chat, success)
+
+    suspend fun getAllUserChat(userId: String) = chatRoomDatasource.getAllUserChat(userId)
+}

@@ -1,9 +1,11 @@
 package com.example.hihello.home
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.auth.usecase.IsUserLoggedInUseCase
 import com.example.auth.usecase.LogoutUseCase
 import com.example.basefeature.update
+import com.example.chat_data.usecase.SendChatUseCase
 import com.example.hihello.home.homeactivity.HomeUIState
 import com.example.hihello.home.homefragment.HomeFragUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,6 +16,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val sendChatUseCase: SendChatUseCase
 ) : ViewModel() {
 
     private val _homeActivityUiState = MutableLiveData(HomeUIState())
@@ -57,5 +60,17 @@ class HomeViewModel @Inject constructor(
             }
         }.invoke()
     }
+
+    fun sendChat(message: String = "happy birthday", user_id: String = "kshitij") =
+        viewModelScope.launch {
+            sendChatUseCase.apply {
+                onSuccess = {
+                    Log.e("CHAT", it.toString())
+                }
+                onFailure = {
+                    Log.e("CHAT", it.message.toString())
+                }
+            }.invoke(message, user_id)
+        }
 
 }

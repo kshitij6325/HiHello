@@ -14,4 +14,12 @@
         android:text="Log out"
         android:textColor="@color/design_default_color_primary" />
 
+    <Button
+        android:id="@+id/send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:text="send" />
+
 </FrameLayout>

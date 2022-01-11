@@ -19,4 +19,7 @@ object DaoModule {
 
     @Provides
     fun getUserDao(appDatabase: AppDatabase) = appDatabase.getUserDao()
+
+    @Provides
+    fun getChatDao(appDatabase: AppDatabase) = appDatabase.getChatDao()
 }

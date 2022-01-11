@@ -23,6 +23,13 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun crateLoggedInUser(user: User) = meDataSource.createUser(user)
 
+    override suspend fun crateLocalUser(user: User): Result<Boolean> {
+        return when (val userRes = userRoomDataSource.createUser(user)) {
+            is Result.Failure -> Result.Failure(userRes.exception)
+            is Result.Success -> Result.Success(true)
+        }
+    }
+
     override suspend fun getRemoteUser(userName: String): Result<User> {
         return userFirebaseDataSource.getUser(userId = userName)
     }

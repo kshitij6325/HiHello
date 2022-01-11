@@ -17,7 +17,7 @@ class FCMCloudMessaging : FirebaseMessagingService() {
     override fun onMessageReceived(p0: RemoteMessage) {
         super.onMessageReceived(p0)
         Handler(Looper.getMainLooper()).post {
-            Toast.makeText(this, p0.data.get("key").toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, p0.data.get("chat_data").toString(), Toast.LENGTH_SHORT).show()
         }
     }
 }

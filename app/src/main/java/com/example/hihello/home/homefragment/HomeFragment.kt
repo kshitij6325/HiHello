@@ -23,6 +23,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             viewModel.logOut()
         }
 
+        binding?.send?.setOnClickListener {
+            viewModel.sendChat()
+        }
+
         viewModel.homeFragUiStateLiveData.observe(this) {
             if (it.isLoggedOut) {
                 navigate(HomeFragmentDirections.actionHomeFragmentToAuthNav())

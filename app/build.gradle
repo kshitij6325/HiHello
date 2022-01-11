@@ -66,6 +66,7 @@ dependencies {
     //auth module
     implementation project(':auth-feature')
     implementation project(':base-feature')
+    implementation project(':chat-data')
 
     // navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"

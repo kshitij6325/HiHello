@@ -8,6 +8,8 @@ interface UserRepository {
 
     suspend fun crateLoggedInUser(user: User): Result<User>
 
+    suspend fun crateLocalUser(user: User): Result<Boolean>
+
     suspend fun getRemoteUser(userName: String): Result<User>
 
     suspend fun getAppSecret(): Result<String>
