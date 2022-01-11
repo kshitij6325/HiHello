@@ -33,14 +33,10 @@ class HomeViewModelTest {
     fun initialize() {
         val repo = FakeDataProvider.initDataAndRepo()
         val isUserLoggedInUseCase = IsUserLoggedInUseCase(repo)
-        val loginUseCase = LoginUseCase(repo)
         val logoutUseCase = LogoutUseCase(repo)
-        val signUpUseCase = SignUpUseCase(repo)
         viewmodel = HomeViewModel(
             isUserLoggedInUseCase = isUserLoggedInUseCase,
-            loginUseCase = loginUseCase,
-            logOutUseCase = logoutUseCase,
-            signUpUseCase = signUpUseCase
+            logoutUseCase = logoutUseCase,
         )
     }
 
@@ -51,78 +47,5 @@ class HomeViewModelTest {
         val getHomeActivityUiState = viewmodel.homeActivityUiStateLiveData.getOrAwaitValue()
         assert(!getHomeActivityUiState.isLoggedIn)
     }
-
-    @Test
-    fun signUpUser_newUserSuccess() = runBlockingTest {
-
-        viewmodel.signUpUser(FakeDataProvider.myUser)
-
-        val signUpUiState = viewmodel.signUpScreenUiStateLiveData.getOrAwaitValue()
-
-        assert(signUpUiState.isSuccess)
-        assert(signUpUiState.error.isNullOrEmpty())
-
-        //mainDispatcherRule.resumeDispatcher()
-
-        //signUpUiState = viewmodel.signUpScreenUiStateLiveData.getOrAwaitValue()
-
-
-        //assert(!signUpUiState.isLoading)
-        //assert(signUpUiState.isSuccess)
-    }
-
-    @Test
-    fun signUpUser_OldUserFail() = runBlockingTest {
-
-        viewmodel.signUpUser(FakeDataProvider.user1)
-
-        val signUpUiState = viewmodel.signUpScreenUiStateLiveData.getOrAwaitValue()
-
-        assert(!signUpUiState.isSuccess)
-        assert(signUpUiState.error == UserAlreadyExitsException().message)
-
-    }
-
-    @Test
-    fun loginUser_success() = runBlockingTest {
-
-        viewmodel.signInUser(FakeDataProvider.user1.userName, FakeDataProvider.user1.password ?: "")
-
-        val signUpUiState = viewmodel.signInScreenUiStateLiveData.getOrAwaitValue()
-
-        assert(signUpUiState.isSuccess)
-        assert(signUpUiState.error.isNullOrEmpty())
-
-    }
-
-    @Test
-    fun loginUser_noSuchUser() = runBlockingTest {
-
-        viewmodel.signInUser(
-            FakeDataProvider.myUser.userName,
-            FakeDataProvider.myUser.password ?: ""
-        )
-
-        val signUpUiState = viewmodel.signInScreenUiStateLiveData.getOrAwaitValue()
-
-        assert(!signUpUiState.isSuccess)
-        assert(signUpUiState.error != null && signUpUiState.error == NoSuchUserException().message)
-
-    }
-
-    @Test
-    fun logoutUser_success() = runBlockingTest {
-
-        viewmodel.signInUser(FakeDataProvider.user1.userName, FakeDataProvider.user1.password ?: "")
-        val loginUIState = viewmodel.signInScreenUiStateLiveData.getOrAwaitValue()
-        assert(loginUIState.isSuccess && loginUIState.error.isNullOrEmpty())
-
-        viewmodel.logOut()
-        val signUpUiState = viewmodel.homeFragUiStateLiveData.getOrAwaitValue()
-        assert(signUpUiState.isLoggedOut)
-        assert(signUpUiState.errorLogOut.isNullOrEmpty())
-
-    }
-
 
 }
