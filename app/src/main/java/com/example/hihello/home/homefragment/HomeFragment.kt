@@ -25,7 +25,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         viewModel.homeFragUiStateLiveData.observe(this) {
             if (it.isLoggedOut) {
-                navigate(HomeFragmentDirections.actionHomeFragmentToSignInFragment())
+                navigate(HomeFragmentDirections.actionHomeFragmentToAuthNav())
             }
         }
 

@@ -59,7 +59,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:23.0.0'
 
     //auth module
-    implementation project(':auth-data')
+    api project(':auth-data')
     implementation project(':base-feature')
 
     // navigation

@@ -7,9 +7,9 @@ import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
 import androidx.navigation.findNavController
 import com.example.basefeature.showToast
+import com.example.hihello.NavHomeDirections
 import com.example.hihello.R
 import com.example.hihello.home.HomeViewModel
-import com.example.hihello.home.homefragment.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,7 +25,7 @@ class HomeActivity : AppCompatActivity() {
             .distinctUntilChanged()
             .observe(this@HomeActivity) {
                 if (it) {
-                    findNavController(R.id.nav_host_fragment).navigate(HomeFragmentDirections.actionMoveToHome())
+                    findNavController(R.id.nav_host_fragment).navigate(NavHomeDirections.actionHomeFragment())
                 }
 
             }
