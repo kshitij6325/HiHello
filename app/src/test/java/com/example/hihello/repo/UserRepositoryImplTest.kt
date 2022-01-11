@@ -1,7 +1,6 @@
 package com.example.hihello.repo
 
 import com.example.auth.NoSuchUserException
-import com.example.auth.UserAlreadyExitsException
 import com.example.auth.repo.UserRepository
 import com.example.hihello.data.FakeDataProvider
 import com.example.pojo.Result
@@ -35,7 +34,7 @@ class UserRepositoryImplTest {
 
     @Test
     fun givenRepo_testLoggedInUser() = runBlocking {
-        repo.crateLoggedInUser(FakeDataProvider.myUser)
+        repo.createLoggedInUser(FakeDataProvider.myUser)
         val loggedInUser = repo.getLoggedInUser()
         assert(loggedInUser is Result.Success && loggedInUser.data.userName == FakeDataProvider.myUser.userName)
     }
@@ -54,7 +53,7 @@ class UserRepositoryImplTest {
 
     @Test
     fun givenRepo_testLogout() = runBlocking {
-        val resCreate = repo.crateLoggedInUser(FakeDataProvider.myUser)
+        val resCreate = repo.createLoggedInUser(FakeDataProvider.myUser)
         val resLogout = repo.deleteLocalUser()
         assert(resCreate is Result.Success && resLogout is Result.Success)
     }

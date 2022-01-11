@@ -21,9 +21,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun createRemoteUser(user: User) = userFirebaseDataSource.createUser(user)
 
-    override suspend fun crateLoggedInUser(user: User) = meDataSource.createUser(user)
+    override suspend fun createLoggedInUser(user: User) = meDataSource.createUser(user)
 
-    override suspend fun crateLocalUser(user: User): Result<Boolean> {
+    override suspend fun createLocalUser(user: User): Result<Boolean> {
         return when (val userRes = userRoomDataSource.createUser(user)) {
             is Result.Failure -> Result.Failure(userRes.exception)
             is Result.Success -> Result.Success(true)
@@ -34,7 +34,7 @@ class UserRepositoryImpl @Inject constructor(
         return userFirebaseDataSource.getUser(userId = userName)
     }
 
-    override suspend fun getAppSecret() = firebaseDataSource.getAppSecret()
+    override suspend fun getAppSecret() = FirebaseDataRepository.getAppSecret()
 
     override suspend fun getFirebaseToken() = firebaseDataSource.getFirebaseToken()
 

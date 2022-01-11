@@ -34,7 +34,7 @@ class UserRepositoryImplTest {
 
     @Test
     fun givenRepo_testLoggedInUser() = runBlocking {
-        repo.crateLoggedInUser(FakeDataProvider.myUser)
+        repo.createLoggedInUser(FakeDataProvider.myUser)
         val loggedInUser = repo.getLoggedInUser()
         assert(loggedInUser is Result.Success && loggedInUser.data.userName == FakeDataProvider.myUser.userName)
     }
@@ -53,7 +53,7 @@ class UserRepositoryImplTest {
 
     @Test
     fun givenRepo_testLogout() = runBlocking {
-        val resCreate = repo.crateLoggedInUser(FakeDataProvider.myUser)
+        val resCreate = repo.createLoggedInUser(FakeDataProvider.myUser)
         val resLogout = repo.deleteLocalUser()
         assert(resCreate is Result.Success && resLogout is Result.Success)
     }

@@ -19,7 +19,7 @@ class SignUpUseCase @Inject constructor(private val userRepositoryImpl: UserRepo
                 userRepositoryImpl.isNewUser(user).map {
                     userRepositoryImpl.getFirebaseToken().map {
                         userRepositoryImpl.createRemoteUser(user.copy(fcmToken = it)).map { user ->
-                            userRepositoryImpl.crateLoggedInUser(user).onSuccess { userLoggedIn ->
+                            userRepositoryImpl.createLoggedInUser(user).onSuccess { userLoggedIn ->
                                 onSuccess?.invoke(userLoggedIn)
                             }
                         }

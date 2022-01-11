@@ -11,7 +11,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 
-@ViewModelScoped
+@Singleton
 class FirebaseDataSourceImpl @Inject constructor() : FirebaseDataSource {
 
     override suspend fun getAppSecret(): Result<String> = withContext(Dispatchers.IO) {

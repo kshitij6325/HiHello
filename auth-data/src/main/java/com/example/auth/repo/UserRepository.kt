@@ -6,9 +6,9 @@ import com.example.pojo.Result
 interface UserRepository {
     suspend fun createRemoteUser(user: User): Result<User>
 
-    suspend fun crateLoggedInUser(user: User): Result<User>
+    suspend fun createLoggedInUser(user: User): Result<User>
 
-    suspend fun crateLocalUser(user: User): Result<Boolean>
+    suspend fun createLocalUser(user: User): Result<Boolean>
 
     suspend fun getRemoteUser(userName: String): Result<User>
 

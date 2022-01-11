@@ -5,7 +5,6 @@ import com.example.auth.EmptyUserNameException
 import com.example.auth.User
 import com.example.auth.WrongPasswordException
 import com.example.auth.repo.UserRepository
-import com.example.auth.repo.UserRepositoryImpl
 import com.example.pojo.BaseUseCase
 import com.example.pojo.Result
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -25,7 +24,7 @@ class LoginUseCase @Inject constructor(private val userRepositoryImpl: UserRepos
             return
         }
         userRepositoryImpl.getRemoteUser(userName).map {
-            (if (password == it.password) userRepositoryImpl.crateLoggedInUser(it) else Result.Failure(
+            (if (password == it.password) userRepositoryImpl.createLoggedInUser(it) else Result.Failure(
                 WrongPasswordException()
             )).onSuccess { loggedInUser ->
                 onSuccess?.invoke(loggedInUser)
