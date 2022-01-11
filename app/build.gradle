@@ -65,7 +65,7 @@ dependencies {
 
     //auth module
     implementation project(':auth-data')
-    implementation project(":pojo")
+    implementation project(':base-data')
     implementation project(':base-feature')
 
     // navigation

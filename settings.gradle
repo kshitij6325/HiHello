@@ -9,5 +9,5 @@ dependencyResolutionManagement {
 rootProject.name = "HiHello"
 include ':app'
 include ':auth-data'
-include ':pojo'
+include ':base-data'
 include ':base-feature'
