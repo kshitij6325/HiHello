@@ -52,7 +52,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
 
     //pojo
-    implementation project(':base-data')
+    api project(':base-data')
 
     //room
     implementation "androidx.room:room-runtime:2.4.0"

@@ -4,6 +4,7 @@
     <bytecodeTargetLevel target="1.7">
       <module name="HiHello.app" target="16" />
       <module name="HiHello.auth-data" target="16" />
+      <module name="HiHello.auth-feature" target="16" />
       <module name="HiHello.base-feature" target="16" />
     </bytecodeTargetLevel>
   </component>
