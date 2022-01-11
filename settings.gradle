@@ -10,4 +10,4 @@ rootProject.name = "HiHello"
 include ':app'
 include ':auth-data'
 include ':pojo'
-include ':baseFeature'
+include ':base-feature'
