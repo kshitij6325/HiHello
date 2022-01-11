@@ -8,6 +8,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "HiHello"
 include ':app'
-include ':auth'
+include ':auth-data'
 include ':pojo'
 include ':baseFeature'

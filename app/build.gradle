@@ -64,7 +64,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:23.0.0'
 
     //auth module
-    implementation project(":auth")
+    implementation project(':auth-data')
     implementation project(":pojo")
     implementation project(":baseFeature")
 
