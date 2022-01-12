@@ -1,13 +1,17 @@
 package com.example.auth.usecase
 
 import com.example.auth.*
+import com.example.auth.repo.FirebaseDataRepository
 import com.example.auth.repo.UserRepository
 import com.example.pojo.BaseUseCase
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 
 @ViewModelScoped
-class SignUpUseCase @Inject constructor(private val userRepositoryImpl: UserRepository) :
+class SignUpUseCase @Inject constructor(
+    private val userRepositoryImpl: UserRepository,
+    private val firebaseDataRepository: FirebaseDataRepository
+) :
     BaseUseCase<User>() {
 
     suspend operator fun invoke(user: User) {
@@ -17,7 +21,7 @@ class SignUpUseCase @Inject constructor(private val userRepositoryImpl: UserRepo
             user.password.isNullOrEmpty() -> onFailure?.invoke(EmptyPasswordException())
             else -> {
                 userRepositoryImpl.isNewUser(user).map {
-                    userRepositoryImpl.getFirebaseToken().map {
+                    firebaseDataRepository.getFirebaseToken().map {
                         userRepositoryImpl.createRemoteUser(user.copy(fcmToken = it)).map { user ->
                             userRepositoryImpl.createLoggedInUser(user).onSuccess { userLoggedIn ->
                                 onSuccess?.invoke(userLoggedIn)

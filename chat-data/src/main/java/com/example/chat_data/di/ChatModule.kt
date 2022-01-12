@@ -2,6 +2,8 @@ package com.example.chat_data.di
 
 import com.example.chat_data.datasource.ChatDatasource
 import com.example.chat_data.datasource.ChatRoomDatasource
+import com.example.chat_data.repo.IRemoteChatHelper
+import com.example.chat_data.repo.RemoteChatHelper
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -14,4 +16,7 @@ interface ChatModule {
 
     @Binds
     fun getChatDataSource(chatRoomDatasource: ChatRoomDatasource): ChatDatasource
+
+    @Binds
+    fun getRemoteChatHelper(remoteChatHelper: RemoteChatHelper): IRemoteChatHelper
 }

@@ -1,11 +1,12 @@
 package com.example.auth.repo
 
-import com.example.auth.datasource.FirebaseDataSourceImpl
+import com.example.auth.datasource.FirebaseDataSource
 import com.example.pojo.Result
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object FirebaseDataRepository {
-
-    private val firebaseDataSource by lazy { FirebaseDataSourceImpl() }
+@Singleton
+class FirebaseDataRepository @Inject constructor(private val firebaseDataSource: FirebaseDataSource) {
 
     private var appSecret: Result<String>? = null
 
@@ -18,4 +19,6 @@ object FirebaseDataRepository {
             else -> appSecret!!
         }
     }
+
+    suspend fun getFirebaseToken(): Result<String> = firebaseDataSource.getFirebaseToken()
 }

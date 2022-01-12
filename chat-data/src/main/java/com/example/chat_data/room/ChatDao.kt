@@ -26,4 +26,7 @@ interface ChatDao {
 
     @Query("delete from chats where user_id in (:userId)")
     suspend fun deleteUserChats(vararg userId: String)
+
+    @Query("select * from chats where success = 0")
+    suspend fun getAllUnSendChats(): List<Chat>
 }

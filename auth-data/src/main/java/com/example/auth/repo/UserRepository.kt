@@ -12,10 +12,6 @@ interface UserRepository {
 
     suspend fun getRemoteUser(userName: String): Result<User>
 
-    suspend fun getAppSecret(): Result<String>
-
-    suspend fun getFirebaseToken(): Result<String>
-
     suspend fun deleteLocalUser(): Result<Boolean>
 
     suspend fun getLocalUser(userId: String): Result<User>
@@ -25,5 +21,7 @@ interface UserRepository {
     suspend fun isNewUser(user: User): Result<Boolean>
 
     suspend fun updateLoggedInUser(user: User): Result<User>
+
+    suspend fun createUserIfNotExists(user: String): Result<User>
 }
 

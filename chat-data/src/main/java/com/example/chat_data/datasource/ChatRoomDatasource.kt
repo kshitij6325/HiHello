@@ -77,4 +77,12 @@ class ChatRoomDatasource @Inject constructor(private val chatDao: ChatDao) : Cha
                 Result.Failure(ex)
             }
         }
+
+    override suspend fun getAllUnSendChat(): Result<List<Chat>> = withContext(Dispatchers.IO) {
+        return@withContext try {
+            Result.Success(chatDao.getAllUnSendChats())
+        } catch (ex: Exception) {
+            Result.Failure(ex)
+        }
+    }
 }

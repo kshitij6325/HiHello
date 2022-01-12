@@ -1,6 +1,7 @@
 package com.example.auth.repo
 
 import com.example.auth.NoSuchUserException
+import com.example.auth.UnknownUserException
 import com.example.auth.User
 import com.example.auth.UserAlreadyExitsException
 import com.example.auth.datasource.*
@@ -16,7 +17,6 @@ class UserRepositoryImpl @Inject constructor(
     private val userRoomDataSource: UserDataSource,
     @MeLocalDataSourceType
     private val meDataSource: UserDataSource,
-    private val firebaseDataSource: FirebaseDataSource
 ) : UserRepository {
 
     override suspend fun createRemoteUser(user: User) = userFirebaseDataSource.createUser(user)
@@ -33,10 +33,6 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getRemoteUser(userName: String): Result<User> {
         return userFirebaseDataSource.getUser(userId = userName)
     }
-
-    override suspend fun getAppSecret() = FirebaseDataRepository.getAppSecret()
-
-    override suspend fun getFirebaseToken() = firebaseDataSource.getFirebaseToken()
 
     override suspend fun deleteLocalUser() = meDataSource.deleteUser("")
 
@@ -68,6 +64,22 @@ class UserRepositoryImpl @Inject constructor(
         return when (val res = userFirebaseDataSource.updateUser(user)) {
             is Result.Failure -> res
             is Result.Success -> meDataSource.updateUser(user)
+        }
+    }
+
+    override suspend fun createUserIfNotExists(userName: String): Result<User> {
+        val userExistsRes = getLocalUser(userName)
+        return when {
+            userExistsRes is Result.Success -> Result.Success(userExistsRes.data)
+            userExistsRes is Result.Failure && userExistsRes.exception is NoSuchUserException -> getRemoteUser(
+                userName
+            ).map { user ->
+                createLocalUser(user).map {
+                    Result.Success(user)
+                }
+            }
+            userExistsRes is Result.Failure -> Result.Failure(userExistsRes.exception)
+            else -> Result.Failure(UnknownUserException())
         }
     }
 }

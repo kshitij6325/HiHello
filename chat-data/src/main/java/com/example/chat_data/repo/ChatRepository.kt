@@ -9,11 +9,11 @@ import javax.inject.Inject
 
 @ViewModelScoped
 class ChatRepository @Inject constructor(
-    private val remoteChatHelper: RemoteChatHelper,
+    private val remoteChatHelper: IRemoteChatHelper,
     private val chatRoomDatasource: ChatDatasource
 ) {
 
-    suspend fun sendChat(user: User, appSecret: String, chat: Chat): Result<String> =
+    suspend fun sendChat(user: User, appSecret: String, chat: Chat) =
         remoteChatHelper.sendMessageToDevice(user, appSecret, chat)
 
     suspend fun addChat(chat: Chat) = chatRoomDatasource.addChats(chat)
@@ -22,4 +22,8 @@ class ChatRepository @Inject constructor(
         chatRoomDatasource.updateChatSuccessState(chat, success)
 
     suspend fun getAllUserChat(userId: String) = chatRoomDatasource.getAllUserChat(userId)
+
+    suspend fun getAllUnSendChats() = chatRoomDatasource.getAllUnSendChat()
+
+    suspend fun getChat(id: Long) = chatRoomDatasource.getChat(id.toString())
 }

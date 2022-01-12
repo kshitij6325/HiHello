@@ -2,6 +2,8 @@ package com.example.auth.usecase
 
 import com.example.auth.*
 import com.example.auth.data.FakeDataProvider
+import com.example.auth.data.FakeFirebaseDataSource
+import com.example.auth.repo.FirebaseDataRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -21,8 +23,9 @@ class UseCaseTestcases {
     fun init() {
         val repo = FakeDataProvider.initDataAndRepo()
         isUserLoggedInUseCase = IsUserLoggedInUseCase(repo)
+        val firebaseDataRepository = FirebaseDataRepository(FakeFirebaseDataSource())
         loginUseCase = LoginUseCase(repo)
-        signUpUseCase = SignUpUseCase(repo)
+        signUpUseCase = SignUpUseCase(repo, firebaseDataRepository)
         logoutUseCase = LogoutUseCase(repo)
     }
 

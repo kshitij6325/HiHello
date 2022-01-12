@@ -19,9 +19,9 @@ import java.lang.Exception
 import javax.inject.Inject
 
 @ViewModelScoped
-class RemoteChatHelper @Inject constructor() {
+class RemoteChatHelper @Inject constructor() : IRemoteChatHelper {
 
-    suspend fun sendMessageToDevice(
+    override suspend fun sendMessageToDevice(
         user: User,
         appSecret: String,
         chat: Chat,
