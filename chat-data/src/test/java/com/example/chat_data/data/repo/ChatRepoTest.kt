@@ -55,7 +55,9 @@ class ChatRepoTest {
 
         chat = (getChatRes as Result.Success).data
 
-        val res = chatRepo.sendChat(user2, "sectert", chat)
+        val res = chatRepo.sendChat(user2, "sectert", chat).map {
+            chatRepo.updateChatSuccess(chat = chat.chatId.toString(), true)
+        }
         getChatRes = chatRepo.getChat(0)
 
         assert(res is Result.Success)

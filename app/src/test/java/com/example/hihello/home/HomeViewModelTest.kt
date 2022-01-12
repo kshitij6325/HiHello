@@ -37,6 +37,7 @@ class HomeViewModelTest {
         viewmodel = HomeViewModel(
             isUserLoggedInUseCase = isUserLoggedInUseCase,
             logoutUseCase = logoutUseCase,
+
         )
     }
 

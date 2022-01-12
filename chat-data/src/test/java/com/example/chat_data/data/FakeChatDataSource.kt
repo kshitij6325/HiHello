@@ -53,7 +53,7 @@ class FakeChatDataSource(private val mutableChatList: MutableList<Chat>) : ChatD
             }
             if (chatIndex == -1) return Result.Failure(Exception("Issue while fetching chat.."))
             val chat = mutableChatList[chatIndex]
-            mutableChatList.add(chatIndex, chat.copy(success = success))
+            mutableChatList[chatIndex] = chat.copy(success = success)
             return Result.Success(true)
         }
     }

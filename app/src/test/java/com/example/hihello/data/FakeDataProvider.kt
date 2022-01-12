@@ -52,8 +52,7 @@ object FakeDataProvider {
         return UserRepositoryImpl(
             userFirebaseDataSource = userFirebaseDataSource,
             meDataSource = meDataSource,
-            userRoomDataSource = userRoomDataSource,
-            firebaseDataSource = firebaseDataSource
+            userRoomDataSource = userRoomDataSource
         )
 
     }

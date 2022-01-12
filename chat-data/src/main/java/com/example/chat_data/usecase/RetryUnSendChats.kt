@@ -15,16 +15,23 @@ class RetryUnSendChats @Inject constructor(
     suspend operator fun invoke() {
         val listOfUnsuccessFullChats = mutableListOf<String>()
         chatRepository.getAllUnSendChats().onSuccess {
-            it.forEach { chat ->
-                firebaseDataRepository.getAppSecret().map { appSecret ->
-                    userRepository.getLoggedInUser().map { self ->
-                        userRepository.getLocalUser(chat.userId).map { user ->
+            for (chat in it) {
+                userRepository.createUserIfNotExists(chat.userId).map { user ->
+                    firebaseDataRepository.getAppSecret().map { appSecret ->
+                        userRepository.getLoggedInUser().map { self ->
                             chatRepository.sendChat(
-                                user, appSecret, chat.copy(userId = self.userName)
-                            ).onFailure { listOfUnsuccessFullChats.add(chat.userId) }
+                                user,
+                                appSecret,
+                                chat.copy(userId = self.userName)
+                            ).map {
+                                chatRepository.updateChatSuccess(
+                                    chat.chatId.toString(),
+                                    true
+                                )
+                            }.onFailure { listOfUnsuccessFullChats.add(chat.userId) }
                         }
                     }
-                }
+                }.catch { listOfUnsuccessFullChats.add(chat.chatId.toString()) }
             }
             onSuccess?.invoke(listOfUnsuccessFullChats)
         }

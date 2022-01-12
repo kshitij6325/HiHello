@@ -24,7 +24,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         }
 
         binding?.send?.setOnClickListener {
-            viewModel.sendChat()
+            //viewModel.sendChat()
         }
 
         viewModel.homeFragUiStateLiveData.observe(this) {

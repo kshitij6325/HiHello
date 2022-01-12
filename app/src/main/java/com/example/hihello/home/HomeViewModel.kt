@@ -15,8 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
-    private val logoutUseCase: LogoutUseCase,
-    private val sendChatUseCase: SendChatUseCase
+    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
     private val _homeActivityUiState = MutableLiveData(HomeUIState())
@@ -60,17 +59,4 @@ class HomeViewModel @Inject constructor(
             }
         }.invoke()
     }
-
-    fun sendChat(message: String = "happy birthday", user_id: String = "kshitij") =
-        viewModelScope.launch {
-            sendChatUseCase.apply {
-                onSuccess = {
-                    Log.e("CHAT", it.toString())
-                }
-                onFailure = {
-                    Log.e("CHAT", it.message.toString())
-                }
-            }.invoke(message, user_id)
-        }
-
 }
