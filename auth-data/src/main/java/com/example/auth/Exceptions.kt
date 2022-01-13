@@ -9,3 +9,6 @@ class InvalidPhoneNumberException : Exception("Invalid mobile number")
 class EmptyPasswordException : Exception("Password is empty")
 class EmptyUserNameException : Exception("Username is empty")
 class UnknownUserException : Exception("Unknown user exception")
+
+//user local datasource errors
+class UserCreationException : Exception("Error creating user")
