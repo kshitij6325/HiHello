@@ -13,8 +13,8 @@ interface ChatDao {
     @Query("select * from chats where user_id=:userId")
     suspend fun getAllUserChats(userId: String): List<Chat>
 
-    @Query("select * from chats")
-    fun getAllUserChatLiveData(): LiveData<List<Chat>>
+    @Query("select * from chats where user_id=:userId")
+    fun getAllUserChatLiveData(userId: String): LiveData<List<Chat>>
 
     @Query("select * from chats where chat_id=:chatId")
     suspend fun getChat(chatId: String): Chat
