@@ -35,8 +35,9 @@ class AuthViewModelTest {
     @After
     fun initialize() {
         val repo = FakeDataProvider.initDataAndRepo()
-        val loginUseCase = LoginUseCase(repo)
-        val signUpUseCase = SignUpUseCase(repo, FirebaseDataRepository(FakeFirebaseDataSource()))
+        val firebaseRepo = FirebaseDataRepository(FakeFirebaseDataSource())
+        val loginUseCase = LoginUseCase(repo, firebaseRepo)
+        val signUpUseCase = SignUpUseCase(repo, firebaseRepo)
         viewmodel = AuthViewModel(
             loginUseCase = loginUseCase,
             signUpUseCase = signUpUseCase

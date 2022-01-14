@@ -13,7 +13,7 @@ class RetryUnSendChats @Inject constructor(
 ) : BaseUseCase<List<String>>() {
 
     suspend operator fun invoke() {
-        val listOfUnsuccessFullChats = mutableListOf<String>()
+        val listOfUnSuccessFullChats = mutableListOf<String>()
         chatRepository.getAllUnSendChats().onSuccess {
             for (chat in it) {
                 userRepository.createUserIfNotExists(chat.userId).map { user ->
@@ -28,12 +28,12 @@ class RetryUnSendChats @Inject constructor(
                                     chat.chatId.toString(),
                                     true
                                 )
-                            }.onFailure { listOfUnsuccessFullChats.add(chat.userId) }
+                            }.onFailure { listOfUnSuccessFullChats.add(chat.userId) }
                         }
                     }
-                }.catch { listOfUnsuccessFullChats.add(chat.chatId.toString()) }
+                }.catch { listOfUnSuccessFullChats.add(chat.chatId.toString()) }
             }
-            onSuccess?.invoke(listOfUnsuccessFullChats)
+            onSuccess?.invoke(listOfUnSuccessFullChats)
         }
     }
 }

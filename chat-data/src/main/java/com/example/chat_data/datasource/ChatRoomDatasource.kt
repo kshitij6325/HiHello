@@ -1,5 +1,6 @@
 package com.example.chat_data.datasource
 
+import androidx.lifecycle.LiveData
 import com.example.chat_data.Chat
 import com.example.chat_data.room.ChatDao
 import com.example.pojo.Result
@@ -7,8 +8,9 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 class ChatRoomDatasource @Inject constructor(private val chatDao: ChatDao) : ChatDatasource {
 
     override suspend fun addChats(chat: Chat): Result<Long> =
@@ -84,5 +86,9 @@ class ChatRoomDatasource @Inject constructor(private val chatDao: ChatDao) : Cha
         } catch (ex: Exception) {
             Result.Failure(ex)
         }
+    }
+
+    override fun getAllUserChatLiveData(userId: String): LiveData<List<Chat>> {
+        return chatDao.getAllUserChatLiveData()
     }
 }

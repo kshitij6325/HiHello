@@ -10,13 +10,14 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Qualifier
+import javax.inject.Singleton
 import kotlin.coroutines.resume
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class UserFirebaseDataSourceType
 
-@ViewModelScoped
+@Singleton
 class UserFirebaseDataSource @Inject constructor() : UserDataSource {
 
     private val firebaseInstanceRef by lazy {

@@ -5,12 +5,14 @@ import com.example.chat_data.Chat
 import com.example.chat_data.datasource.ChatType
 import com.example.chat_data.repo.ChatRepository
 import com.example.pojo.BaseUseCase
+import dagger.hilt.android.scopes.ServiceScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 class ReceiveChatUseCase @Inject constructor(
     private val userRepository: UserRepository,
     private val chatRepository: ChatRepository

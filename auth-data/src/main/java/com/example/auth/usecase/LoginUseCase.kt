@@ -4,6 +4,7 @@ import com.example.auth.EmptyPasswordException
 import com.example.auth.EmptyUserNameException
 import com.example.auth.User
 import com.example.auth.WrongPasswordException
+import com.example.auth.repo.FirebaseDataRepository
 import com.example.auth.repo.UserRepository
 import com.example.pojo.BaseUseCase
 import com.example.pojo.Result
@@ -11,8 +12,10 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 
 @ViewModelScoped
-class LoginUseCase @Inject constructor(private val userRepositoryImpl: UserRepository) :
-    BaseUseCase<User>() {
+class LoginUseCase @Inject constructor(
+    private val userRepositoryImpl: UserRepository,
+    private val firebaseDataRepository: FirebaseDataRepository
+) : BaseUseCase<User>() {
 
     suspend operator fun invoke(userName: String, password: String) {
         if (userName.isEmpty()) {
@@ -23,8 +26,12 @@ class LoginUseCase @Inject constructor(private val userRepositoryImpl: UserRepos
             onFailure?.invoke(EmptyPasswordException())
             return
         }
-        userRepositoryImpl.getRemoteUser(userName).map {
-            (if (password == it.password) userRepositoryImpl.createLoggedInUser(it) else Result.Failure(
+        userRepositoryImpl.getRemoteUser(userName).map { user ->
+            (if (password == user.password) firebaseDataRepository.getFirebaseToken().map {
+                userRepositoryImpl.createRemoteUser(user.copy(fcmToken = it)).map { updatedUser ->
+                    userRepositoryImpl.createLoggedInUser(updatedUser)
+                }
+            } else Result.Failure(
                 WrongPasswordException()
             )).onSuccess { loggedInUser ->
                 onSuccess?.invoke(loggedInUser)

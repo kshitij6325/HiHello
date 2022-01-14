@@ -6,8 +6,9 @@ import com.example.chat_data.datasource.ChatDatasource
 import com.example.pojo.Result
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 class ChatRepository @Inject constructor(
     private val remoteChatHelper: IRemoteChatHelper,
     private val chatRoomDatasource: ChatDatasource
@@ -22,6 +23,9 @@ class ChatRepository @Inject constructor(
         chatRoomDatasource.updateChatSuccessState(chat, success)
 
     suspend fun getAllUserChat(userId: String) = chatRoomDatasource.getAllUserChat(userId)
+
+    fun getAllUserChatLiveData(userId: String) =
+        chatRoomDatasource.getAllUserChatLiveData(userId)
 
     suspend fun getAllUnSendChats() = chatRoomDatasource.getAllUnSendChat()
 

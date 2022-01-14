@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.example.auth.usecase.IsUserLoggedInUseCase
 import com.example.auth.usecase.LogoutUseCase
 import com.example.basefeature.update
+import com.example.chat_data.usecase.GetAllUserChatUseCase
 import com.example.chat_data.usecase.SendChatUseCase
 import com.example.hihello.home.homeactivity.HomeUIState
 import com.example.hihello.home.homefragment.HomeFragUiState
@@ -15,7 +16,9 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
-    private val logoutUseCase: LogoutUseCase
+    private val logoutUseCase: LogoutUseCase,
+    // private val getAllUserChatUseCase: GetAllUserChatUseCase,
+    // private val sendChatUseCase: SendChatUseCase
 ) : ViewModel() {
 
     private val _homeActivityUiState = MutableLiveData(HomeUIState())
@@ -23,6 +26,10 @@ class HomeViewModel @Inject constructor(
 
     private val _homeFragUiState = MutableLiveData(HomeFragUiState())
     val homeFragUiStateLiveData: LiveData<HomeFragUiState> = _homeFragUiState
+
+    init {
+        observeUserSentChat("kshitij")
+    }
 
     fun isUserLoggedIn() = viewModelScope.launch {
         _homeActivityUiState.update {
@@ -59,4 +66,28 @@ class HomeViewModel @Inject constructor(
             }
         }.invoke()
     }
+
+    private fun observeUserSentChat(userId: String) {
+        /*getAllUserChatUseCase.get(userId).observeForever { chatList ->
+            _homeFragUiState.update {
+                it?.copy(currentUserChat = chatList)
+            }
+        }*/
+    }
+
+    fun sendChat(message: String = "happy birthday", user_id: String = "kshitij") =
+        viewModelScope.launch {
+            /* sendChatUseCase.apply {
+                 onSuccess = {
+                     _homeFragUiState.update {
+                         it?.copy(chatSuccess = "Sent!")
+                     }
+                 }
+                 onFailure = { ex ->
+                     _homeFragUiState.update {
+                         it?.copy(chatError = ex.toString())
+                     }
+                 }
+             }.invoke(message, user_id)*/
+        }
 }

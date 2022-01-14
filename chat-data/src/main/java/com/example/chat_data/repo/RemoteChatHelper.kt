@@ -1,6 +1,5 @@
 package com.example.chat_data.repo
 
-import android.content.ContentProviderOperation.newCall
 import com.example.auth.User
 import com.example.chat_data.Chat
 import com.example.pojo.Result
@@ -17,10 +16,12 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Exception
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ViewModelScoped
+const val CHAT_DATA = "chat_data"
+
+@Singleton
 class RemoteChatHelper @Inject constructor() : IRemoteChatHelper {
-
     override suspend fun sendMessageToDevice(
         user: User,
         appSecret: String,
@@ -31,7 +32,7 @@ class RemoteChatHelper @Inject constructor() : IRemoteChatHelper {
         notification.put("body", "${chat.message}")
         notification.put("title", "Message by ${user.userName}")
         val data = JSONObject()
-        data.put("extra_chat", Json.encodeToString(chat))
+        data.put(CHAT_DATA, Json.encodeToString(chat))
         root.put("notification", notification)
         root.put("data", data)
         root.put("registration_ids", JSONArray(listOf(user.fcmToken).toTypedArray()))

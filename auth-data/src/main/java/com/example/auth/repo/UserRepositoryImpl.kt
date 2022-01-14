@@ -8,8 +8,9 @@ import com.example.auth.datasource.*
 import com.example.pojo.Result
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 class UserRepositoryImpl @Inject constructor(
     @UserFirebaseDataSourceType
     private val userFirebaseDataSource: UserDataSource,

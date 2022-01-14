@@ -20,7 +20,7 @@ import javax.inject.Singleton
 @Retention(AnnotationRetention.BINARY)
 annotation class MeLocalDataSourceType
 
-@ViewModelScoped
+@Singleton
 class MeLocalDataSource @Inject constructor(private val sharedPref: SharedPreferences) :
     UserDataSource {
 

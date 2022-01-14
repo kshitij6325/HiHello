@@ -1,8 +1,11 @@
 package com.example.chat_data.data
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.chat_data.Chat
 import com.example.chat_data.datasource.ChatDatasource
 import com.example.pojo.Result
+import kotlinx.coroutines.runBlocking
 import java.lang.Exception
 
 class FakeChatDataSource(private val mutableChatList: MutableList<Chat>) : ChatDatasource {
@@ -76,5 +79,11 @@ class FakeChatDataSource(private val mutableChatList: MutableList<Chat>) : ChatD
         if (error) return Result.Failure(Exception("Issue while fetching chat.."))
         val chatList = mutableChatList.filter { !it.success }
         return Result.Success(chatList)
+    }
+
+    override fun getAllUserChatLiveData(userId: String): LiveData<List<Chat>> = runBlocking {
+        val res = getAllUserChat(userId)
+        val chatList = if (res is Result.Success) res.data else listOf()
+        return@runBlocking MutableLiveData(chatList)
     }
 }

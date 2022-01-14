@@ -1,5 +1,6 @@
 package com.example.chat_data.datasource
 
+import androidx.lifecycle.LiveData
 import com.example.chat_data.Chat
 import com.example.pojo.Result
 
@@ -12,4 +13,5 @@ interface ChatDatasource {
     suspend fun deleteChat(chatId: String): Result<Boolean>
     suspend fun deleteAllUserChat(userId: String): Result<Boolean>
     suspend fun getAllUnSendChat(): Result<List<Chat>>
+    fun getAllUserChatLiveData(userId: String): LiveData<List<Chat>>
 }

@@ -1,23 +1,34 @@
 package com.example.hihello
 
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import android.widget.Toast
+import com.example.chat_data.repo.CHAT_DATA
+import com.example.chat_data.usecase.ReceiveChatUseCase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class FCMCloudMessaging : FirebaseMessagingService() {
+    @Inject
+    lateinit var chatUseCase: ReceiveChatUseCase
+
+    var scope = CoroutineScope(SupervisorJob())
 
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
-        Log.e("Firebase token :: ", p0)
     }
 
     override fun onMessageReceived(p0: RemoteMessage) {
         super.onMessageReceived(p0)
-        Handler(Looper.getMainLooper()).post {
-            Toast.makeText(this, p0.data.get("chat_data").toString(), Toast.LENGTH_SHORT).show()
+        scope.launch {
+            val chatString = p0.data[CHAT_DATA].toString()
+            chatUseCase.invoke(chatString)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
     }
 }

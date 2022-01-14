@@ -37,12 +37,16 @@ class SendChatUseCase @Inject constructor(
                         .map {
                             chatRepository.updateChatSuccess(chatId.toString(), true).onSuccess {
                                 onSuccess?.invoke(it)
-                            }.onFailure { onFailure?.invoke(it) }
+                            }.onFailure {
+                                onFailure?.invoke(it)
+                            }
                         }
                 }
             }
 
-        }.catch { onFailure?.invoke(it) }
+        }.catch {
+            onFailure?.invoke(it)
+        }
     }
 
 
