@@ -1,5 +1,6 @@
 package com.example.chat_data.data.usecase
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.auth.User
 import com.example.auth.datasource.FirebaseDataSourceImpl
 import com.example.auth.datasource.MeLocalDataSource
@@ -12,11 +13,13 @@ import com.example.auth_feature.data.FakeUserDataSource
 import com.example.chat_data.Chat
 import com.example.chat_data.data.FakeChatDataSource
 import com.example.chat_data.data.FakeRemoteChatHelper
+import com.example.chat_data.data.getOrAwaitValue
 import com.example.chat_data.datasource.ChatDatasource
 import com.example.chat_data.datasource.ChatType
 import com.example.chat_data.repo.ChatRepository
 import com.example.chat_data.repo.IRemoteChatHelper
 import com.example.chat_data.repo.RemoteChatHelper
+import com.example.chat_data.usecase.GetAllUserChatUseCase
 import com.example.chat_data.usecase.ReceiveChatUseCase
 import com.example.chat_data.usecase.RetryUnSendChats
 import com.example.chat_data.usecase.SendChatUseCase
@@ -28,6 +31,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -53,6 +57,11 @@ class UsecaseTests {
     lateinit var sendChatUseCase: SendChatUseCase
     lateinit var receiveChatUseCase: ReceiveChatUseCase
     lateinit var retryUnSendChats: RetryUnSendChats
+    lateinit var getAllUserChatUseCase: GetAllUserChatUseCase
+
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
+
 
 
     @Before
@@ -75,6 +84,7 @@ class UsecaseTests {
         sendChatUseCase = SendChatUseCase(userRepositoryImpl, chatRepo, firebaseDataRepository)
         receiveChatUseCase = ReceiveChatUseCase(userRepositoryImpl, chatRepo)
         retryUnSendChats = RetryUnSendChats(userRepositoryImpl, chatRepo, firebaseDataRepository)
+        getAllUserChatUseCase = GetAllUserChatUseCase(chatRepository = chatRepo)
     }
 
     @Test
@@ -267,5 +277,35 @@ class UsecaseTests {
                 assert(false)
             }
         }.invoke()
+    }
+
+    @Test
+    fun getAllUsersChatLiveData_success() = runTest {
+        (1..10).map {
+            Chat(
+                message = "Test message $it",
+                userId = user2.userName,
+                timeStamp = System.currentTimeMillis(),
+                success = true, type = ChatType.SENT
+            )
+        }.forEach { chatRepo.addChat(it) }
+
+        val value = getAllUserChatUseCase.get(user2.userName).getOrAwaitValue()
+        assert(value.size == 10)
+    }
+
+    @Test
+    fun getAllUsersChatLiveData_success_empty() = runTest {
+        (1..10).map {
+            Chat(
+                message = "Test message $it",
+                userId = user2.userName,
+                timeStamp = System.currentTimeMillis(),
+                success = true, type = ChatType.SENT
+            )
+        }.forEach { chatRepo.addChat(it) }
+
+        val value = getAllUserChatUseCase.get("user2").getOrAwaitValue()
+        assert(value.isEmpty())
     }
 }
