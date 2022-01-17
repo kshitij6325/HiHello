@@ -7,6 +7,7 @@
       <module name="HiHello.auth-feature" target="16" />
       <module name="HiHello.base-feature" target="16" />
       <module name="HiHello.chat-data" target="16" />
+      <module name="HiHello.chat-feature" target="16" />
     </bytecodeTargetLevel>
   </component>
 </project>

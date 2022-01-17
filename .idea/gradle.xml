@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/base-data" />
             <option value="$PROJECT_DIR$/base-feature" />
             <option value="$PROJECT_DIR$/chat-data" />
+            <option value="$PROJECT_DIR$/chat-feature" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
