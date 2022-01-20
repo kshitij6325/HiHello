@@ -1,8 +1,14 @@
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.kotlin.dsl.DependencyHandlerScope
 
 fun DependencyHandler.addKotlin() = addAllDependency(kotlinCore)
 
-fun DependencyHandler.addAndroidCore() = addAllDependency(androidCore)
+fun DependencyHandler.addAndroidCore() {
+    addAllDependency(androidCore)
+    addJunit()
+}
+
+fun DependencyHandler.addJunit() = addAllDependency(junit)
 
 fun DependencyHandler.addNavigation() = addAllDependency(jetpackNavigation)
 
@@ -15,6 +21,11 @@ fun DependencyHandler.addHilt() = addAllDependency(hilt)
 fun DependencyHandler.addAndroidUI() = addAllDependency(androidUI)
 
 fun DependencyHandler.addFcm() = addAllDependency(listOf(Dependency.MainSetDependency.FCM))
+
+fun DependencyHandler.addFirebaseDatabase() {
+    //platform(Dependency.MainSetDependency.FirebaseBOM.dependency)
+    addAllDependency(listOf(Dependency.MainSetDependency.FirebaseDataBase))
+}
 
 internal fun DependencyHandler.addAllDependency(list: List<Dependency>) {
     list.forEach {

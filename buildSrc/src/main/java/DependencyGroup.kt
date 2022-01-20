@@ -12,9 +12,12 @@ internal val androidCore = listOf(
     Dependency.MainSetDependency.AndroidAppCompat,
     Dependency.MainSetDependency.AndroidMaterial,
     Dependency.MainSetDependency.AndroidLegacy,
+    Dependency.AndroidTestSetDependency.EspressoCore
+)
+
+internal val junit = listOf(
     Dependency.TestSetDependency.Junit,
     Dependency.AndroidTestSetDependency.Junit,
-    Dependency.AndroidTestSetDependency.EspressoCore
 )
 
 internal val androidUI = listOf(

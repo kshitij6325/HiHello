@@ -1,30 +1,20 @@
-import main.java.*
-
 plugins {
-    id("com.google.gms.google-services")
+    id("com.android.library")
     id("kotlin-android")
     id("kotlinx-serialization")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
-    id("com.android.application")
     id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
-    compileSdk = ProjectConfig.compileSdk
+    compileSdk = main.java.ProjectConfig.compileSdk
 
     defaultConfig {
-        applicationId = ProjectConfig.applicationId
-        minSdk = ProjectConfig.minSdk
-        targetSdk = ProjectConfig.targetSdk
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = main.java.ProjectConfig.minSdk
+        targetSdk = main.java.ProjectConfig.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildFeatures {
-        viewBinding = true
     }
 
     buildTypes {
@@ -36,6 +26,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -47,25 +38,16 @@ android {
 
 dependencies {
 
-    implementation(project(":auth-feature"))
-    implementation(project(":base-feature"))
-    implementation(project(":chat-data"))
+    api(project(":base-data"))
 
     addKotlin()
 
-    addAndroidCore()
-
-    addNavigation()
+    addFirebaseDatabase()
+    addFcm()
 
     addRoom()
 
-    addLifeCycle()
-
-    addAndroidUI()
-
     addHilt()
 
-    addFcm()
-
-
+    addJunit()
 }

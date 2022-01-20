@@ -32,7 +32,7 @@ internal sealed class Dependency(val dependency: String) {
         object Room : MainSetDependency("androidx.room:room-runtime:2.4.0")
         object RoomKTX : MainSetDependency("androidx.room:room-ktx:2.4.0")
 
-        //arch + livedata + view-model
+        //livedata + view-model
         object ViewModel : MainSetDependency("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
         object LiveData : MainSetDependency("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
         object LifeCycleKTX : MainSetDependency("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
@@ -44,6 +44,8 @@ internal sealed class Dependency(val dependency: String) {
 
         //firebase
         object FCM : MainSetDependency("com.google.firebase:firebase-messaging:23.0.0")
+        object FirebaseBOM : MainSetDependency("com.google.firebase:firebase-bom:29.0.3")
+        object FirebaseDataBase : MainSetDependency("com.google.firebase:firebase-database-ktx:20.0.3")
     }
 
     sealed class TestSetDependency(dep: String) : Dependency(dep) {
