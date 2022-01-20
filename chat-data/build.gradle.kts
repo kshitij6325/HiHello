@@ -37,11 +37,11 @@ android {
 
 dependencies {
 
-    api(project(":base-data"))
+    implementation(project(":base-data"))
+    implementation(project(":auth-data"))
 
     addKotlin()
-
-    addFirebaseDatabase()
+    addRetrofit()
     addFcm()
 
     addRoom()
@@ -49,4 +49,7 @@ dependencies {
     addHilt()
 
     addJunit()
+
+    addArchTest()
+
 }

@@ -14,7 +14,12 @@ fun DependencyHandler.addNavigation() = addAllDependency(jetpackNavigation)
 
 fun DependencyHandler.addRoom() = addAllDependency(room)
 
-fun DependencyHandler.addLifeCycle() = addAllDependency(lifecycle)
+fun DependencyHandler.addLifeCycle() {
+    addAllDependency(archTest)
+    addAllDependency(lifecycle)
+}
+
+fun DependencyHandler.addArchTest() = addAllDependency(archTest)
 
 fun DependencyHandler.addHilt() = addAllDependency(hilt)
 
@@ -26,6 +31,9 @@ fun DependencyHandler.addFirebaseDatabase() {
     //platform(Dependency.MainSetDependency.FirebaseBOM.dependency)
     addAllDependency(listOf(Dependency.MainSetDependency.FirebaseDataBase))
 }
+
+fun DependencyHandler.addRetrofit() =
+    addAllDependency(listOf(Dependency.MainSetDependency.Retrofit))
 
 internal fun DependencyHandler.addAllDependency(list: List<Dependency>) {
     list.forEach {

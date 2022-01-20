@@ -45,7 +45,11 @@ internal sealed class Dependency(val dependency: String) {
         //firebase
         object FCM : MainSetDependency("com.google.firebase:firebase-messaging:23.0.0")
         object FirebaseBOM : MainSetDependency("com.google.firebase:firebase-bom:29.0.3")
-        object FirebaseDataBase : MainSetDependency("com.google.firebase:firebase-database-ktx:20.0.3")
+        object FirebaseDataBase :
+            MainSetDependency("com.google.firebase:firebase-database-ktx:20.0.3")
+
+        //retrofit
+        object Retrofit : MainSetDependency("com.squareup.retrofit2:retrofit:2.9.0")
     }
 
     sealed class TestSetDependency(dep: String) : Dependency(dep) {

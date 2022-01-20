@@ -41,9 +41,12 @@ internal val lifecycle =
         Dependency.MainSetDependency.LifeCycleKTX,
         Dependency.MainSetDependency.ActivityKTX,
         Dependency.MainSetDependency.FragmentKTX,
-        Dependency.TestSetDependency.Arch,
-        Dependency.AndroidTestSetDependency.Arch
     )
+
+internal val archTest = listOf(
+    Dependency.TestSetDependency.Arch,
+    Dependency.AndroidTestSetDependency.Arch
+)
 
 internal val hilt =
     listOf(Dependency.MainSetDependency.Hilt, Dependency.AnnotationProcessor.Hilt)

@@ -4,6 +4,7 @@ plugins {
     id("kotlinx-serialization")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -26,6 +27,10 @@ android {
         }
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -37,16 +42,20 @@ android {
 
 dependencies {
 
-    api(project(":base-data"))
+    api(project(":auth-data"))
+    implementation(project(":base-feature"))
+
+    addAndroidCore()
+    addAndroidUI()
 
     addKotlin()
 
-    addFirebaseDatabase()
     addFcm()
 
+    addNavigation()
     addRoom()
 
-    addHilt()
+    addLifeCycle()
 
-    addJunit()
+    addHilt()
 }

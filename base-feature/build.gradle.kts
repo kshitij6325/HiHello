@@ -1,9 +1,6 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
-    id("kotlinx-serialization")
-    id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -26,6 +23,10 @@ android {
         }
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -37,16 +38,10 @@ android {
 
 dependencies {
 
-    api(project(":base-data"))
-
     addKotlin()
+    addAndroidCore()
 
-    addFirebaseDatabase()
-    addFcm()
+    addLifeCycle()
 
-    addRoom()
-
-    addHilt()
-
-    addJunit()
+    addNavigation()
 }
