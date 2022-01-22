@@ -1,8 +1,6 @@
 package com.example.chat_data.data.repo
 
 import com.example.auth.User
-import com.example.auth_feature.data.FakeMeDataSource
-import com.example.auth_feature.data.FakeUserDataSource
 import com.example.chat_data.Chat
 import com.example.chat_data.data.FakeChatDataSource
 import com.example.chat_data.data.FakeRemoteChatHelper
@@ -10,7 +8,6 @@ import com.example.chat_data.datasource.ChatType
 import com.example.chat_data.repo.ChatRepository
 import com.example.pojo.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test

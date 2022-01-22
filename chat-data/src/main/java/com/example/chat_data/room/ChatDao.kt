@@ -10,8 +10,8 @@ interface ChatDao {
     @Query("select * from chats")
     suspend fun getAllChats(): List<Chat>
 
-    @Query("select * from chats where user_id=:userId")
-    suspend fun getAllUserChats(userId: String): List<Chat>
+    @Query("select * from chats where user_id = :userId order by time_stamp desc limit :limit")
+    suspend fun getAllUserChats(userId: String, limit: Int): List<Chat>
 
     @Query("select * from chats where user_id=:userId")
     fun getAllUserChatLiveData(userId: String): LiveData<List<Chat>>

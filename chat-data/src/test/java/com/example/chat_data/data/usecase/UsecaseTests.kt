@@ -2,8 +2,6 @@ package com.example.chat_data.data.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.auth.User
-import com.example.auth.datasource.FirebaseDataSourceImpl
-import com.example.auth.datasource.MeLocalDataSource
 import com.example.auth.datasource.UserDataSource
 import com.example.auth.repo.FirebaseDataRepository
 import com.example.auth.repo.UserRepositoryImpl
@@ -14,19 +12,11 @@ import com.example.chat_data.Chat
 import com.example.chat_data.data.FakeChatDataSource
 import com.example.chat_data.data.FakeRemoteChatHelper
 import com.example.chat_data.data.getOrAwaitValue
-import com.example.chat_data.datasource.ChatDatasource
 import com.example.chat_data.datasource.ChatType
 import com.example.chat_data.repo.ChatRepository
-import com.example.chat_data.repo.IRemoteChatHelper
-import com.example.chat_data.repo.RemoteChatHelper
-import com.example.chat_data.usecase.GetAllUserChatUseCase
-import com.example.chat_data.usecase.ReceiveChatUseCase
-import com.example.chat_data.usecase.RetryUnSendChats
-import com.example.chat_data.usecase.SendChatUseCase
+import com.example.chat_data.usecase.*
 import com.example.pojo.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -58,10 +48,10 @@ class UsecaseTests {
     lateinit var receiveChatUseCase: ReceiveChatUseCase
     lateinit var retryUnSendChats: RetryUnSendChats
     lateinit var getAllUserChatUseCase: GetAllUserChatUseCase
+    lateinit var getAllChatUserCase: GetAllChatsUseCase
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
-
 
 
     @Before
@@ -85,6 +75,7 @@ class UsecaseTests {
         receiveChatUseCase = ReceiveChatUseCase(userRepositoryImpl, chatRepo)
         retryUnSendChats = RetryUnSendChats(userRepositoryImpl, chatRepo, firebaseDataRepository)
         getAllUserChatUseCase = GetAllUserChatUseCase(chatRepository = chatRepo)
+        getAllChatUserCase = GetAllChatsUseCase(userRepository = userRepositoryImpl, chatRepo)
     }
 
     @Test
@@ -307,5 +298,46 @@ class UsecaseTests {
 
         val value = getAllUserChatUseCase.get("user2").getOrAwaitValue()
         assert(value.isEmpty())
+    }
+
+    @Test
+    fun getAllChats_success() = runTest {
+
+        userRepositoryImpl.createLocalUser(user2)
+        userRepositoryImpl.createLocalUser(user3)
+
+        (1..10).map {
+            Chat(
+                message = "Test message $it",
+                userId = if (it % 2 == 0) user2.userName else user3.userName,
+                timeStamp = System.currentTimeMillis(),
+                success = true, type = ChatType.SENT
+            )
+        }.forEach { chatRepo.addChat(it) }
+
+        getAllChatUserCase.apply {
+            onSuccess = {
+                assert(it.size == 2)
+            }
+            onFailure = {
+                assert(false)
+            }
+        }.invoke()
+    }
+
+    @Test
+    fun getAllChats_noChats() = runTest {
+
+        userRepositoryImpl.createLocalUser(user2)
+        userRepositoryImpl.createLocalUser(user3)
+
+        getAllChatUserCase.apply {
+            onSuccess = {
+                assert(it.isEmpty())
+            }
+            onFailure = {
+                assert(false)
+            }
+        }.invoke()
     }
 }

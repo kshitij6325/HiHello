@@ -35,6 +35,10 @@ class UserRepositoryImpl @Inject constructor(
         return userFirebaseDataSource.getUser(userId = userName)
     }
 
+    override suspend fun getAllLocalUsers(): Result<List<User>> {
+        return userRoomDataSource.getAllUsers()
+    }
+
     override suspend fun deleteLocalUser() = meDataSource.deleteUser("")
 
     override suspend fun getLocalUser(userId: String): Result<User> {

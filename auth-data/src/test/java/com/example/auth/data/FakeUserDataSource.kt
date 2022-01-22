@@ -53,4 +53,13 @@ class FakeUserDataSource(private val userList: MutableList<User>) : UserDataSour
             Result.Failure(Exception("Error deleting user!"))
         }
     }
+
+    override suspend fun getAllUsers(): Result<List<User>> {
+        return if (!fail) {
+            Result.Success(userList)
+
+        } else {
+            Result.Failure(Exception("Error fetching user!"))
+        }
+    }
 }

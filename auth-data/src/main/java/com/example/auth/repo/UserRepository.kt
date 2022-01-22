@@ -12,6 +12,8 @@ interface UserRepository {
 
     suspend fun getRemoteUser(userName: String): Result<User>
 
+    suspend fun getAllLocalUsers(): Result<List<User>>
+
     suspend fun deleteLocalUser(): Result<Boolean>
 
     suspend fun getLocalUser(userId: String): Result<User>

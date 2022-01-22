@@ -70,5 +70,13 @@ class UserRoomDataSource @Inject constructor(private val dao: UserDao) : UserDat
         }
     }
 
+    override suspend fun getAllUsers(): Result<List<User>> = withContext(Dispatchers.IO) {
+        return@withContext try {
+            dao.getAllUser().run { Result.Success(this) }
+        } catch (e: Exception) {
+            Result.Failure(e)
+        }
+    }
+
 
 }

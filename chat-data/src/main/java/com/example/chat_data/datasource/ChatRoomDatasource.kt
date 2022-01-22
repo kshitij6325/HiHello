@@ -22,10 +22,10 @@ class ChatRoomDatasource @Inject constructor(private val chatDao: ChatDao) : Cha
             }
         }
 
-    override suspend fun getAllUserChat(userId: String): Result<List<Chat>> =
+    override suspend fun getAllUserChat(userId: String, limit: Int): Result<List<Chat>> =
         withContext(Dispatchers.IO) {
             return@withContext try {
-                Result.Success(chatDao.getAllUserChats(userId))
+                Result.Success(chatDao.getAllUserChats(userId, limit))
             } catch (ex: Exception) {
                 Result.Failure(ex)
             }
