@@ -48,8 +48,8 @@ android {
 dependencies {
 
     implementation(project(":auth-feature"))
+    implementation(project(":chat-feature"))
     implementation(project(":base-feature"))
-    implementation(project(":chat-data"))
 
     addKotlin()
 

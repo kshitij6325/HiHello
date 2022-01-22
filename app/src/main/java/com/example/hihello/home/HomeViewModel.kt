@@ -1,12 +1,9 @@
 package com.example.hihello.home
 
-import android.util.Log
 import androidx.lifecycle.*
-import com.example.auth.usecase.IsUserLoggedInUseCase
+import com.example.auth.usecase.GetUserLoggedInUseCase
 import com.example.auth.usecase.LogoutUseCase
 import com.example.basefeature.update
-import com.example.chat_data.usecase.GetAllUserChatUseCase
-import com.example.chat_data.usecase.SendChatUseCase
 import com.example.hihello.home.homeactivity.HomeUIState
 import com.example.hihello.home.homefragment.HomeFragUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val isUserLoggedInUseCase: IsUserLoggedInUseCase,
+    private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
     private val logoutUseCase: LogoutUseCase,
     // private val getAllUserChatUseCase: GetAllUserChatUseCase,
     // private val sendChatUseCase: SendChatUseCase
@@ -35,10 +32,10 @@ class HomeViewModel @Inject constructor(
         _homeActivityUiState.update {
             it?.copy(isLoading = true)
         }
-        isUserLoggedInUseCase.apply {
-            onSuccess = { isLoggedIn ->
+        getUserLoggedInUseCase.apply {
+            onSuccess = { user ->
                 _homeActivityUiState.update {
-                    it?.copy(isLoading = false, isLoggedIn = isLoggedIn)
+                    it?.copy(isLoading = false, isLoggedIn = user != null)
                 }
             }
             onFailure = { ex ->

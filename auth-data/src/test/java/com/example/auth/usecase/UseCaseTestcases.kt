@@ -14,7 +14,7 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class UseCaseTestcases {
     private lateinit var firebaseDataSrc: FakeFirebaseDataSource
-    private lateinit var isUserLoggedInUseCase: IsUserLoggedInUseCase
+    private lateinit var getUserLoggedInUseCase: GetUserLoggedInUseCase
     private lateinit var loginUseCase: LoginUseCase
     private lateinit var logoutUseCase: LogoutUseCase
     private lateinit var signUpUseCase: SignUpUseCase
@@ -23,7 +23,7 @@ class UseCaseTestcases {
     @After
     fun init() {
         val repo = FakeDataProvider.initDataAndRepo()
-        isUserLoggedInUseCase = IsUserLoggedInUseCase(repo)
+        getUserLoggedInUseCase = GetUserLoggedInUseCase(repo)
         firebaseDataSrc = FakeFirebaseDataSource()
         val firebaseDataRepository = FirebaseDataRepository(firebaseDataSrc)
         loginUseCase = LoginUseCase(repo, firebaseDataRepository)
@@ -79,9 +79,9 @@ class UseCaseTestcases {
 
     @Test
     fun checkIsLoggedIn_withoutLogin() = runTest {
-        isUserLoggedInUseCase.apply {
+        getUserLoggedInUseCase.apply {
             onSuccess = {
-                assert(!it)
+                assert(it == null)
             }
             onFailure = {
                 assert(false)
@@ -102,9 +102,9 @@ class UseCaseTestcases {
 
         }.invoke(FakeDataProvider.user1.userName, FakeDataProvider.user1.password!!)
 
-        isUserLoggedInUseCase.apply {
+        getUserLoggedInUseCase.apply {
             onSuccess = {
-                assert(it)
+                assert(it != null && it.userName == FakeDataProvider.user1.userName)
             }
             onFailure = {
                 assert(false)
@@ -125,9 +125,9 @@ class UseCaseTestcases {
 
         }.invoke(FakeDataProvider.myUser)
 
-        isUserLoggedInUseCase.apply {
+        getUserLoggedInUseCase.apply {
             onSuccess = {
-                assert(it)
+                assert(it != null)
             }
             onFailure = {
                 assert(false)

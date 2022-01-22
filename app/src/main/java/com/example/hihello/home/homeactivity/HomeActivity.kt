@@ -25,7 +25,7 @@ class HomeActivity : AppCompatActivity() {
             .distinctUntilChanged()
             .observe(this@HomeActivity) {
                 if (it) {
-                    findNavController(R.id.nav_host_fragment).navigate(NavHomeDirections.actionHomeFragment())
+                    findNavController(R.id.nav_host_fragment).navigate(NavHomeDirections.actionChatNavGraph())
                 }
 
             }

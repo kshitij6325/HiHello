@@ -1,12 +1,8 @@
 package com.example.hihello.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.auth.NoSuchUserException
-import com.example.auth.UserAlreadyExitsException
-import com.example.auth.usecase.IsUserLoggedInUseCase
-import com.example.auth.usecase.LoginUseCase
+import com.example.auth.usecase.GetUserLoggedInUseCase
 import com.example.auth.usecase.LogoutUseCase
-import com.example.auth.usecase.SignUpUseCase
 import com.example.hihello.MainDispatcherRule
 import com.example.hihello.data.FakeDataProvider
 import com.example.hihello.getOrAwaitValue
@@ -32,12 +28,11 @@ class HomeViewModelTest {
     @After
     fun initialize() {
         val repo = FakeDataProvider.initDataAndRepo()
-        val isUserLoggedInUseCase = IsUserLoggedInUseCase(repo)
+        val isUserLoggedInUseCase = GetUserLoggedInUseCase(repo)
         val logoutUseCase = LogoutUseCase(repo)
         viewmodel = HomeViewModel(
-            isUserLoggedInUseCase = isUserLoggedInUseCase,
+            getUserLoggedInUseCase = isUserLoggedInUseCase,
             logoutUseCase = logoutUseCase,
-
         )
     }
 

@@ -16,6 +16,8 @@
         <entry key="auth-feature/src/main/res/layout/layout.xml" value="0.16530797101449277" />
         <entry key="base-feature/src/main/res/font/kk.xml" value="0.35801838610827375" />
         <entry key="chat-feature/src/main/res/layout/fragment_chat.xml" value="0.15817356205852673" />
+        <entry key="chat-feature/src/main/res/layout/fragment_chat_home.xml" value="0.27682737169517885" />
+        <entry key="chat-feature/src/main/res/layout/item_chat_home.xml" value="0.5" />
       </map>
     </option>
   </component>

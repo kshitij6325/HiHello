@@ -38,7 +38,7 @@ android {
 dependencies {
 
     implementation(project(":base-data"))
-    implementation(project(":auth-data"))
+    api(project(":auth-data"))
 
     addKotlin()
     addRetrofit()

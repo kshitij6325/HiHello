@@ -73,7 +73,7 @@ class ChatRoomTest {
             assert(chatRes == i.toLong())
         }
 
-        val allChat = chatDao.getAllUserChats("userId")
+        val allChat = chatDao.getAllUserChats("userId",50)
         assert(allChat.size == 50)
     }
 
@@ -85,7 +85,7 @@ class ChatRoomTest {
             assert(chatRes == i.toLong())
         }
 
-        val allChat = chatDao.getAllUserChats("user2")
+        val allChat = chatDao.getAllUserChats("user2",50)
         assert(allChat.isEmpty())
     }
 
