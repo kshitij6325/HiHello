@@ -2,7 +2,9 @@ package com.example.chat_data.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.auth.User
 import com.example.chat_data.Chat
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChatDao {
@@ -36,4 +38,7 @@ interface ChatDao {
 
     @Query("select * from chats where success = 0")
     suspend fun getAllUnSendChats(): List<Chat>
+
+    @Query("select * from users join chats on user_id = user_name group by user_name order by time_stamp desc")
+    fun getAllUserChats(): Flow<Map<User, List<Chat>>>
 }

@@ -6,6 +6,7 @@ import com.example.chat_data.Chat
 import com.example.chat_data.repo.ChatRepository
 import com.example.pojo.BaseUseCase
 import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.flow.map
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -15,22 +16,12 @@ class GetAllChatsUseCase @Inject constructor(
     private val chatRepository: ChatRepository
 ) : BaseUseCase<List<Pair<User, Chat>>>() {
 
-    suspend operator fun invoke() {
-        val resList = mutableListOf<Pair<User, Chat>>()
-        val errorList = mutableListOf<String>()
-        userRepository.getAllLocalUsers().onSuccess { userList ->
-            for (user in userList) {
-                chatRepository.getAllUserChat(user.userName, 1).onSuccess {
-                    if (it.isNotEmpty()) {
-                        resList.add(user to it[0])
-                    }
-                }.onFailure {
-                    errorList.add(user.userName)
-                }
-            }
-            onSuccess?.invoke(resList)
-        }.onFailure {
-            onFailure?.invoke(Exception("Error loading user chats"))
+    fun get() = chatRepository.getAllUserChat().map {
+        val mutableList = mutableListOf<Pair<User, Chat>>()
+        for ((user, chatList) in it) {
+            if (chatList.isNotEmpty())
+                mutableList.add(user to chatList[0])
         }
+        return@map mutableList
     }
 }

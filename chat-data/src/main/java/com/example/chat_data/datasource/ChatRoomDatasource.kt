@@ -1,6 +1,7 @@
 package com.example.chat_data.datasource
 
 import androidx.lifecycle.LiveData
+import com.example.auth.User
 import com.example.chat_data.Chat
 import com.example.chat_data.room.ChatDao
 import com.example.pojo.Result
@@ -91,4 +92,7 @@ class ChatRoomDatasource @Inject constructor(private val chatDao: ChatDao) : Cha
     override fun getAllUserChatLiveData(userId: String): LiveData<List<Chat>> {
         return chatDao.getAllUserChatLiveData(userId)
     }
+
+    override fun getAllUserChatsMap() = chatDao.getAllUserChats()
+
 }

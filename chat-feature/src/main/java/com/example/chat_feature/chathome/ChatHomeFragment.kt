@@ -9,6 +9,8 @@ import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
 import com.example.basefeature.BaseFragment
 import com.example.chat_feature.ChatHomeViewModel
+import com.example.chat_feature.NewChatBottomSheet
+import com.example.chat_feature.NewChatBsUI
 import com.example.chat_feature.R
 import com.example.chat_feature.databinding.FragmentChatHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +34,14 @@ class ChatHomeFragment : BaseFragment<FragmentChatHomeBinding>() {
             .observe(this) {
                 binding?.tvWelcome?.text = it
             }
+
+        binding?.fabCreateChat?.setOnClickListener {
+            NewChatBottomSheet().show(childFragmentManager, "NewChatBottomSheet")
+        }
+    }
+
+    val updateChatList = {
+        viewModel.fetchUserChats()
     }
 
     private fun setUpRecyclerView() {

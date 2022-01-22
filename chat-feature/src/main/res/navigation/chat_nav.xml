@@ -9,7 +9,8 @@
         android:id="@+id/chatHomeFragment"
         android:name="com.example.chat_feature.chathome.ChatHomeFragment"
         android:label="fragment_chat_home"
-        tools:layout="@layout/fragment_chat_home" >
+        tools:layout="@layout/fragment_chat_home">
+        <deepLink app:uri="@string/chat_home_frag_deeplink_string" />
         <action
             android:id="@+id/action_chatHomeFragment_to_chatFragment"
             app:destination="@id/chatFragment" />

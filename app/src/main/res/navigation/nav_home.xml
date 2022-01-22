@@ -22,7 +22,8 @@
 
     <action
         android:id="@+id/action_chat_nav_graph"
-        app:destination="@id/chat_nav" />
+        app:destination="@id/chat_nav"
+        app:popUpToInclusive="true" />
 
     <action
         android:id="@+id/action_nav_graph"

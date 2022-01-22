@@ -31,4 +31,6 @@ class ChatRepository @Inject constructor(
     suspend fun getAllUnSendChats() = chatRoomDatasource.getAllUnSendChat()
 
     suspend fun getChat(id: Long) = chatRoomDatasource.getChat(id.toString())
+
+    fun getAllUserChat() = chatRoomDatasource.getAllUserChatsMap()
 }

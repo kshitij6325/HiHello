@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">HiHello</string>
     <string name="home_frag_deeplink_string">app://com.example.hihello/home_fragment</string>
+    <string name="chat_home_frag_deeplink_string">app://com.example.hihello/chat_home_fragment</string>
+
 </resources>

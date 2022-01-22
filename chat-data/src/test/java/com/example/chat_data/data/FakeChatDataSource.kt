@@ -2,9 +2,12 @@ package com.example.chat_data.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.auth.User
 import com.example.chat_data.Chat
 import com.example.chat_data.datasource.ChatDatasource
 import com.example.pojo.Result
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import java.lang.Exception
 
@@ -85,5 +88,10 @@ class FakeChatDataSource(private val mutableChatList: MutableList<Chat>) : ChatD
         val res = getAllUserChat(userId, 100)
         val chatList = if (res is Result.Success) res.data else listOf()
         return@runBlocking MutableLiveData(chatList)
+    }
+
+    override fun getAllUserChatsMap(): Flow<Map<User, List<Chat>>> = flow {
+        emit(mutableMapOf<User, List<Chat>>())
+
     }
 }

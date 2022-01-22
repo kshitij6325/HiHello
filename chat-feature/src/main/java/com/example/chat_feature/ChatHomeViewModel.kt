@@ -9,6 +9,7 @@ import com.example.basefeature.update
 import com.example.chat_data.usecase.GetAllChatsUseCase
 import com.example.chat_feature.chathome.ChatHomeUI
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,8 +17,7 @@ import javax.inject.Inject
 class ChatHomeViewModel @Inject constructor(
     private val getAllChatsUseCase: GetAllChatsUseCase,
     private val getLoggedInUseCase: GetUserLoggedInUseCase
-) :
-    ViewModel() {
+) : ViewModel() {
 
     private val _chatHomeUiState = MutableLiveData(ChatHomeUI())
     val chatHomeUiStateLiveData: LiveData<ChatHomeUI> = _chatHomeUiState
@@ -35,22 +35,11 @@ class ChatHomeViewModel @Inject constructor(
     }
 
     fun fetchUserChats() = viewModelScope.launch {
-        _chatHomeUiState.update {
-            it?.copy(loading = true)
+        getAllChatsUseCase.get().collect { list ->
+            _chatHomeUiState.update {
+                it?.copy(loading = false, userChatList = list)
+            }
         }
-        getAllChatsUseCase.apply {
-            onSuccess = { list ->
-                _chatHomeUiState.update {
-                    it?.copy(loading = false, userChatList = list)
-                }
-
-            }
-            onFailure = { error ->
-                _chatHomeUiState.update {
-                    it?.copy(loading = false, error = error.message)
-                }
-            }
-        }.invoke()
     }
 
 }

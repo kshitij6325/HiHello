@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../.gradle/caches/transforms-3/e03760b31c01f5d3c27d440e896a8065/transformed/jetified-appcompat-resources-1.2.0/res/drawable/abc_vector_test.xml" value="0.34014300306435136" />
         <entry key="app/src/main/res/font/font.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19701086956521738" />
@@ -15,8 +16,9 @@
         <entry key="auth-feature/src/main/res/layout/fragment_sign_up.xml" value="0.16530797101449277" />
         <entry key="auth-feature/src/main/res/layout/layout.xml" value="0.16530797101449277" />
         <entry key="base-feature/src/main/res/font/kk.xml" value="0.35801838610827375" />
+        <entry key="chat-feature/src/main/res/layout/bottomsheet_fragment_add_chat.xml" value="0.15817356205852673" />
         <entry key="chat-feature/src/main/res/layout/fragment_chat.xml" value="0.15817356205852673" />
-        <entry key="chat-feature/src/main/res/layout/fragment_chat_home.xml" value="0.27682737169517885" />
+        <entry key="chat-feature/src/main/res/layout/fragment_chat_home.xml" value="0.335" />
         <entry key="chat-feature/src/main/res/layout/item_chat_home.xml" value="0.5" />
       </map>
     </option>

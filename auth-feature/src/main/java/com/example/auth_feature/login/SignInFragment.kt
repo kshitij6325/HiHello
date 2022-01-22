@@ -34,7 +34,7 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
             .distinctUntilChanged()
             .observe(this) {
                 if (it) {
-                    navigate(requireActivity().resources.getString(R.string.home_frag_deeplink_string))
+                    navigate(requireActivity().resources.getString(R.string.chat_home_frag_deeplink_string))
                 }
             }
 
