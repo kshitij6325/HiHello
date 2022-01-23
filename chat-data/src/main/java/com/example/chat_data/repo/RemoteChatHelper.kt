@@ -28,14 +28,19 @@ class RemoteChatHelper @Inject constructor() : IRemoteChatHelper {
         chat: Chat,
     ): Result<String> = withContext(Dispatchers.IO) {
         val root = JSONObject()
-        val notification = JSONObject()
-        notification.put("body", "${chat.message}")
-        notification.put("title", "Message by ${user.userName}")
+
+        //setting chat data
         val data = JSONObject()
         data.put(CHAT_DATA, Json.encodeToString(chat))
-        root.put("notification", notification)
         root.put("data", data)
+
+        //setting registration id
         root.put("registration_ids", JSONArray(listOf(user.fcmToken).toTypedArray()))
+
+        //adding priority data for message delivery
+        val priorityData = JSONObject()
+        priorityData.put("priority", "high")
+        root.put("android", priorityData)
 
         val res = OkHttpClient().run {
             newCall(

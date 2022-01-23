@@ -7,8 +7,9 @@ import com.example.auth.repo.UserRepositoryImpl
 import com.example.pojo.BaseUseCase
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 class GetUserLoggedInUseCase @Inject constructor(private val userRepositoryImpl: UserRepository) :
     BaseUseCase<User?>() {
 
