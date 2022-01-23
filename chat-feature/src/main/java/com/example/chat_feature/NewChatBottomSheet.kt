@@ -1,15 +1,14 @@
 package com.example.chat_feature
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
 import com.example.basefeature.showToast
-import com.example.chat_feature.chathome.ChatHomeFragment
 import com.example.chat_feature.databinding.BottomsheetFragmentAddChatBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class NewChatBottomSheet : BottomSheetDialogFragment() {
 
-    private val viewModel by viewModels<ChatUserViewModel>()
+    private val viewModel by viewModels<ChatHomeViewModel>()
     private var binding: BottomsheetFragmentAddChatBinding? = null
 
     override fun onCreateView(
@@ -43,7 +42,7 @@ class NewChatBottomSheet : BottomSheetDialogFragment() {
             .distinctUntilChanged()
             .observe(this) {
                 if (it) {
-                    (parentFragment as? ChatHomeFragment)?.updateChatList?.invoke()
+                    dismiss()
                 }
             }
 

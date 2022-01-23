@@ -27,6 +27,7 @@ internal sealed class Dependency(val dependency: String) {
         //jetpack navigation
         object NavFragment : MainSetDependency("androidx.navigation:navigation-fragment-ktx:2.3.5")
         object NavUiKTX : MainSetDependency("androidx.navigation:navigation-ui-ktx:2.3.5")
+        object NavHilt : MainSetDependency("androidx.hilt:hilt-navigation-fragment:1.0.0")
 
         //room
         object Room : MainSetDependency("androidx.room:room-runtime:2.4.0")

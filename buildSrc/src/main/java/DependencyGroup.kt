@@ -25,7 +25,11 @@ internal val androidUI = listOf(
 )
 
 internal val jetpackNavigation =
-    listOf(Dependency.MainSetDependency.NavFragment, Dependency.MainSetDependency.NavUiKTX)
+    listOf(
+        Dependency.MainSetDependency.NavFragment,
+        Dependency.MainSetDependency.NavUiKTX,
+        Dependency.MainSetDependency.NavHilt
+    )
 
 internal val room =
     listOf(

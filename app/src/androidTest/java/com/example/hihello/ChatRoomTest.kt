@@ -21,14 +21,14 @@ class ChatRoomTest {
 
     lateinit var chatDao: ChatDao
 
-    val chat1 = Chat(
+    private val chat1 = Chat(
         message = "Test message",
         userId = "userId",
         timeStamp = System.currentTimeMillis(),
         success = false, type = ChatType.SENT
     )
 
-    val chat2 = Chat(
+    private val chat2 = Chat(
         message = "Test message 2",
         userId = "userId",
         timeStamp = System.currentTimeMillis(),
@@ -73,7 +73,7 @@ class ChatRoomTest {
             assert(chatRes == i.toLong())
         }
 
-        val allChat = chatDao.getAllUserChats("userId",50)
+        val allChat = chatDao.getAllUserChats("userId", 50)
         assert(allChat.size == 50)
     }
 
@@ -85,7 +85,7 @@ class ChatRoomTest {
             assert(chatRes == i.toLong())
         }
 
-        val allChat = chatDao.getAllUserChats("user2",50)
+        val allChat = chatDao.getAllUserChats("user2", 50)
         assert(allChat.isEmpty())
     }
 
@@ -137,4 +137,5 @@ class ChatRoomTest {
         chatDao.addChat(chat2)
 
     }
+
 }

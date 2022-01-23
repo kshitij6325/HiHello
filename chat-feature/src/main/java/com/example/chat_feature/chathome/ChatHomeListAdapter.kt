@@ -7,7 +7,8 @@ import com.example.auth.User
 import com.example.chat_data.Chat
 import com.example.chat_feature.databinding.ItemChatHomeBinding
 
-class ChatHomeListAdapter : RecyclerView.Adapter<ChatHomeViewHolder>() {
+class ChatHomeListAdapter(private val onItemClick: ((User) -> Unit)) :
+    RecyclerView.Adapter<ChatHomeViewHolder>() {
 
     var list: List<Pair<User, Chat>> = listOf()
         set(value) {
@@ -18,7 +19,11 @@ class ChatHomeListAdapter : RecyclerView.Adapter<ChatHomeViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatHomeViewHolder {
         val binding =
             ItemChatHomeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ChatHomeViewHolder(binding)
+        return ChatHomeViewHolder(binding).also { holder ->
+            binding.root.setOnClickListener {
+                onItemClick.invoke(list[holder.adapterPosition].first)
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: ChatHomeViewHolder, position: Int) {

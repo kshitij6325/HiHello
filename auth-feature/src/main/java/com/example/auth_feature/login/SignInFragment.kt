@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
 import com.example.auth_feature.AuthViewModel
@@ -21,7 +22,7 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
         get() = FragmentSignInBinding::inflate
 
 
-    private val viewModel: AuthViewModel by viewModels()
+    private val viewModel: AuthViewModel by hiltNavGraphViewModels(R.id.auth_nav)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

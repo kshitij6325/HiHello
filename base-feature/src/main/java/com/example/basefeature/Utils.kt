@@ -2,7 +2,10 @@ package com.example.basefeature
 
 import android.app.ProgressDialog
 import android.content.Context
+import android.view.View
 import android.widget.Toast
+import androidx.annotation.ColorInt
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -28,4 +31,10 @@ fun ProgressDialog.showIf(condition: Boolean) = if (condition) show() else hide(
 fun <T> MutableLiveData<T>.update(evaluator: (T?) -> T) {
     val currentValue = value
     value = currentValue?.run(evaluator)
+}
+
+fun View.tintBackground(@ColorInt color: Int) {
+    background = DrawableCompat.wrap(background).apply {
+        DrawableCompat.setTint(this, color)
+    }
 }

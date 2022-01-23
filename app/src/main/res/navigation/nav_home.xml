@@ -3,30 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_home"
-    app:startDestination="@id/auth_nav">
+    app:startDestination="@id/homeFragment">
 
     <include app:graph="@navigation/auth_nav" />
     <include app:graph="@navigation/chat_nav" />
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.hihello.home.homefragment.HomeFragment"
+        android:name="com.example.hihello.home.homeactivity.HomeFragment"
         android:label="fragment_home2"
         tools:layout="@layout/fragment_home">
-        <deepLink app:uri="@string/home_frag_deeplink_string" />
         <action
-            android:id="@+id/action_homeFragment_to_auth_nav"
+            android:id="@+id/action_chat_nav_graph"
+            app:destination="@id/chat_nav"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_auth_nav_graph"
             app:destination="@id/auth_nav"
+            app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
-    <action
-        android:id="@+id/action_chat_nav_graph"
-        app:destination="@id/chat_nav"
-        app:popUpToInclusive="true" />
-
-    <action
-        android:id="@+id/action_nav_graph"
-        app:destination="@id/auth_nav" />
 
 </navigation>

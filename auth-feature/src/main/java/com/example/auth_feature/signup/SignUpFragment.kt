@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
 import androidx.navigation.NavDeepLinkRequest
@@ -25,7 +26,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>() {
     override val getBindingInflation: (LayoutInflater) -> FragmentSignUpBinding
         get() = FragmentSignUpBinding::inflate
 
-    private val viewModel: AuthViewModel by viewModels()
+    private val viewModel: AuthViewModel by hiltNavGraphViewModels(R.id.auth_nav)
 
     private var p: ProgressDialog? = null
 
