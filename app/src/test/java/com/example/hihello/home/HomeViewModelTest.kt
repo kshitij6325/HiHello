@@ -41,7 +41,7 @@ class HomeViewModelTest {
     fun loggedLiveDataTest() = runBlockingTest {
         viewmodel.isUserLoggedIn()
         val getHomeActivityUiState = viewmodel.homeActivityUiStateLiveData.getOrAwaitValue()
-        assert(!getHomeActivityUiState.isLoggedIn)
+        assert(getHomeActivityUiState.isLoggedIn == false)
     }
 
 }

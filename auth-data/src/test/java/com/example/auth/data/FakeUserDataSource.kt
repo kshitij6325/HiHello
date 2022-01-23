@@ -26,7 +26,7 @@ class FakeUserDataSource(private val userList: MutableList<User>) : UserDataSour
 
     override suspend fun updateUser(user: User): Result<User> {
         return if (!fail) {
-            val index = userList.indexOf(user)
+            val index = userList.indexOfFirst { it.userName == user.userName }
             return if (index == -1) Result.Failure(NoSuchUserException()) else {
                 userList.add(index, user)
                 Result.Success(user)

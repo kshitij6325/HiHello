@@ -27,20 +27,20 @@ class RemoteChatHelper @Inject constructor() : IRemoteChatHelper {
         appSecret: String,
         chat: Chat,
     ): Result<String> = withContext(Dispatchers.IO) {
-        val root = JSONObject()
+        val requestPayload = JSONObject()
 
         //setting chat data
         val data = JSONObject()
         data.put(CHAT_DATA, Json.encodeToString(chat))
-        root.put("data", data)
+        requestPayload.put("data", data)
 
         //setting registration id
-        root.put("registration_ids", JSONArray(listOf(user.fcmToken).toTypedArray()))
+        requestPayload.put("registration_ids", JSONArray(listOf(user.fcmToken).toTypedArray()))
 
         //adding priority data for message delivery
         val priorityData = JSONObject()
         priorityData.put("priority", "high")
-        root.put("android", priorityData)
+        requestPayload.put("android", priorityData)
 
         val res = OkHttpClient().run {
             newCall(
@@ -49,7 +49,7 @@ class RemoteChatHelper @Inject constructor() : IRemoteChatHelper {
                     post(
                         RequestBody.create(
                             MediaType.get("application/json; charset=utf-8"),
-                            root.toString()
+                            requestPayload.toString()
                         )
                     )
                     addHeader("Authorization", "key=$appSecret")

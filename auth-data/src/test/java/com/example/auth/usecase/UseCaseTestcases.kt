@@ -18,6 +18,7 @@ class UseCaseTestcases {
     private lateinit var loginUseCase: LoginUseCase
     private lateinit var logoutUseCase: LogoutUseCase
     private lateinit var signUpUseCase: SignUpUseCase
+    private lateinit var updateUserUseCase: UpdateUserUseCase
 
     @Before
     @After
@@ -29,6 +30,7 @@ class UseCaseTestcases {
         loginUseCase = LoginUseCase(repo, firebaseDataRepository)
         signUpUseCase = SignUpUseCase(repo, firebaseDataRepository)
         logoutUseCase = LogoutUseCase(repo)
+        updateUserUseCase = UpdateUserUseCase(repo)
     }
 
 
@@ -192,6 +194,38 @@ class UseCaseTestcases {
             }
 
         }.invoke(FakeDataProvider.myUser)
+
+    }
+
+    @Test
+    fun checkUserFcmUpdate_success() = runTest {
+        signUpUseCase.apply {
+            onSuccess = {
+                assert(it.userName == FakeDataProvider.myUser.userName)
+            }
+            onFailure = {
+                assert(false)
+            }
+
+        }.invoke(FakeDataProvider.myUser)
+        updateUserUseCase.apply {
+            onSuccess = {
+                assert(it)
+            }
+            onFailure = {
+                assert(false)
+            }
+
+        }.invoke(FakeDataProvider.myUser.copy(fcmToken = "new token"))
+
+        getUserLoggedInUseCase.apply {
+            onSuccess = {
+                assert(it != null && it.fcmToken == "new token")
+            }
+            onFailure = {
+                assert(false)
+            }
+        }.invoke()
 
     }
 }
