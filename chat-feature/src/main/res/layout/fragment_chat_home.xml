@@ -30,12 +30,11 @@
         app:layout_constraintTop_toBottomOf="@id/tv_welcome"
         tools:listitem="@layout/item_chat_home" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/fab_create_chat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        style="@style/SendHeroButtonStyle"
+        android:layout_margin="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/abc_vector_test" />
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

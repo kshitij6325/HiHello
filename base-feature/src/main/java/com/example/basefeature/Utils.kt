@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.ColorInt
+import androidx.annotation.DimenRes
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -38,3 +39,7 @@ fun View.tintBackground(@ColorInt color: Int) {
         DrawableCompat.setTint(this, color)
     }
 }
+
+fun View.getDimen(@DimenRes dimen: Int) = context.getDimen(dimen)
+
+fun Context.getDimen(@DimenRes dimen: Int) = resources.getDimensionPixelOffset(dimen)

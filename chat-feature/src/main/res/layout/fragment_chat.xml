@@ -20,17 +20,30 @@
     <EditText
         android:id="@+id/et_message"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_40"
+        android:layout_margin="@dimen/dp_16"
+        android:background="@drawable/bg_message_edt"
+        android:ellipsize="end"
+        android:fontFamily="@font/averta_regular"
         android:hint="Start typing..."
+        android:inputType="text"
+        android:maxLines="1"
+        android:padding="8dp"
+        android:paddingEnd="@dimen/dp_40"
+        android:textColor="@color/black"
+        android:textColorHint="#7A8B94"
+        android:textSize="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/fab_sent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/fab_sent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        style="@style/SendHeroButtonStyle"
+        android:rotation="180"
+        app:layout_constraintBottom_toBottomOf="@id/et_message"
+        app:layout_constraintEnd_toEndOf="@id/et_message"
+        app:layout_constraintTop_toTopOf="@id/et_message"
+        app:srcCompat="@drawable/abc_vector_test" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
