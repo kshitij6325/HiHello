@@ -41,25 +41,35 @@ class RemoteChatHelper @Inject constructor() : IRemoteChatHelper {
         val priorityData = JSONObject()
         priorityData.put("priority", "high")
         requestPayload.put("android", priorityData)
-
-        val res = OkHttpClient().run {
-            newCall(
-                Request.Builder().apply {
-                    url("https://fcm.googleapis.com/fcm/send")
-                    post(
-                        RequestBody.create(
-                            MediaType.get("application/json; charset=utf-8"),
-                            requestPayload.toString()
+        try {
+            val res = OkHttpClient().run {
+                newCall(
+                    Request.Builder().apply {
+                        url("https://fcm.googleapis.com/fcm/send")
+                        post(
+                            RequestBody.create(
+                                MediaType.get("application/json; charset=utf-8"),
+                                requestPayload.toString()
+                            )
                         )
-                    )
-                    addHeader("Authorization", "key=$appSecret")
-                }.build()
-            )
-        }.execute()
-        return@withContext if (res.isSuccessful) {
-            Result.Success(res.body().toString())
-        } else {
-            Result.Failure(Exception(res.body().toString()))
+                        addHeader("Authorization", "key=$appSecret")
+                    }.build()
+                )
+            }.execute()
+            return@withContext if (res.isSuccessful) {
+                val response = res.body()?.string() ?: ""
+                val responseJson = JSONObject(response)
+                val isSuccess = responseJson.getInt("success")
+                if (isSuccess == 1) Result.Success(response) else Result.Failure(
+                    Exception("Some error occured")
+                )
+
+            } else {
+                Result.Failure(Exception(res.body().toString()))
+            }
+        } catch (ex: Exception) {
+            Result.Failure<String>(ex)
         }
+
     }
 }

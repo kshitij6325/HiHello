@@ -7,9 +7,13 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginLeft
 import androidx.core.view.updateLayoutParams
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.auth.User
 import com.example.basefeature.getDimen
+import com.example.basefeature.gone
+import com.example.basefeature.setTint
 import com.example.basefeature.tintBackground
 import com.example.chat_data.Chat
 import com.example.chat_data.datasource.ChatType
@@ -17,13 +21,8 @@ import com.example.chat_feature.R
 import com.example.chat_feature.databinding.ItemChatBinding
 import com.example.chat_feature.databinding.ItemChatHomeBinding
 
-class ChatUserListAdapter : RecyclerView.Adapter<ChatUserViewHolder>() {
-
-    var list: List<Chat> = listOf()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+class ChatUserListAdapter :
+    ListAdapter<Chat, ChatUserViewHolder>(ChatUserListDiffUtils()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatUserViewHolder {
         val binding =
@@ -34,14 +33,14 @@ class ChatUserListAdapter : RecyclerView.Adapter<ChatUserViewHolder>() {
 
         when (ChatType.fromInt(viewType)) {
             ChatType.SENT -> {
-                binding.tvMessage.updateLayoutParams {
+                binding.clContainer.updateLayoutParams {
                     (this as ViewGroup.MarginLayoutParams).run {
                         marginStart = dp50
                         marginEnd = dp16
                     }
                     (this as FrameLayout.LayoutParams).gravity = Gravity.END
                 }
-                binding.tvMessage.tintBackground(
+                binding.clContainer.tintBackground(
                     ContextCompat.getColor(
                         parent.context,
                         R.color.blue
@@ -53,16 +52,17 @@ class ChatUserListAdapter : RecyclerView.Adapter<ChatUserViewHolder>() {
                         R.color.white
                     )
                 )
+                binding.ivMessageState.setTint(R.color.white)
             }
             ChatType.RECEIVED -> {
-                binding.tvMessage.updateLayoutParams {
+                binding.clContainer.updateLayoutParams {
                     (this as ViewGroup.MarginLayoutParams).run {
                         marginStart = dp16
                         marginEnd = dp50
                     }
                     (this as FrameLayout.LayoutParams).gravity = Gravity.START
                 }
-                binding.tvMessage.tintBackground(
+                binding.clContainer.tintBackground(
                     ContextCompat.getColor(
                         parent.context,
                         R.color.light_blue
@@ -74,6 +74,7 @@ class ChatUserListAdapter : RecyclerView.Adapter<ChatUserViewHolder>() {
                         R.color.black
                     )
                 )
+                binding.ivMessageState.gone()
             }
         }
 
@@ -81,12 +82,12 @@ class ChatUserListAdapter : RecyclerView.Adapter<ChatUserViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ChatUserViewHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(currentList[position])
     }
 
-    override fun getItemCount(): Int = list.size
+    override fun getItemCount(): Int = currentList.size
 
-    override fun getItemViewType(position: Int) = list[position].type.ordinal
+    override fun getItemViewType(position: Int) = currentList[position].type.ordinal
 
 }
 
@@ -95,5 +96,17 @@ class ChatUserViewHolder(private val binding: ItemChatBinding) :
 
     fun bind(data: Chat) {
         binding.tvMessage.text = data.message
+        binding.ivMessageState.setImageResource(if (data.success) R.drawable.ic_outline_done_24 else R.drawable.ic_baseline_access_time_24)
     }
+}
+
+class ChatUserListDiffUtils : DiffUtil.ItemCallback<Chat>() {
+    override fun areItemsTheSame(oldItem: Chat, newItem: Chat): Boolean {
+        return oldItem.chatId == newItem.chatId
+    }
+
+    override fun areContentsTheSame(oldItem: Chat, newItem: Chat): Boolean {
+        return oldItem == newItem
+    }
+
 }

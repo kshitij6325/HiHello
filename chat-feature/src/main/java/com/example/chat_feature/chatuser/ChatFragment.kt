@@ -35,8 +35,10 @@ class ChatFragment : BaseFragment<FragmentChatBinding>() {
             .map { it.chatList }
             .distinctUntilChanged()
             .observe(this) {
-                adapter.list = it
-                binding?.recyclerView?.scrollToPosition(it.size - 1)
+                adapter.submitList(it) {
+                    if (it.isNotEmpty())
+                        binding?.recyclerView?.smoothScrollToPosition(it.size - 1)
+                }
             }
 
         viewModel.chatUserUiStateLiveData
