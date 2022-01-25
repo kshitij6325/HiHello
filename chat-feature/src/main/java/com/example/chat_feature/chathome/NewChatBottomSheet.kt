@@ -1,14 +1,14 @@
-package com.example.chat_feature
+package com.example.chat_feature.chathome
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
 import com.example.basefeature.showToast
+import com.example.chat_feature.ChatHomeViewModel
 import com.example.chat_feature.databinding.BottomsheetFragmentAddChatBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint

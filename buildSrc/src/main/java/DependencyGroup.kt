@@ -53,4 +53,15 @@ internal val archTest = listOf(
 )
 
 internal val hilt =
-    listOf(Dependency.MainSetDependency.Hilt, Dependency.AnnotationProcessor.Hilt)
+    listOf(
+        Dependency.MainSetDependency.Hilt,
+        Dependency.AnnotationProcessor.Hilt,
+        Dependency.AnnotationProcessor.HiltCompiler
+    )
+
+internal val workmanger =
+    listOf(
+        Dependency.MainSetDependency.WorkManager,
+        Dependency.AndroidTestSetDependency.WorkManger,
+        Dependency.MainSetDependency.WorkMangerHilt
+    )

@@ -1,22 +1,22 @@
 package com.example.chat_feature.chathome
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
-import androidx.navigation.navGraphViewModels
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.example.basefeature.BaseFragment
+import com.example.basefeature.gone
+import com.example.basefeature.showToast
+import com.example.basefeature.visible
 import com.example.chat_feature.ChatHomeViewModel
-import com.example.chat_feature.NewChatBottomSheet
-import com.example.chat_feature.NewChatBsUI
 import com.example.chat_feature.R
 import com.example.chat_feature.databinding.FragmentChatHomeBinding
+import com.example.chat_feature.work.SyncUserWorker
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,6 +40,15 @@ class ChatHomeFragment : BaseFragment<FragmentChatHomeBinding>() {
         viewModel.chatHomeUiStateLiveData.map { it.welcomeString }.distinctUntilChanged()
             .observe(this) {
                 binding?.tvWelcome?.text = it
+            }
+        viewModel.chatHomeUiStateLiveData.map { it.userSyncing to it.userSyncSuccess }
+            .distinctUntilChanged()
+            .observe(this) {
+                when {
+                    it.first -> binding?.tvSync?.visible()
+                    it.second != null -> binding?.tvSync?.gone()
+                    it.second == false -> showToast("User sync failed")
+                }
             }
 
         binding?.fabCreateChat?.setOnClickListener {

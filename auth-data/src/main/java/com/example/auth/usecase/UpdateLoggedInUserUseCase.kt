@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UpdateUserUseCase @Inject constructor(private val userRepository: UserRepository) :
+class UpdateLoggedInUserUseCase @Inject constructor(private val userRepository: UserRepository) :
     BaseUseCase<Boolean>() {
 
 

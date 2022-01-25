@@ -51,6 +51,10 @@ internal sealed class Dependency(val dependency: String) {
 
         //retrofit
         object Retrofit : MainSetDependency("com.squareup.retrofit2:retrofit:2.9.0")
+
+        //workmanager
+        object WorkManager : MainSetDependency("androidx.work:work-runtime-ktx:2.7.1")
+        object WorkMangerHilt : MainSetDependency("androidx.hilt:hilt-work:1.0.0")
     }
 
     sealed class TestSetDependency(dep: String) : Dependency(dep) {
@@ -76,10 +80,13 @@ internal sealed class Dependency(val dependency: String) {
         object KTXCore : AndroidTestSetDependency("androidx.test:core-ktx:1.4.0")
 
         object Arch : AndroidTestSetDependency("androidx.arch.core:core-testing:2.1.0")
+
+        object WorkManger : AndroidTestSetDependency("androidx.work:work-testing:2.7.1")
     }
 
     sealed class AnnotationProcessor(dep: String) : Dependency(dep) {
         object Room : AnnotationProcessor("androidx.room:room-compiler:2.4.0")
+        object HiltCompiler : AnnotationProcessor("androidx.hilt:hilt-compiler:1.0.0")
         object Hilt : AnnotationProcessor("com.google.dagger:hilt-compiler:2.38.1")
     }
 }

@@ -72,6 +72,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateLocalUser(user: User): Result<User> {
+        return userRoomDataSource.updateUser(user)
+    }
+
     override suspend fun createUserIfNotExists(userName: String): Result<User> {
         val userExistsRes = getLocalUser(userName)
         return when {

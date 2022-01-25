@@ -35,6 +35,8 @@ fun DependencyHandler.addFirebaseDatabase() {
 fun DependencyHandler.addRetrofit() =
     addAllDependency(listOf(Dependency.MainSetDependency.Retrofit))
 
+fun DependencyHandler.addWorkManger() = addAllDependency(workmanger)
+
 internal fun DependencyHandler.addAllDependency(list: List<Dependency>) {
     list.forEach {
         when (it) {

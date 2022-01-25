@@ -53,6 +53,7 @@ dependencies {
 
     addNavigation()
     addRoom()
+    addWorkManger()
 
     addLifeCycle()
 

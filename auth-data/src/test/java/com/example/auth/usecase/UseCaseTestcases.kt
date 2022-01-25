@@ -3,7 +3,13 @@ package com.example.auth.usecase
 import com.example.auth.*
 import com.example.auth.data.FakeDataProvider
 import com.example.auth.data.FakeFirebaseDataSource
+import com.example.auth.data.FakeMeDataSource
+import com.example.auth.data.FakeUserDataSource
+import com.example.auth.datasource.FirebaseDataSource
+import com.example.auth.datasource.UserDataSource
 import com.example.auth.repo.FirebaseDataRepository
+import com.example.auth.repo.UserRepository
+import com.example.auth.repo.UserRepositoryImpl
 import com.example.pojo.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -13,24 +19,47 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class UseCaseTestcases {
+
+    private val remoteUserList =
+        listOf(FakeDataProvider.user1, FakeDataProvider.user2, FakeDataProvider.user3)
+    private val localUserList = listOf(FakeDataProvider.user1.copy(), FakeDataProvider.user2.copy())
+
+    private lateinit var userFirebaseDataSource: FakeUserDataSource
+    private lateinit var meDataSource: UserDataSource
+    private lateinit var userRoomDataSource: UserDataSource
+    private lateinit var firebaseDataSource: FirebaseDataSource
     private lateinit var firebaseDataSrc: FakeFirebaseDataSource
+
     private lateinit var getUserLoggedInUseCase: GetUserLoggedInUseCase
     private lateinit var loginUseCase: LoginUseCase
     private lateinit var logoutUseCase: LogoutUseCase
     private lateinit var signUpUseCase: SignUpUseCase
-    private lateinit var updateUserUseCase: UpdateUserUseCase
+    private lateinit var updateLoggedInUserUseCase: UpdateLoggedInUserUseCase
+    private lateinit var syncUsersUseCase: SyncUsersUseCase
 
     @Before
     @After
     fun init() {
-        val repo = FakeDataProvider.initDataAndRepo()
+        userFirebaseDataSource =
+            FakeUserDataSource(remoteUserList.toMutableList())
+        meDataSource = FakeMeDataSource()
+        userRoomDataSource =
+            FakeUserDataSource(localUserList.toMutableList())
+        firebaseDataSource = FakeFirebaseDataSource()
+        val repo = UserRepositoryImpl(
+            userFirebaseDataSource = userFirebaseDataSource,
+            meDataSource = meDataSource,
+            userRoomDataSource = userRoomDataSource
+        )
+
         getUserLoggedInUseCase = GetUserLoggedInUseCase(repo)
         firebaseDataSrc = FakeFirebaseDataSource()
         val firebaseDataRepository = FirebaseDataRepository(firebaseDataSrc)
         loginUseCase = LoginUseCase(repo, firebaseDataRepository)
         signUpUseCase = SignUpUseCase(repo, firebaseDataRepository)
         logoutUseCase = LogoutUseCase(repo)
-        updateUserUseCase = UpdateUserUseCase(repo)
+        updateLoggedInUserUseCase = UpdateLoggedInUserUseCase(repo)
+        syncUsersUseCase = SyncUsersUseCase(repo)
     }
 
 
@@ -208,7 +237,7 @@ class UseCaseTestcases {
             }
 
         }.invoke(FakeDataProvider.myUser)
-        updateUserUseCase.apply {
+        updateLoggedInUserUseCase.apply {
             onSuccess = {
                 assert(it)
             }
@@ -226,6 +255,35 @@ class UseCaseTestcases {
                 assert(false)
             }
         }.invoke()
+
+    }
+
+    @Test
+    fun checkSyncUserUpdate_success() = runTest {
+        assert(FakeDataProvider.user1.fcmToken == null)
+        userFirebaseDataSource.updateUser(FakeDataProvider.user1.copy(fcmToken = "newToken"))
+        val res = syncUsersUseCase.invoke()
+        when (res) {
+            is Result.Failure -> assert(false)
+            is Result.Success -> assert(res.data == 0)
+        }
+        val userRes = userRoomDataSource.getUser(FakeDataProvider.user1.userName)
+        assert(userRoomDataSource.getUser(FakeDataProvider.user1.userName) is Result.Success && (userRes as Result.Success).data.fcmToken == "newToken")
+
+    }
+
+    @Test
+    fun checkSyncUserUpdate_fail() = runTest {
+        assert(FakeDataProvider.user1.fcmToken == null)
+        userFirebaseDataSource.updateUser(FakeDataProvider.user1.copy(fcmToken = "newToken"))
+        userFirebaseDataSource.fail = true
+        val res = syncUsersUseCase.invoke()
+        when (res) {
+            is Result.Failure -> assert(false)
+            is Result.Success -> assert(res.data == 2)
+        }
+        val userRes = userRoomDataSource.getUser(FakeDataProvider.user1.userName)
+        assert(userRoomDataSource.getUser(FakeDataProvider.user1.userName) is Result.Success && (userRes as Result.Success).data.fcmToken == null)
 
     }
 }

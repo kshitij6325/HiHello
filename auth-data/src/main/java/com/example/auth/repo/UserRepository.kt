@@ -24,6 +24,8 @@ interface UserRepository {
 
     suspend fun updateLoggedInUser(user: User): Result<User>
 
+    suspend fun updateLocalUser(user: User): Result<User>
+
     suspend fun createUserIfNotExists(user: String): Result<User>
 }
 

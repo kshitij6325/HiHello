@@ -2,7 +2,7 @@ package com.example.hihello
 
 import android.util.Log
 import com.example.auth.usecase.GetUserLoggedInUseCase
-import com.example.auth.usecase.UpdateUserUseCase
+import com.example.auth.usecase.UpdateLoggedInUserUseCase
 import com.example.chat_data.repo.CHAT_DATA
 import com.example.chat_data.usecase.ReceiveChatUseCase
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -17,7 +17,7 @@ class FCMCloudMessaging : FirebaseMessagingService() {
     lateinit var chatUseCase: ReceiveChatUseCase
 
     @Inject
-    lateinit var userUpdateUseCase: UpdateUserUseCase
+    lateinit var userUpdateLoggedInUseCase: UpdateLoggedInUserUseCase
 
     @Inject
     lateinit var getLoggedInUser: GetUserLoggedInUseCase
@@ -30,7 +30,7 @@ class FCMCloudMessaging : FirebaseMessagingService() {
             getLoggedInUser.apply {
                 onSuccess = { loggedInUser ->
                     if (loggedInUser != null) {
-                        userUpdateUseCase.invoke(loggedInUser.copy(fcmToken = p0))
+                        userUpdateLoggedInUseCase.invoke(loggedInUser.copy(fcmToken = p0))
                     }
                 }
             }.invoke()

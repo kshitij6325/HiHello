@@ -11,6 +11,9 @@ class FakeUserDataSource(private val userList: MutableList<User>) : UserDataSour
     var fail = false
 
     override suspend fun getUser(userId: String): Result<User> {
+        if (fail){
+            return Result.Failure(Exception("Error fetching user"))
+        }
         return userList.find { it.userName == userId }?.let { Result.Success(it) }
             ?: Result.Failure(NoSuchUserException())
     }

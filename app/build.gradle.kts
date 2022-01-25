@@ -63,6 +63,8 @@ dependencies {
 
     addAndroidUI()
 
+    addWorkManger()
+
     addHilt()
 
     addFcm()

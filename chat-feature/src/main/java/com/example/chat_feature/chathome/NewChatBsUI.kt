@@ -1,4 +1,4 @@
-package com.example.chat_feature
+package com.example.chat_feature.chathome
 
 data class NewChatBsUI(
     val userName: String? = null,

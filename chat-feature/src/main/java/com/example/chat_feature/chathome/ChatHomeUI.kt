@@ -7,5 +7,7 @@ data class ChatHomeUI(
     val error: String? = null,
     val loading: Boolean = false,
     val welcomeString: String? = null,
-    val userChatList: List<Pair<User, Chat>> = listOf()
+    val userChatList: List<Pair<User, Chat>> = listOf(),
+    val userSyncing: Boolean = false,
+    val userSyncSuccess: Boolean? = null
 )
