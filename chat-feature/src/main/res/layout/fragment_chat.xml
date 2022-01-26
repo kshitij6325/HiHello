@@ -24,10 +24,45 @@
         android:layout_height="@dimen/dp_40"
         android:layout_margin="@dimen/dp_16"
         android:hint="Start typing..."
-        android:paddingEnd="@dimen/dp_40"
+        android:paddingEnd="65dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_attach"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/et_message"
+        app:layout_constraintEnd_toStartOf="@id/fab_sent"
+        app:layout_constraintTop_toTopOf="@id/et_message"
+        app:srcCompat="@drawable/ic_baseline_attach_file_24" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_attach_prev"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="8dp"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/et_message"
+        app:layout_constraintBottom_toTopOf="@id/et_message"
+        app:layout_constraintEnd_toEndOf="@id/et_message"
+        app:layout_constraintStart_toStartOf="@id/et_message"
+        tools:srcCompat="@drawable/ic_baseline_attach_file_24"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_remove_attach"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/iv_attach_prev"
+        app:layout_constraintTop_toTopOf="@id/iv_attach_prev"
+        app:srcCompat="@drawable/ic_baseline_cancel_24"
+        tools:visibility="visible" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/fab_sent"

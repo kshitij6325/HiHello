@@ -9,6 +9,7 @@
       <module name="HiHello.buildSrc" target="16" />
       <module name="HiHello.chat-data" target="16" />
       <module name="HiHello.chat-feature" target="16" />
+      <module name="HiHello.media-data" target="16" />
     </bytecodeTargetLevel>
   </component>
 </project>

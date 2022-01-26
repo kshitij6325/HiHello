@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/chat-data" />
             <option value="$PROJECT_DIR$/chat-feature" />
+            <option value="$PROJECT_DIR$/media-data" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -10,16 +10,16 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.auth.User
-import com.example.basefeature.getDimen
-import com.example.basefeature.gone
-import com.example.basefeature.setTint
-import com.example.basefeature.tintBackground
+import com.example.basefeature.*
 import com.example.chat_data.Chat
 import com.example.chat_data.datasource.ChatType
 import com.example.chat_feature.R
 import com.example.chat_feature.databinding.ItemChatBinding
 import com.example.chat_feature.databinding.ItemChatHomeBinding
+import com.example.media_data.MediaType
+import java.io.File
 
 class ChatUserListAdapter :
     ListAdapter<Chat, ChatUserViewHolder>(ChatUserListDiffUtils()) {
@@ -97,6 +97,13 @@ class ChatUserViewHolder(private val binding: ItemChatBinding) :
     fun bind(data: Chat) {
         binding.tvMessage.text = data.message
         binding.ivMessageState.setImageResource(if (data.success) R.drawable.ic_outline_done_24 else R.drawable.ic_baseline_access_time_24)
+        binding.ivMedia.visibleIf(data.media != null)
+        if (data.media?.type == MediaType.IMAGE) {
+            Glide.with(binding.root.context).apply {
+                (data.media?.url?.let { load(it) }
+                    ?: data.media?.localPath?.let { load(File(it)) })?.into(binding.ivMedia)
+            }
+        }
     }
 }
 

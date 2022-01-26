@@ -38,19 +38,13 @@ android {
 dependencies {
 
     implementation(project(":base-data"))
-    api(project(":auth-data"))
-    api(project(":media-data"))
 
     addKotlin()
-    addRetrofit()
-    addFcm()
 
-    addRoom()
+    addFirebaseDatabase()
+    addFirebaseStorage()
 
     addHilt()
 
     addJunit()
-
-    addArchTest()
-
 }

@@ -51,6 +51,8 @@ dependencies {
 
     addKotlin()
 
+    addGlide()
+
     addNavigation()
     addRoom()
     addWorkManger()

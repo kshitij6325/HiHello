@@ -65,3 +65,6 @@ internal val workmanger =
         Dependency.AndroidTestSetDependency.WorkManger,
         Dependency.MainSetDependency.WorkMangerHilt
     )
+
+internal val glide =
+    listOf(Dependency.MainSetDependency.Glide, Dependency.AnnotationProcessor.Glide)

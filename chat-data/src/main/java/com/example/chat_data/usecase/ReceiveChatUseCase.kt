@@ -21,7 +21,7 @@ class ReceiveChatUseCase @Inject constructor(
     suspend operator fun invoke(jsonChatString: String) {
         val chat = Json.decodeFromString<Chat>(jsonChatString)
         userRepository.createUserIfNotExists(chat.userId).onSuccess {
-            saveChat(chat.copy(chatId = null, type = ChatType.RECEIVED, success = true))
+            saveChat(chat.copy(chatId = 0, type = ChatType.RECEIVED, success = true))
         }.onFailure { onFailure?.invoke(it) }
     }
 

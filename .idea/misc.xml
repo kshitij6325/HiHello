@@ -21,6 +21,8 @@
         <entry key="base-feature/src/main/res/font/kk.xml" value="0.35801838610827375" />
         <entry key="chat-feature/src/main/res/drawable/bg_chat.xml" value="0.346875" />
         <entry key="chat-feature/src/main/res/drawable/bg_message_edt.xml" value="0.19322916666666667" />
+        <entry key="chat-feature/src/main/res/drawable/ic_baseline_attach_file_24.xml" value="0.346875" />
+        <entry key="chat-feature/src/main/res/drawable/ic_baseline_cancel_24.xml" value="0.346875" />
         <entry key="chat-feature/src/main/res/layout/bottomsheet_fragment_add_chat.xml" value="0.15817356205852673" />
         <entry key="chat-feature/src/main/res/layout/fragment_chat.xml" value="0.375" />
         <entry key="chat-feature/src/main/res/layout/fragment_chat_home.xml" value="0.335" />

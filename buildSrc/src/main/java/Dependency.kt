@@ -49,12 +49,18 @@ internal sealed class Dependency(val dependency: String) {
         object FirebaseDataBase :
             MainSetDependency("com.google.firebase:firebase-database-ktx:20.0.3")
 
+        object FirebaseStorage :
+            MainSetDependency("com.google.firebase:firebase-storage-ktx:20.0.0")
+
         //retrofit
         object Retrofit : MainSetDependency("com.squareup.retrofit2:retrofit:2.9.0")
 
         //workmanager
         object WorkManager : MainSetDependency("androidx.work:work-runtime-ktx:2.7.1")
         object WorkMangerHilt : MainSetDependency("androidx.hilt:hilt-work:1.0.0")
+
+        //Glide
+        object Glide : MainSetDependency("com.github.bumptech.glide:glide:4.12.0")
     }
 
     sealed class TestSetDependency(dep: String) : Dependency(dep) {
@@ -88,5 +94,7 @@ internal sealed class Dependency(val dependency: String) {
         object Room : AnnotationProcessor("androidx.room:room-compiler:2.4.0")
         object HiltCompiler : AnnotationProcessor("androidx.hilt:hilt-compiler:1.0.0")
         object Hilt : AnnotationProcessor("com.google.dagger:hilt-compiler:2.38.1")
+        object Glide : AnnotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
     }
 }

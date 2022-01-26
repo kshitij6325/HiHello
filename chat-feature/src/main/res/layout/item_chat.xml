@@ -15,13 +15,26 @@
         tools:layout_editor_absoluteX="24dp"
         tools:layout_editor_absoluteY="190dp">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_media"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_height="100dp"
+            tools:layout_width="100dp"
+            tools:visibility="visible" />
+
         <TextView
             android:id="@+id/tv_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_media"
             tools:text="Aur bhai kya hal chal??" />
 
         <androidx.appcompat.widget.AppCompatImageView

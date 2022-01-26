@@ -32,10 +32,16 @@ fun DependencyHandler.addFirebaseDatabase() {
     addAllDependency(listOf(Dependency.MainSetDependency.FirebaseDataBase))
 }
 
+fun DependencyHandler.addFirebaseStorage() {
+    addAllDependency(listOf(Dependency.MainSetDependency.FirebaseStorage))
+}
+
 fun DependencyHandler.addRetrofit() =
     addAllDependency(listOf(Dependency.MainSetDependency.Retrofit))
 
 fun DependencyHandler.addWorkManger() = addAllDependency(workmanger)
+
+fun DependencyHandler.addGlide() = addAllDependency(glide)
 
 internal fun DependencyHandler.addAllDependency(list: List<Dependency>) {
     list.forEach {
