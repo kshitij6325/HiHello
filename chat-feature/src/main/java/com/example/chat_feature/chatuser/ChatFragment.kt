@@ -7,6 +7,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.map
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
@@ -15,6 +16,7 @@ import com.example.chat_feature.ChatHomeViewModel
 import com.example.chat_feature.R
 import com.example.chat_feature.databinding.FragmentChatBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ChatFragment : BaseFragment<FragmentChatBinding>() {
@@ -29,7 +31,10 @@ class ChatFragment : BaseFragment<FragmentChatBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.recyclerView?.adapter = adapter
-        viewModel.subscribeToUserChat(args.userName ?: "")
+
+        lifecycleScope.launch {
+            viewModel.subscribeToUserChat(args.userName ?: "")
+        }
 
         viewModel.chatUserUiStateLiveData
             .map { it.chatList }
@@ -37,13 +42,13 @@ class ChatFragment : BaseFragment<FragmentChatBinding>() {
             .observe(this) {
                 adapter.submitList(it) {
                     if (it.isNotEmpty())
-                        binding?.recyclerView?.smoothScrollToPosition(it.size - 1)
+                        binding?.recyclerView?.scrollToPosition(it.size - 1)
                 }
             }
 
         viewModel.chatUserUiStateLiveData
             .map { it.chatSentSuccess }
-            .observeForever {
+            .observe(this) {
                 binding?.etMessage?.text?.clear()
             }
 
@@ -51,5 +56,4 @@ class ChatFragment : BaseFragment<FragmentChatBinding>() {
             viewModel.sendChat(args.userName ?: "", binding?.etMessage?.text?.toString() ?: "")
         }
     }
-
 }

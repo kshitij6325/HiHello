@@ -2,23 +2,24 @@ package com.example.chat_feature
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.work.*
 import com.example.auth.usecase.GetUserLoggedInUseCase
 import com.example.auth.usecase.SyncUsersUseCase
 import com.example.basefeature.showToast
 import com.example.basefeature.update
+import com.example.chat_data.Chat
 import com.example.chat_data.usecase.GetAllChatsUseCase
 import com.example.chat_data.usecase.GetAllUserChatUseCase
 import com.example.chat_data.usecase.SendChatUseCase
 import com.example.chat_feature.chathome.ChatHomeUI
 import com.example.chat_feature.chathome.NewChatBsUI
 import com.example.chat_feature.chatuser.ChatUserUI
+import com.example.chat_feature.work.RetryFailedChatsWorker
 import com.example.chat_feature.work.SyncUserWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,6 +42,8 @@ class ChatHomeViewModel @Inject constructor(
     private val _chatUserUiState = MutableLiveData(ChatUserUI())
     val chatUserUiStateLiveData: LiveData<ChatUserUI> = _chatUserUiState
 
+    private var flow: Flow<List<Chat>>? = null
+
     private val syncUserWorkRequest by lazy {
         OneTimeWorkRequestBuilder<SyncUserWorker>()
             .setConstraints(
@@ -50,13 +53,22 @@ class ChatHomeViewModel @Inject constructor(
             ).build()
     }
 
+    private val retrySendChats by lazy {
+        OneTimeWorkRequestBuilder<RetryFailedChatsWorker>()
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            ).build()
+    }
+
     init {
-        syncUsers(application.applicationContext)
+        syncUsersAndRetryChats(application.applicationContext)
         fetchUserChats()
         fetchWelcomeMessage()
     }
 
-    private fun syncUsers(context: Context) {
+    private fun syncUsersAndRetryChats(context: Context) {
         with(WorkManager.getInstance(context)) {
             _chatHomeUiState.update {
                 it?.copy(
@@ -64,7 +76,7 @@ class ChatHomeViewModel @Inject constructor(
                     userSyncSuccess = null
                 )
             }
-            enqueue(syncUserWorkRequest)
+            beginWith(syncUserWorkRequest).then(retrySendChats).enqueue()
             getWorkInfoByIdLiveData(syncUserWorkRequest.id)
                 .observeForever { wf ->
                     _chatHomeUiState.update {
@@ -78,8 +90,8 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
-    fun subscribeToUserChat(userName: String) {
-        getAllUserChatUseCase.get(userName).observeForever { list ->
+    suspend fun subscribeToUserChat(userName: String) {
+        getAllUserChatUseCase.get(userName).collect { list ->
             _chatUserUiState.update {
                 it?.copy(chatList = list)
             }
@@ -122,5 +134,4 @@ class ChatHomeViewModel @Inject constructor(
             }
         }
     }
-
 }

@@ -39,7 +39,6 @@ class FCMCloudMessaging : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage) {
         super.onMessageReceived(p0)
-        Log.e("FCM", "HJJJ")
         scope.launch {
             val chatString = p0.data[CHAT_DATA].toString()
             chatUseCase.invoke(chatString)

@@ -5,7 +5,9 @@ import com.example.auth.repo.UserRepository
 import com.example.chat_data.repo.ChatRepository
 import com.example.pojo.BaseUseCase
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class RetryUnSendChats @Inject constructor(
     private val userRepository: UserRepository,
     private val chatRepository: ChatRepository,

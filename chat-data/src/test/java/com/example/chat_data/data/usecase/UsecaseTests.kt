@@ -282,8 +282,9 @@ class UsecaseTests {
             )
         }.forEach { chatRepo.addChat(it) }
 
-        val value = getAllUserChatUseCase.get(user2.userName).getOrAwaitValue()
-        assert(value.size == 10)
+        getAllUserChatUseCase.get(user2.userName).collect {
+            assert(it.size == 10)
+        }
     }
 
     @Test
@@ -297,8 +298,9 @@ class UsecaseTests {
             )
         }.forEach { chatRepo.addChat(it) }
 
-        val value = getAllUserChatUseCase.get("user2").getOrAwaitValue()
-        assert(value.isEmpty())
+        getAllUserChatUseCase.get("user2").collect {
+            assert(it.isEmpty())
+        }
     }
 
     /*@Test

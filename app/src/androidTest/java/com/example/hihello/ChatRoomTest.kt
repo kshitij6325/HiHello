@@ -7,6 +7,8 @@ import com.example.chat_data.Chat
 import com.example.chat_data.datasource.ChatType
 import com.example.chat_data.room.ChatDao
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -120,21 +122,24 @@ class ChatRoomTest {
     @Test
     fun getChatList_liveDataTest() = runTest {
         var newValueUpdated = false
+
         for (i in 1..50) {
             val chatRes = chatDao.addChat(chat1.copy(success = true))
             assert(chatRes == i.toLong())
         }
-
-        chatDao.getAllUserChatLiveData("userId").observeForever {
-            if (newValueUpdated) {
-                assert(it.size == 51)
-            } else {
-                assert(it.size == 50)
+        val job = launch {
+            chatDao.getAllUserChatLiveData("userId").collect {
+                if (newValueUpdated) {
+                    assert(it.size == 51)
+                } else {
+                    assert(it.size == 50)
+                }
             }
         }
 
         newValueUpdated = true
         chatDao.addChat(chat2)
+        job.cancel()
 
     }
 

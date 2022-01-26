@@ -38,9 +38,10 @@ class RemoteChatHelper @Inject constructor() : IRemoteChatHelper {
         requestPayload.put("registration_ids", JSONArray(listOf(user.fcmToken).toTypedArray()))
 
         //adding priority data for message delivery
-        val priorityData = JSONObject()
-        priorityData.put("priority", "high")
-        requestPayload.put("android", priorityData)
+        //val priorityData = JSONObject()
+        //priorityData.put("priority", "high")
+        //requestPayload.put("android", priorityData)
+        requestPayload.put("priority","high")
         try {
             val res = OkHttpClient().run {
                 newCall(

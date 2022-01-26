@@ -16,7 +16,7 @@ interface ChatDao {
     suspend fun getAllUserChats(userId: String, limit: Int): List<Chat>
 
     @Query("select * from chats where user_id=:userId")
-    fun getAllUserChatLiveData(userId: String): LiveData<List<Chat>>
+    fun getAllUserChatLiveData(userId: String): Flow<List<Chat>>
 
     @Query("select * from chats where chat_id=:chatId")
     suspend fun getChat(chatId: String): Chat
@@ -39,6 +39,6 @@ interface ChatDao {
     @Query("select * from chats where success = 0")
     suspend fun getAllUnSendChats(): List<Chat>
 
-    @Query("select * from users join chats on user_id = user_name group by user_name order by time_stamp desc")
+    @Query("select * from users join (select * , max(time_stamp) from chats group by user_id) on user_id = user_name")
     fun getAllUserChats(): Flow<Map<User, List<Chat>>>
 }

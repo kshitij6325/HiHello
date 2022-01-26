@@ -17,16 +17,30 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Kshitij6325" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_message_state"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="4dp"
+        android:tint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_username"
+        app:srcCompat="@drawable/ic_baseline_access_time_24" />
+
+
     <TextView
         android:id="@+id/tv_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
         android:ellipsize="end"
         android:fontFamily="@font/averta_regular"
         android:maxLines="1"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_username"
+        app:layout_constraintBottom_toBottomOf="@id/iv_message_state"
+        app:layout_constraintStart_toEndOf="@id/iv_message_state"
+        app:layout_constraintTop_toTopOf="@id/iv_message_state"
         tools:text="Hey hi" />
 
 

@@ -15,6 +15,6 @@ interface ChatDatasource {
     suspend fun deleteChat(chatId: String): Result<Boolean>
     suspend fun deleteAllUserChat(userId: String): Result<Boolean>
     suspend fun getAllUnSendChat(): Result<List<Chat>>
-    fun getAllUserChatLiveData(userId: String): LiveData<List<Chat>>
+    fun getAllUserChatLiveData(userId: String): Flow<List<Chat>>
     fun getAllUserChatsMap(): Flow<Map<User, List<Chat>>>
 }

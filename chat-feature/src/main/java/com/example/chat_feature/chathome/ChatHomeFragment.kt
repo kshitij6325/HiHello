@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.map
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.example.auth.repo.FirebaseDataRepository
 import com.example.basefeature.BaseFragment
 import com.example.basefeature.gone
 import com.example.basefeature.showToast
@@ -18,6 +20,8 @@ import com.example.chat_feature.R
 import com.example.chat_feature.databinding.FragmentChatHomeBinding
 import com.example.chat_feature.work.SyncUserWorker
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ChatHomeFragment : BaseFragment<FragmentChatHomeBinding>() {
@@ -34,9 +38,7 @@ class ChatHomeFragment : BaseFragment<FragmentChatHomeBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setUpRecyclerView()
-
         viewModel.chatHomeUiStateLiveData.map { it.welcomeString }.distinctUntilChanged()
             .observe(this) {
                 binding?.tvWelcome?.text = it

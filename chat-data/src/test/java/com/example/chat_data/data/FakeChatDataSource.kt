@@ -84,10 +84,10 @@ class FakeChatDataSource(private val mutableChatList: MutableList<Chat>) : ChatD
         return Result.Success(chatList)
     }
 
-    override fun getAllUserChatLiveData(userId: String): LiveData<List<Chat>> = runBlocking {
+    override fun getAllUserChatLiveData(userId: String): Flow<List<Chat>> = runBlocking {
         val res = getAllUserChat(userId, 100)
         val chatList = if (res is Result.Success) res.data else listOf()
-        return@runBlocking MutableLiveData(chatList)
+        return@runBlocking flow { emit(chatList) }
     }
 
     override fun getAllUserChatsMap(): Flow<Map<User, List<Chat>>> = flow {

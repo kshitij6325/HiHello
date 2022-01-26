@@ -7,6 +7,7 @@ import com.example.chat_data.room.ChatDao
 import com.example.pojo.Result
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -89,7 +90,7 @@ class ChatRoomDatasource @Inject constructor(private val chatDao: ChatDao) : Cha
         }
     }
 
-    override fun getAllUserChatLiveData(userId: String): LiveData<List<Chat>> {
+    override fun getAllUserChatLiveData(userId: String): Flow<List<Chat>> {
         return chatDao.getAllUserChatLiveData(userId)
     }
 
