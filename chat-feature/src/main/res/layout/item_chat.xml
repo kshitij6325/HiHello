@@ -11,41 +11,59 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_chat"
-        android:padding="8dp"
+        android:padding="4dp"
         tools:layout_editor_absoluteX="24dp"
         tools:layout_editor_absoluteY="190dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_media"
             android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_height="100dp"
             tools:layout_width="100dp"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="2dp"
+            app:layout_constraintEnd_toStartOf="@id/tv_time"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_media"
             tools:text="Aur bhai kya hal chal??" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:text="8:30PM"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/iv_message_state"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_message"
+            app:layout_goneMarginTop="2dp" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_message_state"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="2dp"
             android:tint="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/tv_time"
             app:layout_constraintTop_toBottomOf="@id/tv_message"
+            app:layout_goneMarginTop="2dp"
             app:srcCompat="@drawable/ic_baseline_access_time_24" />
 
 

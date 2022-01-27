@@ -46,6 +46,12 @@ class ChatUserListAdapter :
                         R.color.blue
                     )
                 )
+                binding.tvTime.setTextColor(
+                    ContextCompat.getColor(
+                        parent.context,
+                        R.color.white_variant
+                    )
+                )
                 binding.tvMessage.setTextColor(
                     ContextCompat.getColor(
                         parent.context,
@@ -62,6 +68,7 @@ class ChatUserListAdapter :
                     }
                     (this as FrameLayout.LayoutParams).gravity = Gravity.START
                 }
+
                 binding.clContainer.tintBackground(
                     ContextCompat.getColor(
                         parent.context,
@@ -95,8 +102,10 @@ class ChatUserViewHolder(private val binding: ItemChatBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(data: Chat) {
-        binding.tvMessage.text = data.message
+        binding.tvMessage.setTextWithVisibility(data.message)
+
         binding.ivMessageState.setImageResource(if (data.success) R.drawable.ic_outline_done_24 else R.drawable.ic_baseline_access_time_24)
+
         binding.ivMedia.visibleIf(data.media != null)
         if (data.media?.type == MediaType.IMAGE) {
             Glide.with(binding.root.context).apply {

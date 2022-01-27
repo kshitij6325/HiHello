@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -61,4 +62,13 @@ fun View.visible() {
 
 fun View.visibleIf(condition: Boolean) {
     visibility = if (condition) View.VISIBLE else View.GONE
+}
+
+fun TextView.setTextWithVisibility(mtext: String?) {
+    if (!mtext.isNullOrEmpty()) {
+        visible()
+        text = mtext
+    } else {
+        gone()
+    }
 }
