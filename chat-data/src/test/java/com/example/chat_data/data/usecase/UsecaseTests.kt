@@ -1,6 +1,7 @@
 package com.example.chat_data.data.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.auth.NoSuchUserException
 import com.example.auth.User
 import com.example.auth.datasource.UserDataSource
 import com.example.auth.repo.FirebaseDataRepository
@@ -10,11 +11,17 @@ import com.example.auth_feature.data.FakeMeDataSource
 import com.example.auth_feature.data.FakeUserDataSource
 import com.example.chat_data.Chat
 import com.example.chat_data.data.FakeChatDataSource
+import com.example.chat_data.data.FakeMediaSource
 import com.example.chat_data.data.FakeRemoteChatHelper
 import com.example.chat_data.data.getOrAwaitValue
+import com.example.chat_data.datasource.ChatMedia
 import com.example.chat_data.datasource.ChatType
 import com.example.chat_data.repo.ChatRepository
 import com.example.chat_data.usecase.*
+import com.example.media_data.MediaDataSource
+import com.example.media_data.MediaRepository
+import com.example.media_data.MediaSource
+import com.example.media_data.MediaType
 import com.example.pojo.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -35,12 +42,17 @@ class UsecaseTests {
     private val remoteList = mutableListOf(meUser, user2, user3)
     private val localUser = mutableListOf<User>()
 
+    private val mediaMap =
+        mutableMapOf<String, MediaSource>()
+    private val chatList = mutableListOf<Chat>()
+
     lateinit var meUserDataSource: UserDataSource
     lateinit var remoteUseDataSource: FakeUserDataSource
     lateinit var roomDataSource: UserDataSource
 
     lateinit var chatDataSource: FakeChatDataSource
     lateinit var remoteChatHelper: FakeRemoteChatHelper
+    lateinit var mediaDataSource: FakeMediaSource
 
     lateinit var chatRepo: ChatRepository
     lateinit var userRepositoryImpl: UserRepositoryImpl
@@ -61,8 +73,9 @@ class UsecaseTests {
         remoteUseDataSource = FakeUserDataSource(remoteList)
         roomDataSource = FakeUserDataSource(localUser)
 
-        chatDataSource = FakeChatDataSource(mutableListOf())
+        chatDataSource = FakeChatDataSource(chatList)
         remoteChatHelper = FakeRemoteChatHelper()
+        mediaDataSource = FakeMediaSource(mediaMap)
 
         chatRepo = ChatRepository(remoteChatHelper, chatDataSource)
         userRepositoryImpl = UserRepositoryImpl(
@@ -71,10 +84,13 @@ class UsecaseTests {
             meDataSource = meUserDataSource
         )
         val firebaseDataRepository = FirebaseDataRepository(FakeFirebaseDataSource())
+        val mediaRepo = MediaRepository(mediaDataSource)
 
-        sendChatUseCase = SendChatUseCase(userRepositoryImpl, chatRepo, firebaseDataRepository)
+        sendChatUseCase =
+            SendChatUseCase(userRepositoryImpl, chatRepo, firebaseDataRepository, mediaRepo)
         receiveChatUseCase = ReceiveChatUseCase(userRepositoryImpl, chatRepo)
-        retryUnSendChats = RetryUnSendChats(userRepositoryImpl, chatRepo, firebaseDataRepository)
+        retryUnSendChats =
+            RetryUnSendChats(userRepositoryImpl, chatRepo, firebaseDataRepository, mediaRepo)
         getAllUserChatUseCase = GetAllUserChatUseCase(chatRepository = chatRepo)
         getAllChatUserCase = GetAllChatsUseCase(userRepository = userRepositoryImpl, chatRepo)
     }
@@ -301,6 +317,79 @@ class UsecaseTests {
         getAllUserChatUseCase.get("user2").collect {
             assert(it.isEmpty())
         }
+    }
+
+    @Test
+    fun sendChatWithMediaUseCase_success() = runTest {
+        val file = kotlin.io.path.createTempFile("temp", "png").toFile()
+        val mediSource = MediaSource.File.ImageFile(file)
+        sendChatUseCase.apply {
+            onSuccess = {
+                val chatRes = chatRepo.getChat(0)
+                val userRes = userRepositoryImpl.getLocalUser(user2.userName)
+
+                //checking if new user is created
+                assert(userRes is Result.Success && userRes.data.userName == user2.userName)
+
+                //checking if chat data is correct
+                assert(chatRes is Result.Success && chatRes.data.success)
+                assert(chatRes is Result.Success && chatRes.data.userId == user2.userName)
+            }
+            onFailure = {
+                assert(false)
+            }
+        }.invoke("Henlo", user2.userName, mediSource)
+        val mediaUrl = MediaSource.Url(mediSource.toString(), MediaType.IMAGE)
+        val mediaRes = mediaDataSource.getMedia(
+            mediaUrl, "type", MediaType.IMAGE
+        ) {}
+
+        //check if media is successfully created
+        assert(mediaRes is Result.Success && mediaRes.data is MediaSource.File.ImageFile)
+
+        //check if chat has correct media data
+        val chat = chatRepo.getChat(0)
+        assert(chat is Result.Success && chat.data.media?.url == mediSource.toString())
+    }
+
+    @Test
+    fun retrySendWithMedia_success() = runTest {
+        val file = kotlin.io.path.createTempFile("temp", "png").toFile()
+        (1..10).map {
+            Chat(
+                message = "Test message $it",
+                userId = user2.userName,
+                timeStamp = System.currentTimeMillis(),
+                media = ChatMedia(localPath = file.absolutePath, type = MediaType.IMAGE),
+                success = false, type = ChatType.SENT
+            )
+        }.forEach { chatRepo.addChat(it) }
+
+        //checking unsend chats count before running use case
+        var unSendChats = chatRepo.getAllUnSendChats()
+        assert(unSendChats is Result.Success && unSendChats.data.size == 10)
+
+        retryUnSendChats.apply {
+            onSuccess = {
+                assert(it.isEmpty())
+                unSendChats = chatRepo.getAllUnSendChats()
+                assert(unSendChats is Result.Success && (unSendChats as Result.Success).data.isEmpty())
+            }
+            onFailure = {
+                assert(false)
+            }
+        }.invoke()
+
+        //check if chat has correct media data
+
+        val res = chatRepo.getAllUserChat(user2.userName)
+        assert(res is Result.Success)
+
+        val chatList = (res as Result.Success).data
+        for (chat in chatList) {
+            assert(!chat.media?.url.isNullOrEmpty())
+        }
+
     }
 
     /*@Test

@@ -44,9 +44,9 @@ class FakeChatDataSource(private val mutableChatList: MutableList<Chat>) : ChatD
     override suspend fun updateChat(chat: Chat): Result<Boolean> {
         return if (error) Result.Failure(Exception("Issue while fetching chat.."))
         else {
-            val chatIndex = mutableChatList.indexOf(chat)
+            val chatIndex = mutableChatList.indexOfFirst { chat.chatId == it.chatId }
             if (chatIndex == -1) return Result.Failure(Exception("Issue while fetching chat.."))
-            mutableChatList.add(chatIndex, chat)
+            mutableChatList[chatIndex] = chat
             return Result.Success(true)
         }
     }

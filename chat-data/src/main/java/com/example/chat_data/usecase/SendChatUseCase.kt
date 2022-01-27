@@ -54,42 +54,46 @@ class SendChatUseCase @Inject constructor(
         chatRepository.addChat(chat).map { chatId ->
             firebaseDataRepository.getAppSecret().map { appSecret ->
                 userRepository.getLoggedInUser().map { self ->
-                    if (mediaSource != null) mediaDataRepository.uploadMedia(
-                        mediaSource,
-                        "${chatId}_${self.userName}_${user.userName}",
+                    if (mediaSource != null) {
+                        mediaDataRepository.uploadMedia(
+                            mediaSource,
+                            "${chatId}_${self.userName}_${user.userName}",
 
-                        ) {}.map { mediaSrc ->
+                            ) {}.map { mediaSrc ->
+                            chatRepository.sendChat(
+                                user,
+                                appSecret,
+                                chat.copy(
+                                    userId = self.userName,
+                                    media = chat.media?.copy(localPath = null, url = mediaSrc.url)
+                                )
+                            ).map {
+                                chatRepository.updateChat(
+                                    chat.copy(
+                                        chatId = chatId,
+                                        media = chat.media?.copy(url = mediaSrc.url),
+                                        success = true
+                                    )
+                                ).onSuccess {
+                                    onSuccess?.invoke(it)
+                                }.onFailure {
+                                    onFailure?.invoke(it)
+                                }
+                            }
+                        }
+                    } else {
                         chatRepository.sendChat(
                             user,
                             appSecret,
-                            chat.copy(
-                                userId = self.userName,
-                                media = chat.media?.copy(localPath = null, url = mediaSrc.url)
-                            )
+                            chat.copy(userId = self.userName)
                         ).map {
-                            chatRepository.updateChat(
-                                chat.copy(
-                                    chatId = chatId,
-                                    media = chat.media?.copy(url = mediaSrc.url),
-                                    success = true
-                                )
-                            ).onSuccess {
-                                onSuccess?.invoke(it)
-                            }.onFailure {
-                                onFailure?.invoke(it)
-                            }
+                            chatRepository.updateChatSuccess(chatId.toString(), true)
+                                .onSuccess {
+                                    onSuccess?.invoke(it)
+                                }.onFailure {
+                                    onFailure?.invoke(it)
+                                }
                         }
-                    } else chatRepository.sendChat(
-                        user,
-                        appSecret,
-                        chat.copy(userId = self.userName)
-                    ).map {
-                        chatRepository.updateChatSuccess(chatId.toString(), true)
-                            .onSuccess {
-                                onSuccess?.invoke(it)
-                            }.onFailure {
-                                onFailure?.invoke(it)
-                            }
                     }
                 }
 
