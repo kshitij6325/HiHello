@@ -106,6 +106,8 @@ class ChatUserViewHolder(private val binding: ItemChatBinding) :
 
         binding.ivMessageState.setImageResource(if (data.success) R.drawable.ic_outline_done_24 else R.drawable.ic_baseline_access_time_24)
 
+        binding.tvTime.text = data.timeStamp.getTime()
+
         binding.ivMedia.visibleIf(data.media != null)
         if (data.media?.type == MediaType.IMAGE) {
             Glide.with(binding.root.context).apply {

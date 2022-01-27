@@ -15,6 +15,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import java.lang.Exception
+import java.time.Instant
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.*
 
 fun Context.showToast(string: String?) =
     string?.let { Toast.makeText(this, string, Toast.LENGTH_SHORT).show() }
@@ -71,4 +78,9 @@ fun TextView.setTextWithVisibility(mtext: String?) {
     } else {
         gone()
     }
+}
+
+fun Long.getTime(): String {
+    return DateTimeFormatter.ofPattern("hh:mm a").withZone(ZoneId.systemDefault())
+        .format(Instant.ofEpochMilli(this))
 }
