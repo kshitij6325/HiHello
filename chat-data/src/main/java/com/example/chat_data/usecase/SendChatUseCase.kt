@@ -8,6 +8,7 @@ import com.example.auth.repo.UserRepository
 import com.example.chat_data.Chat
 import com.example.chat_data.datasource.ChatMedia
 import com.example.chat_data.datasource.ChatType
+import com.example.chat_data.datasource.getChatDate
 import com.example.chat_data.repo.ChatRepository
 import com.example.media_data.MediaRepository
 import com.example.media_data.MediaSource
@@ -29,10 +30,13 @@ class SendChatUseCase @Inject constructor(
         userName: String,
         mediaSource: MediaSource.File? = null,
     ) {
+        val currentEpoc = System.currentTimeMillis()
+        val date = currentEpoc.getChatDate()
         val chat = Chat(
             message = message,
             type = ChatType.SENT,
-            timeStamp = System.currentTimeMillis(),
+            timeStamp = currentEpoc,
+            date = date,
             userId = userName,
             media = mediaSource?.let {
                 ChatMedia(

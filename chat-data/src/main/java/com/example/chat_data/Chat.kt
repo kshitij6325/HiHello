@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.example.chat_data.datasource.ChatDate
 import com.example.chat_data.datasource.ChatMedia
 import com.example.chat_data.datasource.ChatType
 import com.example.chat_data.room.ChatTypeConverter
@@ -18,6 +19,7 @@ data class Chat(
     @ColumnInfo(name = "type") val type: ChatType,
     @ColumnInfo(name = "message") val message: String? = null,
     @ColumnInfo(name = "media") val media: ChatMedia? = null,
+    @ColumnInfo(name = "date") val date : ChatDate,
     @ColumnInfo(name = "time_stamp") val timeStamp: Long,
     @ColumnInfo(name = "success") val success: Boolean = false
 )

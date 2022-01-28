@@ -11,11 +11,14 @@ import androidx.work.*
 import com.example.auth.usecase.GetUserLoggedInUseCase
 import com.example.basefeature.update
 import com.example.chat_data.Chat
+import com.example.chat_data.datasource.ChatDate
+import com.example.chat_data.datasource.ChatType
 import com.example.chat_data.usecase.GetAllChatsUseCase
 import com.example.chat_data.usecase.GetAllUserChatUseCase
 import com.example.chat_data.usecase.SendChatUseCase
 import com.example.chat_feature.chathome.ChatHomeUI
 import com.example.chat_feature.chathome.NewChatBsUI
+import com.example.chat_feature.chatuser.ChatUI
 import com.example.chat_feature.chatuser.ChatUserUI
 import com.example.chat_feature.work.RetryFailedChatsWorker
 import com.example.chat_feature.work.SyncUserWorker
@@ -24,6 +27,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -47,8 +51,6 @@ class ChatHomeViewModel @Inject constructor(
 
     private val _chatUserUiState = MutableLiveData(ChatUserUI())
     val chatUserUiStateLiveData: LiveData<ChatUserUI> = _chatUserUiState
-
-    private var flow: Flow<List<Chat>>? = null
 
     private val syncUserWorkRequest by lazy {
         OneTimeWorkRequestBuilder<SyncUserWorker>()
@@ -97,11 +99,28 @@ class ChatHomeViewModel @Inject constructor(
     }
 
     suspend fun subscribeToUserChat(userName: String) {
-        getAllUserChatUseCase.get(userName).collect { list ->
-            _chatUserUiState.update {
-                it?.copy(chatList = list)
+        getAllUserChatUseCase.get(userName)
+            .map {
+                val transformedList = mutableListOf<ChatUI>()
+                var date: ChatDate? = null
+                for (chat in it) {
+                    if (date == null || !date.isSameDay(chat.date)) {
+                        date = chat.date
+                        transformedList.add(ChatUI.DateItem(chat.date.getDateString()))
+                    }
+                    transformedList.add(
+                        if (chat.type == ChatType.SENT) ChatUI.ChatItem.ChatItemSent(chat) else ChatUI.ChatItem.ChatItemReceived(
+                            chat
+                        )
+                    )
+                }
+                return@map transformedList
             }
-        }
+            .collect { list ->
+                _chatUserUiState.update {
+                    it?.copy(chatList = list)
+                }
+            }
     }
 
 
