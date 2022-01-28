@@ -12,4 +12,8 @@
         <item name="android:textColorHint">#7A8B94</item>
         <item name="android:textSize">@dimen/dp_16</item>
     </style>
+
+    <style name="RoundImageStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

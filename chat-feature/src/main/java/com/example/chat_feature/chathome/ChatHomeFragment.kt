@@ -11,6 +11,7 @@ import androidx.lifecycle.map
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.bumptech.glide.Glide
 import com.example.auth.repo.FirebaseDataRepository
 import com.example.basefeature.BaseFragment
 import com.example.basefeature.gone
@@ -40,9 +41,15 @@ class ChatHomeFragment : BaseFragment<FragmentChatHomeBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView()
-        viewModel.chatHomeUiStateLiveData.map { it.welcomeString }.distinctUntilChanged()
+        viewModel.chatHomeUiStateLiveData
+            .map { it.welcomeString to it.userAvatar }
+            .distinctUntilChanged()
             .observe(this) {
-                binding?.tvWelcome?.text = it
+                binding?.tvWelcome?.text = it.first
+                binding?.ivAvatar?.let { iv ->
+                    Glide.with(requireActivity()).load(it.second).into(iv)
+                }
+
             }
         viewModel.chatHomeUiStateLiveData.map { it.userSyncing to it.userSyncSuccess }
             .distinctUntilChanged()

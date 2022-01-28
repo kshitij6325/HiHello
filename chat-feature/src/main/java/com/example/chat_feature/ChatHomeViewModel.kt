@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import androidx.work.*
 import com.example.auth.usecase.GetUserLoggedInUseCase
+import com.example.basefeature.getFile
 import com.example.basefeature.update
 import com.example.chat_data.Chat
 import com.example.chat_data.datasource.ChatDate
@@ -147,7 +148,10 @@ class ChatHomeViewModel @Inject constructor(
         getLoggedInUseCase.apply {
             onSuccess = { user ->
                 _chatHomeUiState.update {
-                    it?.copy(welcomeString = "Welcome, ${user?.userName}")
+                    it?.copy(
+                        welcomeString = "Welcome, ${user?.userName}",
+                        userAvatar = user?.profileUrl
+                    )
                 }
 
             }
@@ -168,22 +172,10 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun createAndSetImageFile(uri: Uri, resolver: ContentResolver) =
-        withContext(Dispatchers.IO) {
-            val file = kotlin.io.path.createTempFile("file", "png")
-            val inputStream = resolver.openInputStream(uri)
-
-            inputStream.use { input ->
-                file.outputStream().use { output ->
-                    input?.copyTo(output)
-                }
-            }
-            _chatUserUiState.postValue(
-                _chatUserUiState.value?.copy(
-                    mediaSource = MediaSource.File.ImageFile(
-                        file.toFile()
-                    )
-                )
-            )
-        }
+    suspend fun createAndSetImageFile(uri: Uri, resolver: ContentResolver) {
+        val file = uri.getFile(resolver)
+        _chatUserUiState.postValue(
+            _chatUserUiState.value?.copy(mediaSource = MediaSource.File.ImageFile(file))
+        )
+    }
 }

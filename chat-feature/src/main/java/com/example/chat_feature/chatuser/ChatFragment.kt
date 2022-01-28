@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
@@ -17,10 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.map
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import com.example.basefeature.BaseFragment
-import com.example.basefeature.showToast
-import com.example.basefeature.visible
-import com.example.basefeature.visibleIf
+import com.example.basefeature.*
 import com.example.chat_feature.ChatHomeViewModel
 import com.example.chat_feature.R
 import com.example.chat_feature.databinding.FragmentChatBinding
@@ -29,26 +27,21 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ChatFragment : BaseFragment<FragmentChatBinding>() {
+class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
 
     private val viewModel by hiltNavGraphViewModels<ChatHomeViewModel>(R.id.chat_nav)
     private val adapter by lazy { ChatUserListAdapter() }
     private val args by navArgs<ChatFragmentArgs>()
 
-    private var resultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                lifecycleScope.launch {
-                    viewModel.createAndSetImageFile(
-                        result.data?.data!!,
-                        requireActivity().contentResolver
-                    )
-                }
-            }
-        }
-
     override val getBindingInflation: (LayoutInflater) -> FragmentChatBinding
         get() = FragmentChatBinding::inflate
+
+    override val onFileSelected: suspend (ActivityResult) -> Unit = {
+        viewModel.createAndSetImageFile(
+            it.data?.data!!,
+            requireActivity().contentResolver
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -88,7 +81,7 @@ class ChatFragment : BaseFragment<FragmentChatBinding>() {
         }
 
         binding?.ivAttach?.setOnClickListener {
-            openFile()
+            openFilePicker()
         }
 
         binding?.ivRemoveAttach?.setOnClickListener {
@@ -97,12 +90,5 @@ class ChatFragment : BaseFragment<FragmentChatBinding>() {
 
     }
 
-    private fun openFile() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "image/*"
-        }
 
-        resultLauncher.launch(intent)
-    }
 }

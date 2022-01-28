@@ -38,6 +38,7 @@ android {
 dependencies {
 
     api(project(":base-data"))
+    api(project(":media-data"))
 
     addKotlin()
 

@@ -11,4 +11,5 @@ data class ChatHomeUI(
     val userChatList: List<Pair<User, Chat>> = listOf(),
     val userSyncing: Boolean = false,
     val userSyncSuccess: Boolean? = null,
+    val userAvatar: String? = null
 )

@@ -23,6 +23,17 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Welcome, Username" />
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:background="@color/grey_variant"
+        app:layout_constraintBottom_toBottomOf="@id/tv_welcome"
+        app:layout_constraintStart_toEndOf="@id/tv_welcome"
+        app:layout_constraintTop_toTopOf="@id/tv_welcome"
+        app:shapeAppearance="@style/RoundImageStyle" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_home"
         android:layout_width="match_parent"

@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.activity.result.ActivityResult
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
@@ -14,17 +15,18 @@ import com.example.auth.User
 import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.R
 import com.example.auth_feature.databinding.FragmentSignUpBinding
-import com.example.basefeature.BaseFragment
-import com.example.basefeature.showIf
-import com.example.basefeature.showProgressDialog
-import com.example.basefeature.showToast
+import com.example.basefeature.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignUpFragment : BaseFragment<FragmentSignUpBinding>() {
+class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
 
     override val getBindingInflation: (LayoutInflater) -> FragmentSignUpBinding
         get() = FragmentSignUpBinding::inflate
+
+    override val onFileSelected: suspend (ActivityResult) -> Unit = {
+        viewModel.setUserAvatar(it.data?.data)
+    }
 
     private val viewModel: AuthViewModel by hiltNavGraphViewModels(R.id.auth_nav)
 
@@ -60,6 +62,17 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>() {
                     .also { this.p = it }).showIf(it)
             }
 
+        viewModel.signUpScreenUiStateLiveData
+            .map { it.imageUri }
+            .distinctUntilChanged()
+            .observe(this) {
+                binding?.ivAvatar?.setImageURI(it)
+            }
+
+        binding?.ivAvatar?.setOnClickListener {
+            openFilePicker()
+        }
+
     }
 
     private fun signUp(view: View) {
@@ -72,12 +85,14 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>() {
                 userName = userName,
                 mobileNumber = mobile.toLongOrNull(),
                 password = password
-            )
+            ),
+            requireActivity().contentResolver
         )
     }
 
     private fun moveToSignIn(view: View) {
         navigate(SignUpFragmentDirections.actionSignUpFragmentToSignInFragment())
     }
+
 
 }

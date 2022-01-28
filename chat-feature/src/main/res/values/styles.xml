@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="SendButtonShapeStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerSize">50%</item>
-    </style>
-
     <style name="SendHeroButtonStyle">
         <item name="android:layout_width">@dimen/dp_40</item>
         <item name="android:layout_height">@dimen/dp_40</item>
         <item name="android:background">@color/blue</item>
-        <item name="shapeAppearance">@style/SendButtonShapeStyle</item>
+        <item name="shapeAppearance">@style/RoundImageStyle</item>
     </style>
 </resources>

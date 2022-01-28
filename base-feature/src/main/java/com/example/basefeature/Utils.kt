@@ -1,7 +1,9 @@
 package com.example.basefeature
 
 import android.app.ProgressDialog
+import android.content.ContentResolver
 import android.content.Context
+import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,6 +16,9 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
 import java.lang.Exception
 import java.time.Instant
 import java.time.LocalTime
@@ -22,6 +27,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
+import kotlin.io.path.outputStream
 
 fun Context.showToast(string: String?) =
     string?.let { Toast.makeText(this, string, Toast.LENGTH_SHORT).show() }
@@ -83,4 +89,16 @@ fun TextView.setTextWithVisibility(mtext: String?) {
 fun Long.getTime(): String {
     return DateTimeFormatter.ofPattern("hh:mm a").withZone(ZoneId.systemDefault())
         .format(Instant.ofEpochMilli(this))
+}
+
+suspend fun Uri.getFile(resolver: ContentResolver): File = withContext(Dispatchers.IO) {
+    val file = kotlin.io.path.createTempFile("avatar", "png")
+    val inputStream = resolver.openInputStream(this@getFile)
+
+    inputStream.use { input ->
+        file.outputStream().use { output ->
+            input?.copyTo(output)
+        }
+    }
+    return@withContext file.toFile()
 }
