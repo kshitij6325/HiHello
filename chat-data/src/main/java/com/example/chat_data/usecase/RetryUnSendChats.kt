@@ -27,7 +27,7 @@ class RetryUnSendChats @Inject constructor(
                         userRepository.getLoggedInUser().map { self ->
                             if (chat.media != null) {
                                 mediaRepository.uploadMedia(
-                                    MediaSource.File.ImageFile(File(chat.media.localPath)),
+                                    MediaSource.File(File(chat.media.localPath), chat.media.type),
                                     "${chat.chatId}_${self.userName}_${user.userName}",
 
                                     ) {}.map { mediaSrc ->

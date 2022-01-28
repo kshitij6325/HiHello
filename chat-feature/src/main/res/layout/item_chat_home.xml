@@ -6,14 +6,25 @@
     android:layout_height="wrap_content"
     android:layout_margin="16dp">
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/grey_variant"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearance="@style/RoundImageStyle" />
+
     <TextView
         android:id="@+id/tv_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
         android:fontFamily="@font/averta_bold"
         android:textColor="@android:color/black"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_avatar"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Kshitij6325" />
 
@@ -21,10 +32,10 @@
         android:id="@+id/iv_message_state"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="@dimen/dp_16"
         android:tint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_avatar"
         app:layout_constraintTop_toBottomOf="@id/tv_username"
         app:srcCompat="@drawable/ic_baseline_access_time_24" />
 

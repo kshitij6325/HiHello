@@ -11,6 +11,7 @@ import com.example.auth_feature.signup.SignUpUiState
 import com.example.basefeature.getFile
 import com.example.basefeature.update
 import com.example.media_data.MediaSource
+import com.example.media_data.MediaType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,7 +36,7 @@ class AuthViewModel @Inject constructor(
 
     fun signUpUser(user: User, resolver: ContentResolver) = viewModelScope.launch {
         val avatarMediaSrc = _signUpScreenUiState.value?.imageUri?.getFile(resolver)?.let {
-            MediaSource.File.ImageFile(it)
+            MediaSource.File(it, MediaType.IMAGE)
         }
         _signUpScreenUiState.update {
             it?.copy(isLoading = true)

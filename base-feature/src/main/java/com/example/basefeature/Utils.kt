@@ -44,7 +44,7 @@ fun Context.showProgressDialog(message: String) = ProgressDialog(this).apply {
     setCancelable(false)
 }
 
-fun ProgressDialog.showIf(condition: Boolean) = if (condition) show() else hide()
+fun ProgressDialog.showIf(condition: Boolean) = if (condition) show() else cancel()
 
 fun <T> MutableLiveData<T>.update(evaluator: (T?) -> T) {
     val currentValue = value

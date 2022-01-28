@@ -24,6 +24,7 @@ import com.example.chat_feature.chatuser.ChatUserUI
 import com.example.chat_feature.work.RetryFailedChatsWorker
 import com.example.chat_feature.work.SyncUserWorker
 import com.example.media_data.MediaSource
+import com.example.media_data.MediaType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -175,7 +176,7 @@ class ChatHomeViewModel @Inject constructor(
     suspend fun createAndSetImageFile(uri: Uri, resolver: ContentResolver) {
         val file = uri.getFile(resolver)
         _chatUserUiState.postValue(
-            _chatUserUiState.value?.copy(mediaSource = MediaSource.File.ImageFile(file))
+            _chatUserUiState.value?.copy(mediaSource = MediaSource.File(file, MediaType.IMAGE))
         )
     }
 }

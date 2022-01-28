@@ -17,7 +17,7 @@ class SignUpUseCase @Inject constructor(
 ) :
     BaseUseCase<User>() {
 
-    suspend operator fun invoke(user: User, avatarMediaSource: MediaSource? = null) {
+    suspend operator fun invoke(user: User, avatarMediaSource: MediaSource.File? = null) {
         when {
             user.userName.isEmpty() -> onFailure?.invoke(EmptyUserNameException())
             !validateMobileNumber(user) -> onFailure?.invoke(InvalidPhoneNumberException())

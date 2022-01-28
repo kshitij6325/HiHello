@@ -23,6 +23,7 @@ import com.example.chat_feature.ChatHomeViewModel
 import com.example.chat_feature.R
 import com.example.chat_feature.databinding.FragmentChatBinding
 import com.example.media_data.MediaSource
+import com.example.media_data.MediaType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -69,7 +70,7 @@ class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
             }
 
         viewModel.chatUserUiStateLiveData
-            .map { it.mediaSource as? MediaSource.File.ImageFile }
+            .map { it.mediaSource }
             .distinctUntilChanged().observe(this) {
                 binding?.ivAttachPrev?.visibleIf(it != null)
                 binding?.ivRemoveAttach?.visibleIf(it != null)

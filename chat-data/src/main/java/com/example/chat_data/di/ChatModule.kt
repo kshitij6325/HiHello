@@ -23,5 +23,5 @@ interface ChatModule {
     abstract fun getRemoteChatHelper(remoteChatHelper: RemoteChatHelper): IRemoteChatHelper
 
     @Binds
-    abstract fun getMediaDataSource(firebaseStorageDataSource: FirebaseStorageDataSource): MediaDataSource<MediaSource, MediaSource.Url>
+    abstract fun getMediaDataSource(firebaseStorageDataSource: FirebaseStorageDataSource): MediaDataSource
 }
