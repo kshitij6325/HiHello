@@ -25,7 +25,7 @@ class RetryUnSendChats @Inject constructor(
                 userRepository.createUserIfNotExists(chat.userId).map { user ->
                     firebaseDataRepository.getAppSecret().map { appSecret ->
                         userRepository.getLoggedInUser().map { self ->
-                            if (chat.media != null) {
+                            if (chat.media != null && chat.media.url == null) {
                                 mediaRepository.uploadMedia(
                                     MediaSource.File(File(chat.media.localPath), chat.media.type),
                                     "${chat.chatId}_${self.userName}_${user.userName}",

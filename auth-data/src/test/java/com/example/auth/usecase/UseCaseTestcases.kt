@@ -1,21 +1,23 @@
 package com.example.auth.usecase
 
 import com.example.auth.*
-import com.example.auth.data.FakeDataProvider
-import com.example.auth.data.FakeFirebaseDataSource
-import com.example.auth.data.FakeMeDataSource
-import com.example.auth.data.FakeUserDataSource
+import com.example.auth.data.*
 import com.example.auth.datasource.FirebaseDataSource
 import com.example.auth.datasource.UserDataSource
 import com.example.auth.repo.FirebaseDataRepository
 import com.example.auth.repo.UserRepository
 import com.example.auth.repo.UserRepositoryImpl
+import com.example.media_data.FirebaseStorageDataSource
+import com.example.media_data.MediaRepository
+import com.example.media_data.MediaSource
+import com.example.media_data.MediaType
 import com.example.pojo.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.io.File
 
 @ExperimentalCoroutinesApi
 class UseCaseTestcases {
@@ -23,12 +25,15 @@ class UseCaseTestcases {
     private val remoteUserList =
         listOf(FakeDataProvider.user1, FakeDataProvider.user2, FakeDataProvider.user3)
     private val localUserList = listOf(FakeDataProvider.user1.copy(), FakeDataProvider.user2.copy())
+    private val mediaMap =
+        mutableMapOf<String, MediaSource>()
 
     private lateinit var userFirebaseDataSource: FakeUserDataSource
     private lateinit var meDataSource: UserDataSource
     private lateinit var userRoomDataSource: UserDataSource
     private lateinit var firebaseDataSource: FirebaseDataSource
     private lateinit var firebaseDataSrc: FakeFirebaseDataSource
+    private lateinit var mediaSource: FakeMediaSource
 
     private lateinit var getUserLoggedInUseCase: GetUserLoggedInUseCase
     private lateinit var loginUseCase: LoginUseCase
@@ -46,6 +51,7 @@ class UseCaseTestcases {
         userRoomDataSource =
             FakeUserDataSource(localUserList.toMutableList())
         firebaseDataSource = FakeFirebaseDataSource()
+        mediaSource = FakeMediaSource(mediaMap)
         val repo = UserRepositoryImpl(
             userFirebaseDataSource = userFirebaseDataSource,
             meDataSource = meDataSource,
@@ -56,7 +62,7 @@ class UseCaseTestcases {
         firebaseDataSrc = FakeFirebaseDataSource()
         val firebaseDataRepository = FirebaseDataRepository(firebaseDataSrc)
         loginUseCase = LoginUseCase(repo, firebaseDataRepository)
-        signUpUseCase = SignUpUseCase(repo, firebaseDataRepository)
+        signUpUseCase = SignUpUseCase(repo, firebaseDataRepository, MediaRepository(mediaSource))
         logoutUseCase = LogoutUseCase(repo)
         updateLoggedInUserUseCase = UpdateLoggedInUserUseCase(repo)
         syncUsersUseCase = SyncUsersUseCase(repo)
@@ -223,6 +229,22 @@ class UseCaseTestcases {
             }
 
         }.invoke(FakeDataProvider.myUser)
+
+    }
+
+    @Test
+    fun checkSignUpWithMedia_success() = runTest {
+        val mediaSrc = MediaSource.File(File.createTempFile("avatar", "png"), MediaType.IMAGE)
+        signUpUseCase.apply {
+            onSuccess = {
+                assert(it.userName == FakeDataProvider.myUser.userName)
+                assert(it.profileUrl != null)
+            }
+            onFailure = {
+                assert(false)
+            }
+
+        }.invoke(FakeDataProvider.myUser, mediaSrc)
 
     }
 

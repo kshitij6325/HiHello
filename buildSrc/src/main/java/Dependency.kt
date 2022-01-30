@@ -69,9 +69,11 @@ internal sealed class Dependency(val dependency: String) {
 
         object Junit : TestSetDependency("junit:junit:4.13.2")
 
-        object KTXCore : TestSetDependency("androidx.test:core-ktx:1.4.0")
+        object AndroidKTXCore : TestSetDependency("androidx.test:core-ktx:1.4.0")
 
         object Arch : TestSetDependency("androidx.arch.core:core-testing:2.1.0")
+
+        object Mockito : TestSetDependency("org.mockito:mockito-core:2.19.0")
     }
 
     sealed class AndroidTestSetDependency(dep: String) : Dependency(dep) {
@@ -83,7 +85,7 @@ internal sealed class Dependency(val dependency: String) {
 
         object Junit : AndroidTestSetDependency("androidx.test.ext:junit:1.1.3")
 
-        object KTXCore : AndroidTestSetDependency("androidx.test:core-ktx:1.4.0")
+        object AndroidKTXCore : AndroidTestSetDependency("androidx.test:core-ktx:1.4.0")
 
         object Arch : AndroidTestSetDependency("androidx.arch.core:core-testing:2.1.0")
 

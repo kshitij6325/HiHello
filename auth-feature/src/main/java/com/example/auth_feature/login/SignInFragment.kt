@@ -42,6 +42,13 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
                 }
             }
 
+        viewModel.signInScreenUiStateLiveData
+            .map { it.isLoading }
+            .distinctUntilChanged()
+            .observe(this) {
+                showLoaderIf("Signing in...", it)
+            }
+
         //show error toast
         viewModel.signInScreenUiStateLiveData.map { it.error }
             .distinctUntilChanged()

@@ -3,9 +3,9 @@ internal val kotlinCore = listOf(
     Dependency.MainSetDependency.KotlinSerialization,
     Dependency.MainSetDependency.CoroutineCore,
     Dependency.TestSetDependency.CoroutineCore,
-    Dependency.TestSetDependency.KTXCore,
+    Dependency.TestSetDependency.AndroidKTXCore,
     Dependency.AndroidTestSetDependency.CoroutineCore,
-    Dependency.AndroidTestSetDependency.KTXCore
+    Dependency.AndroidTestSetDependency.AndroidKTXCore
 )
 
 internal val androidCore = listOf(
@@ -18,6 +18,7 @@ internal val androidCore = listOf(
 internal val junit = listOf(
     Dependency.TestSetDependency.Junit,
     Dependency.AndroidTestSetDependency.Junit,
+    Dependency.TestSetDependency.Mockito
 )
 
 internal val androidUI = listOf(

@@ -39,7 +39,7 @@ fun Fragment.showToast(string: String?) = try {
 } catch (e: Exception) {
 }
 
-fun Context.showProgressDialog(message: String) = ProgressDialog(this).apply {
+fun Fragment.showProgressDialog(message: String) = ProgressDialog(requireContext()).apply {
     setMessage(message)
     setCancelable(false)
 }

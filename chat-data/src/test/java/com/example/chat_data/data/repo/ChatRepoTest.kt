@@ -5,6 +5,7 @@ import com.example.chat_data.Chat
 import com.example.chat_data.data.FakeChatDataSource
 import com.example.chat_data.data.FakeRemoteChatHelper
 import com.example.chat_data.datasource.ChatType
+import com.example.chat_data.datasource.getChatDate
 import com.example.chat_data.repo.ChatRepository
 import com.example.pojo.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,7 +42,8 @@ class ChatRepoTest {
                 type = ChatType.SENT,
                 message = "Hiii hello",
                 timeStamp = System.currentTimeMillis(),
-                success = false
+                success = false,
+                date = System.currentTimeMillis().getChatDate()
             )
         //adding chat
         val addRes = chatRepo.addChat(chat)

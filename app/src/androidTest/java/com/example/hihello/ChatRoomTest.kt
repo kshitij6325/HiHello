@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.example.chat_data.Chat
 import com.example.chat_data.datasource.ChatType
+import com.example.chat_data.datasource.getChatDate
 import com.example.chat_data.room.ChatDao
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -21,20 +22,22 @@ class ChatRoomTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
 
-    lateinit var chatDao: ChatDao
+    private lateinit var chatDao: ChatDao
 
     private val chat1 = Chat(
         message = "Test message",
         userId = "userId",
         timeStamp = System.currentTimeMillis(),
-        success = false, type = ChatType.SENT
+        success = false, type = ChatType.SENT,
+        date = System.currentTimeMillis().getChatDate()
     )
 
     private val chat2 = Chat(
         message = "Test message 2",
         userId = "userId",
         timeStamp = System.currentTimeMillis(),
-        success = false, type = ChatType.SENT
+        success = false, type = ChatType.SENT,
+        date = System.currentTimeMillis().getChatDate()
     )
 
     @Before

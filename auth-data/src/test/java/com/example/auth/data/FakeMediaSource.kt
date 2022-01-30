@@ -1,4 +1,4 @@
-package com.example.chat_data.data
+package com.example.auth.data
 
 import com.example.media_data.MediaDataSource
 import com.example.media_data.MediaSource

@@ -14,9 +14,16 @@ data class ChatUserUI(
 )
 
 sealed class ChatUI(val type: Int) {
-    class DateItem(val date: String) : ChatUI(1)
+    class DateItem(val date: String) : ChatUI(DATE)
     sealed class ChatItem(val chat: Chat, type: Int) : ChatUI(type) {
-        class ChatItemSent(chat: Chat) : ChatItem(chat, 2)
-        class ChatItemReceived(chat: Chat) : ChatItem(chat, 3)
+        class ChatItemSent(chat: Chat) : ChatItem(chat, CHAT_SENT)
+        class ChatItemReceived(chat: Chat) : ChatItem(chat, CHAT_RECEIVED)
     }
+
+    companion object {
+        const val DATE = 1
+        const val CHAT_SENT = 2
+        const val CHAT_RECEIVED = 3;
+    }
+
 }

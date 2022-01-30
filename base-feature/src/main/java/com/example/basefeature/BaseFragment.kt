@@ -1,5 +1,6 @@
 package com.example.basefeature
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,8 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
     abstract val getBindingInflation: (LayoutInflater) -> VB
     var binding: VB? = null
+
+    private var p: ProgressDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,5 +57,10 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     override fun onDestroyView() {
         binding = null
         super.onDestroyView()
+    }
+
+    protected fun showLoaderIf(message: String, condition: Boolean) {
+        (p ?: showProgressDialog(message)
+            .also { this.p = it }).showIf(condition)
     }
 }

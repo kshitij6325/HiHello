@@ -30,8 +30,6 @@ class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
 
     private val viewModel: AuthViewModel by hiltNavGraphViewModels(R.id.auth_nav)
 
-    private var p: ProgressDialog? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.btnSingup?.setOnClickListener(this::signUp)
@@ -58,8 +56,7 @@ class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
 
         viewModel.signUpScreenUiStateLiveData.map { it.isLoading }
             .distinctUntilChanged().observe(this) {
-                (p ?: requireActivity().showProgressDialog("Loading...")
-                    .also { this.p = it }).showIf(it)
+                showLoaderIf("Signing up...", it)
             }
 
         viewModel.signUpScreenUiStateLiveData

@@ -16,6 +16,7 @@ import com.example.chat_data.data.FakeRemoteChatHelper
 import com.example.chat_data.data.getOrAwaitValue
 import com.example.chat_data.datasource.ChatMedia
 import com.example.chat_data.datasource.ChatType
+import com.example.chat_data.datasource.getChatDate
 import com.example.chat_data.repo.ChatRepository
 import com.example.chat_data.usecase.*
 import com.example.media_data.MediaDataSource
@@ -184,7 +185,8 @@ class UsecaseTests {
             message = "Test message",
             userId = user2.userName,
             timeStamp = System.currentTimeMillis(),
-            success = false, type = ChatType.SENT
+            success = false, type = ChatType.SENT,
+            date = System.currentTimeMillis().getChatDate()
         )
         val jsonString = Json.encodeToString(chat)
         receiveChatUseCase.apply {
@@ -207,11 +209,13 @@ class UsecaseTests {
     @Test
     fun receiveChatUseCase_FailureChatDberror() = runTest {
         chatDataSource.error = true
+        val milli = System.currentTimeMillis()
         val chat = Chat(
             chatId = 6900,
             message = "Test message",
             userId = user2.userName,
-            timeStamp = System.currentTimeMillis(),
+            timeStamp = milli,
+            date = milli.getChatDate(),
             success = false, type = ChatType.SENT
         )
         val jsonString = Json.encodeToString(chat)
@@ -235,11 +239,13 @@ class UsecaseTests {
     @Test
     fun retrySend_success() = runTest {
         (1..10).map {
+            val milli = System.currentTimeMillis()
             Chat(
                 message = "Test message $it",
                 userId = user2.userName,
-                timeStamp = System.currentTimeMillis(),
-                success = false, type = ChatType.SENT
+                success = false, type = ChatType.SENT,
+                timeStamp = milli,
+                date = milli.getChatDate(),
             )
         }.forEach { chatRepo.addChat(it) }
 
@@ -263,10 +269,12 @@ class UsecaseTests {
     fun retrySend_NetworkError_SendingChat() = runTest {
         remoteChatHelper.error = true
         (1..10).map {
+            val milli = System.currentTimeMillis()
             Chat(
                 message = "Test message $it",
                 userId = user2.userName,
-                timeStamp = System.currentTimeMillis(),
+                timeStamp = milli,
+                date = milli.getChatDate(),
                 success = false, type = ChatType.SENT
             )
         }.forEach { chatRepo.addChat(it) }
@@ -290,12 +298,16 @@ class UsecaseTests {
     @Test
     fun getAllUsersChatLiveData_success() = runTest {
         (1..10).map {
+            val milli = System.currentTimeMillis()
             Chat(
                 message = "Test message $it",
                 userId = user2.userName,
-                timeStamp = System.currentTimeMillis(),
-                success = true, type = ChatType.SENT
-            )
+                success = true, type = ChatType.SENT,
+                timeStamp = milli,
+                date = milli.getChatDate(),
+
+
+                )
         }.forEach { chatRepo.addChat(it) }
 
         getAllUserChatUseCase.get(user2.userName).collect {
@@ -310,7 +322,8 @@ class UsecaseTests {
                 message = "Test message $it",
                 userId = user2.userName,
                 timeStamp = System.currentTimeMillis(),
-                success = true, type = ChatType.SENT
+                success = true, type = ChatType.SENT,
+                date = System.currentTimeMillis().getChatDate()
             )
         }.forEach { chatRepo.addChat(it) }
 
@@ -322,7 +335,7 @@ class UsecaseTests {
     @Test
     fun sendChatWithMediaUseCase_success() = runTest {
         val file = kotlin.io.path.createTempFile("temp", "png").toFile()
-        val mediSource = MediaSource.File.ImageFile(file)
+        val mediSource = MediaSource.File(file, MediaType.IMAGE)
         sendChatUseCase.apply {
             onSuccess = {
                 val chatRes = chatRepo.getChat(0)
@@ -345,7 +358,7 @@ class UsecaseTests {
         ) {}
 
         //check if media is successfully created
-        assert(mediaRes is Result.Success && mediaRes.data is MediaSource.File.ImageFile)
+        assert(mediaRes is Result.Success)
 
         //check if chat has correct media data
         val chat = chatRepo.getChat(0)
@@ -361,7 +374,8 @@ class UsecaseTests {
                 userId = user2.userName,
                 timeStamp = System.currentTimeMillis(),
                 media = ChatMedia(localPath = file.absolutePath, type = MediaType.IMAGE),
-                success = false, type = ChatType.SENT
+                success = false, type = ChatType.SENT,
+                date = System.currentTimeMillis().getChatDate()
             )
         }.forEach { chatRepo.addChat(it) }
 
