@@ -1,7 +1,12 @@
 package com.example.auth.repo
 
+import android.app.Activity
 import com.example.auth.datasource.FirebaseDataSource
 import com.example.pojo.Result
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,6 +24,17 @@ class FirebaseDataRepository @Inject constructor(private val firebaseDataSource:
             else -> appSecret!!
         }
     }
+
+    suspend fun verifyPhoneNumber(
+        phoneNumber: String,
+        activity: Activity
+    ) = firebaseDataSource.verifyPhoneNumber(phoneNumber, activity)
+
+    suspend fun verifyOtp(
+        activity: Activity,
+        otp: String,
+        id: String
+    ) = firebaseDataSource.verifyOtp(activity, otp, id)
 
     suspend fun getFirebaseToken(): Result<String> = firebaseDataSource.getFirebaseToken()
 }

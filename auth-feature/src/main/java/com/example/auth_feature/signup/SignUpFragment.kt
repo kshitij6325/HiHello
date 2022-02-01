@@ -1,9 +1,10 @@
 package com.example.auth_feature.signup
 
-import android.app.ProgressDialog
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.app.ProgressDialog
 import androidx.activity.result.ActivityResult
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
@@ -37,20 +38,14 @@ class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
 
         viewModel.signUpScreenUiStateLiveData
             .map { it.error }
-            .distinctUntilChanged()
             .observe(this@SignUpFragment) { message ->
                 message?.let { showToast(it) }
             }
-
-
         //observe signUp state
         viewModel.signUpScreenUiStateLiveData.map { it.isSuccess }
             .distinctUntilChanged().observe(this) {
                 if (it) {
-                    navigate(
-                        requireActivity().resources.getString(R.string.chat_home_frag_deeplink_string),
-                        R.id.auth_nav
-                    )
+                    viewModel.navigateToChat(requireActivity(), this::navigate)
                 }
             }
 
@@ -64,6 +59,15 @@ class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
             .distinctUntilChanged()
             .observe(this) {
                 binding?.ivAvatar?.setImageURI(it)
+            }
+
+        viewModel.signUpScreenUiStateLiveData
+            .map { it.goToOtp }
+            .distinctUntilChanged()
+            .observe(this) {
+                if (it)
+                    viewModel.navigateToOtp(this::navigate)
+
             }
 
         binding?.ivAvatar?.setOnClickListener {
@@ -83,12 +87,12 @@ class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
                 mobileNumber = mobile.toLongOrNull(),
                 password = password
             ),
-            requireActivity().contentResolver
+            requireActivity()
         )
     }
 
     private fun moveToSignIn(view: View) {
-        navigate(SignUpFragmentDirections.actionSignUpFragmentToSignInFragment())
+        viewModel.navigateToSignIn(this::navigate)
     }
 
 

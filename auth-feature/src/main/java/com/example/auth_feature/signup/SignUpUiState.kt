@@ -6,5 +6,6 @@ data class SignUpUiState(
     val error: String? = null,
     val isSuccess: Boolean = false,
     val isLoading: Boolean = false,
-    val imageUri: Uri? = null
+    val imageUri: Uri? = null,
+    val goToOtp: Boolean = false
 )

@@ -36,6 +36,10 @@ fun DependencyHandler.addFirebaseStorage() {
     addAllDependency(listOf(Dependency.MainSetDependency.FirebaseStorage))
 }
 
+fun DependencyHandler.addFirebaseAuth() {
+    addAllDependency(listOf(Dependency.MainSetDependency.FirebaseAuth))
+}
+
 fun DependencyHandler.addRetrofit() =
     addAllDependency(listOf(Dependency.MainSetDependency.Retrofit))
 

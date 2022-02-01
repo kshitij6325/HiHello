@@ -52,6 +52,8 @@ internal sealed class Dependency(val dependency: String) {
         object FirebaseStorage :
             MainSetDependency("com.google.firebase:firebase-storage-ktx:20.0.0")
 
+        object FirebaseAuth : MainSetDependency("com.google.firebase:firebase-auth:21.0.1")
+
         //retrofit
         object Retrofit : MainSetDependency("com.squareup.retrofit2:retrofit:2.9.0")
 

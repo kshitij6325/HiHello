@@ -1,5 +1,6 @@
 package com.example.auth.usecase
 
+import android.app.Activity
 import com.example.auth.*
 import com.example.auth.data.*
 import com.example.auth.datasource.FirebaseDataSource
@@ -17,9 +18,14 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.junit.MockitoJUnitRunner
 import java.io.File
 
 @ExperimentalCoroutinesApi
+@RunWith(MockitoJUnitRunner::class)
 class UseCaseTestcases {
 
     private val remoteUserList =
@@ -41,6 +47,9 @@ class UseCaseTestcases {
     private lateinit var signUpUseCase: SignUpUseCase
     private lateinit var updateLoggedInUserUseCase: UpdateLoggedInUserUseCase
     private lateinit var syncUsersUseCase: SyncUsersUseCase
+
+    @Mock
+    private lateinit var activity: Activity
 
     @Before
     @After
@@ -151,16 +160,28 @@ class UseCaseTestcases {
 
     @Test
     fun checkIsLoggedIn_withSignUp() = runTest {
-
         signUpUseCase.apply {
             onSuccess = {
-                assert(true)
+                when (it) {
+                    is State.Complete -> assert(false)
+                    is State.Otp -> signUpUseCase.apply {
+                        onSuccess = {
+                            when (it) {
+                                is State.Complete -> assert(true)
+                                is State.Otp -> assert(false)
+                            }
+                        }
+                        onFailure = {
+                            assert(false)
+                        }
+                    }.invoke(FakeDataProvider.myUser, otp = "otp", activity = activity)
+                }
             }
             onFailure = {
                 assert(false)
             }
 
-        }.invoke(FakeDataProvider.myUser)
+        }.invoke(FakeDataProvider.myUser, activity)
 
         getUserLoggedInUseCase.apply {
             onSuccess = {
@@ -182,7 +203,7 @@ class UseCaseTestcases {
                 assert(it is UserAlreadyExitsException)
             }
 
-        }.invoke(FakeDataProvider.user1)
+        }.invoke(FakeDataProvider.user1, activity)
     }
 
     @Test
@@ -195,7 +216,7 @@ class UseCaseTestcases {
                 assert(it is EmptyUserNameException)
             }
 
-        }.invoke(User(""))
+        }.invoke(User(""), activity)
 
         signUpUseCase.apply {
             onSuccess = {
@@ -205,7 +226,7 @@ class UseCaseTestcases {
                 assert(it is InvalidPhoneNumberException)
             }
 
-        }.invoke(User("Tanjiro", mobileNumber = 6677858))
+        }.invoke(User("Tanjiro", mobileNumber = 6677858), activity)
 
         signUpUseCase.apply {
             onSuccess = {
@@ -215,20 +236,33 @@ class UseCaseTestcases {
                 assert(it is EmptyPasswordException)
             }
 
-        }.invoke(User("Tanjiro", mobileNumber = 8865534256))
+        }.invoke(User("Tanjiro", mobileNumber = 8865534256), activity)
     }
 
     @Test
     fun checkSignUp_success() = runTest {
         signUpUseCase.apply {
             onSuccess = {
-                assert(it.userName == FakeDataProvider.myUser.userName)
+                when (it) {
+                    is State.Complete -> assert(false)
+                    is State.Otp -> signUpUseCase.apply {
+                        onSuccess = {
+                            when (it) {
+                                is State.Complete -> assert(it.user.userName == FakeDataProvider.myUser.userName)
+                                is State.Otp -> assert(false)
+                            }
+                        }
+                        onFailure = {
+                            assert(false)
+                        }
+                    }.invoke(FakeDataProvider.myUser, otp = "otp", activity = activity)
+                }
             }
             onFailure = {
                 assert(false)
             }
 
-        }.invoke(FakeDataProvider.myUser)
+        }.invoke(FakeDataProvider.myUser, activity)
 
     }
 
@@ -237,14 +271,29 @@ class UseCaseTestcases {
         val mediaSrc = MediaSource.File(File.createTempFile("avatar", "png"), MediaType.IMAGE)
         signUpUseCase.apply {
             onSuccess = {
-                assert(it.userName == FakeDataProvider.myUser.userName)
-                assert(it.profileUrl != null)
+                when (it) {
+                    is State.Complete -> assert(false)
+                    is State.Otp -> signUpUseCase.apply {
+                        onSuccess = { state ->
+                            when (state) {
+                                is State.Complete -> {
+                                    assert(state.user.userName == FakeDataProvider.myUser.userName)
+                                    assert(state.user.profileUrl != null)
+                                }
+                                is State.Otp -> assert(false)
+                            }
+                        }
+                        onFailure = {
+                            assert(false)
+                        }
+                    }.invoke(FakeDataProvider.myUser, otp = "otp", activity = activity)
+                }
             }
             onFailure = {
                 assert(false)
             }
 
-        }.invoke(FakeDataProvider.myUser, mediaSrc)
+        }.invoke(FakeDataProvider.myUser, activity, avatarMediaSource = mediaSrc)
 
     }
 
@@ -252,13 +301,26 @@ class UseCaseTestcases {
     fun checkUserFcmUpdate_success() = runTest {
         signUpUseCase.apply {
             onSuccess = {
-                assert(it.userName == FakeDataProvider.myUser.userName)
+                when (it) {
+                    is State.Complete -> assert(false)
+                    is State.Otp -> signUpUseCase.apply {
+                        onSuccess = {
+                            when (it) {
+                                is State.Complete -> assert(true)
+                                is State.Otp -> assert(false)
+                            }
+                        }
+                        onFailure = {
+                            assert(false)
+                        }
+                    }.invoke(FakeDataProvider.myUser, otp = "otp", activity = activity)
+                }
             }
             onFailure = {
                 assert(false)
             }
 
-        }.invoke(FakeDataProvider.myUser)
+        }.invoke(FakeDataProvider.myUser, activity)
         updateLoggedInUserUseCase.apply {
             onSuccess = {
                 assert(it)

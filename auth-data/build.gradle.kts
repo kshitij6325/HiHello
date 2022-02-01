@@ -43,6 +43,7 @@ dependencies {
     addKotlin()
 
     addFirebaseDatabase()
+    addFirebaseAuth()
     addFcm()
 
     addRoom()

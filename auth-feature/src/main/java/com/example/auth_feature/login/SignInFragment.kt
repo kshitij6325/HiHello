@@ -35,10 +35,7 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
             .distinctUntilChanged()
             .observe(this) {
                 if (it) {
-                    navigate(
-                        requireActivity().resources.getString(R.string.chat_home_frag_deeplink_string),
-                        R.id.auth_nav
-                    )
+                    viewModel.navigateToChat(requireActivity(), this::navigate)
                 }
             }
 
@@ -64,7 +61,8 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
     }
 
     private fun moveToSignUp(view: View) {
-        navigate(SignInFragmentDirections.actionSignInFragmentToSignUpFragment())
+        viewModel.navigateToSignUp(this::navigate)
+
     }
 
 }

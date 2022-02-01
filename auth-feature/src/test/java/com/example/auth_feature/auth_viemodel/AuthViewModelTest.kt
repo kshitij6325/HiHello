@@ -1,5 +1,6 @@
 package com.example.auth_feature.auth_viemodel
 
+import android.app.Activity
 import android.app.Application
 import android.content.ContentResolver
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -37,7 +38,7 @@ class AuthViewModelTest {
     var mainDispatcherRule = MainDispatcherRule()
 
     @Mock
-    private lateinit var contentResolver: ContentResolver
+    private lateinit var activity: Activity
 
     private lateinit var viewmodel: AuthViewModel
 
@@ -58,12 +59,19 @@ class AuthViewModelTest {
 
     @Test
     fun signUpUser_newUserSuccess() = runBlockingTest {
-        viewmodel.signUpUser(FakeDataProvider.myUser, contentResolver)
+        viewmodel.signUpUser(FakeDataProvider.myUser, activity)
 
         val signUpUiState = viewmodel.signUpScreenUiStateLiveData.getOrAwaitValue()
 
-        assert(signUpUiState.isSuccess)
-        assert(signUpUiState.error.isNullOrEmpty())
+        assert(signUpUiState.goToOtp)
+
+        viewmodel.submitOtp(otp = "lakfk", activity = activity)
+
+        val otpLiveData = viewmodel.otpScreenUiStateLiveData.getOrAwaitValue()
+
+        assert(otpLiveData.isSuccess)
+
+        assert(otpLiveData.error.isNullOrEmpty())
 
         //mainDispatcherRule.resumeDispatcher()
 
@@ -77,7 +85,7 @@ class AuthViewModelTest {
     @Test
     fun signUpUser_OldUserFail() = runBlockingTest {
 
-        viewmodel.signUpUser(FakeDataProvider.user1, contentResolver)
+        viewmodel.signUpUser(FakeDataProvider.user1, activity)
 
         val signUpUiState = viewmodel.signUpScreenUiStateLiveData.getOrAwaitValue()
 
