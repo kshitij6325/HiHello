@@ -3,16 +3,14 @@ package com.example.auth_feature.login
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-import androidx.lifecycle.distinctUntilChanged
-import androidx.lifecycle.map
 import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.R
 import com.example.auth_feature.databinding.FragmentSignInBinding
 import com.example.basefeature.BaseFragment
 import com.example.basefeature.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.*
 
 @AndroidEntryPoint
 class SignInFragment : BaseFragment<FragmentSignInBinding>() {
@@ -29,29 +27,28 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
         binding?.btnLogin?.setOnClickListener(this::signIn)
         binding?.tvSignUp?.setOnClickListener(this::moveToSignUp)
 
-        //observe signIn state
-        viewModel.signInScreenUiStateLiveData
+        viewModel.signInScreenUiState
             .map { it.isSuccess }
             .distinctUntilChanged()
-            .observe(this) {
+            .onEach {
                 if (it) {
-                    viewModel.navigateToChat(requireActivity(), this::navigate)
+                    viewModel.navigateToChat(requireActivity(), this@SignInFragment::navigate)
                 }
-            }
+            }.launchIn(uiScope)
 
-        viewModel.signInScreenUiStateLiveData
+        //observe signIn state
+        viewModel.signInScreenUiState
             .map { it.isLoading }
             .distinctUntilChanged()
-            .observe(this) {
+            .onEach {
                 showLoaderIf("Signing in...", it)
-            }
+            }.launchIn(uiScope)
 
         //show error toast
-        viewModel.signInScreenUiStateLiveData.map { it.error }
-            .distinctUntilChanged()
-            .observe(this) {
+        viewModel.toastError
+            .onEach {
                 showToast(it)
-            }
+            }.launchIn(uiScope)
     }
 
     private fun signIn(view: View) {

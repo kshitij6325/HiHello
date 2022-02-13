@@ -4,20 +4,15 @@ package com.example.auth_feature.signup
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.app.ProgressDialog
 import androidx.activity.result.ActivityResult
-import androidx.core.net.toUri
-import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-import androidx.lifecycle.distinctUntilChanged
-import androidx.lifecycle.map
-import androidx.navigation.NavDeepLinkRequest
 import com.example.auth.User
 import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.R
 import com.example.auth_feature.databinding.FragmentSignUpBinding
 import com.example.basefeature.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.*
 
 @AndroidEntryPoint
 class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
@@ -36,45 +31,46 @@ class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
         binding?.btnSingup?.setOnClickListener(this::signUp)
         binding?.tvLogin?.setOnClickListener(this::moveToSignIn)
 
-        viewModel.signUpScreenUiStateLiveData
-            .map { it.error }
-            .observe(this@SignUpFragment) { message ->
+        viewModel.toastError
+            .onEach { message ->
                 message?.let { showToast(it) }
-            }
+            }.launchIn(uiScope)
+
         //observe signUp state
-        viewModel.signUpScreenUiStateLiveData.map { it.isSuccess }
-            .distinctUntilChanged().observe(this) {
+        viewModel.signUpScreenUiState
+            .map { it.isSuccess }
+            .distinctUntilChanged().onEach {
                 if (it) {
-                    viewModel.navigateToChat(requireActivity(), this::navigate)
+                    viewModel.navigateToChat(requireActivity(), this@SignUpFragment::navigate)
                 }
-            }
+            }.launchIn(uiScope)
 
-        viewModel.signUpScreenUiStateLiveData.map { it.isLoading }
-            .distinctUntilChanged().observe(this) {
+        viewModel.signUpScreenUiState
+            .map { it.isLoading }
+            .distinctUntilChanged().onEach {
                 showLoaderIf("Signing up...", it)
-            }
+            }.launchIn(uiScope)
 
-        viewModel.signUpScreenUiStateLiveData
+        viewModel.signUpScreenUiState
             .map { it.imageUri }
             .distinctUntilChanged()
-            .observe(this) {
+            .onEach {
                 binding?.ivAvatar?.setImageURI(it)
-            }
+            }.launchIn(uiScope)
 
-        viewModel.signUpScreenUiStateLiveData
+        viewModel.signUpScreenUiState
             .map { it.goToOtp }
             .distinctUntilChanged()
-            .observe(this) {
+            .onEach {
                 if (it)
-                    viewModel.navigateToOtp(this::navigate)
-
-            }
+                    viewModel.navigateToOtp(this@SignUpFragment::navigate)
+            }.launchIn(uiScope)
 
         binding?.ivAvatar?.setOnClickListener {
             openFilePicker()
         }
-
     }
+
 
     private fun signUp(view: View) {
         val userName = binding?.tvUserName?.text.toString()

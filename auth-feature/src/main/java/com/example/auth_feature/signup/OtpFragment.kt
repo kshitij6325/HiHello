@@ -3,21 +3,14 @@ package com.example.auth_feature.signup
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.app.ProgressDialog
 import androidx.activity.result.ActivityResult
-import androidx.core.net.toUri
-import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-import androidx.lifecycle.distinctUntilChanged
-import androidx.lifecycle.map
-import androidx.navigation.NavDeepLinkRequest
-import com.example.auth.User
 import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.R
 import com.example.auth_feature.databinding.FragmentOtpBinding
-import com.example.auth_feature.databinding.FragmentSignUpBinding
 import com.example.basefeature.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.*
 
 @AndroidEntryPoint
 class OtpFragment : MediaBaseFragment<FragmentOtpBinding>() {
@@ -36,27 +29,30 @@ class OtpFragment : MediaBaseFragment<FragmentOtpBinding>() {
         super.onViewCreated(view, savedInstanceState)
         binding?.btnOtp?.setOnClickListener(this::submitOtp)
 
-        viewModel.otpScreenUiStateLiveData
-            .map { it.error }
-            .distinctUntilChanged()
-            .observe(this) { message ->
+        viewModel.toastError
+            .onEach { message ->
                 message?.let { showToast(it) }
-            }
+            }.launchIn(uiScope)
+
         //observe signUp state
-        viewModel.otpScreenUiStateLiveData.map { it.isSuccess }
-            .distinctUntilChanged().observe(this) {
+        viewModel.otpScreenUiState
+            .map { it.isSuccess }
+            .distinctUntilChanged()
+            .onEach {
                 if (it) {
                     navigate(
                         requireActivity().resources.getString(R.string.chat_home_frag_deeplink_string),
                         R.id.auth_nav
                     )
                 }
-            }
+            }.launchIn(uiScope)
 
-        viewModel.otpScreenUiStateLiveData.map { it.isLoading }
-            .distinctUntilChanged().observe(this) {
+        viewModel.otpScreenUiState
+            .map { it.isLoading }
+            .distinctUntilChanged()
+            .onEach {
                 showLoaderIf("Verifying otp...", it)
-            }
+            }.launchIn(uiScope)
 
     }
 

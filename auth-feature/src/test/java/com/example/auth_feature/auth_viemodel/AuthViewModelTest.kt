@@ -1,8 +1,6 @@
 package com.example.auth_feature.auth_viemodel
 
 import android.app.Activity
-import android.app.Application
-import android.content.ContentResolver
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.auth.NoSuchUserException
 import com.example.auth.UserAlreadyExitsException
@@ -13,9 +11,7 @@ import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.MainDispatcherRule
 import com.example.auth_feature.data.FakeDataProvider
 import com.example.auth_feature.data.FakeFirebaseDataSource
-import com.example.auth_feature.data.FakeMeDataSource
 import com.example.auth_feature.data.FakeMediaSource
-import com.example.auth_feature.getOrAwaitValue
 import com.example.media_data.MediaRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -61,13 +57,13 @@ class AuthViewModelTest {
     fun signUpUser_newUserSuccess() = runBlockingTest {
         viewmodel.signUpUser(FakeDataProvider.myUser, activity)
 
-        val signUpUiState = viewmodel.signUpScreenUiStateLiveData.getOrAwaitValue()
+        val signUpUiState = viewmodel.signUpScreenUiState.value
 
         assert(signUpUiState.goToOtp)
 
         viewmodel.submitOtp(otp = "lakfk", activity = activity)
 
-        val otpLiveData = viewmodel.otpScreenUiStateLiveData.getOrAwaitValue()
+        val otpLiveData = viewmodel.otpScreenUiState.value
 
         assert(otpLiveData.isSuccess)
 
@@ -75,7 +71,7 @@ class AuthViewModelTest {
 
         //mainDispatcherRule.resumeDispatcher()
 
-        //signUpUiState = viewmodel.signUpScreenUiStateLiveData.getOrAwaitValue()
+        //signUpUiState = viewmodel.signUpScreenUiStateLiveData.value()
 
 
         //assert(!signUpUiState.isLoading)
@@ -87,7 +83,7 @@ class AuthViewModelTest {
 
         viewmodel.signUpUser(FakeDataProvider.user1, activity)
 
-        val signUpUiState = viewmodel.signUpScreenUiStateLiveData.getOrAwaitValue()
+        val signUpUiState = viewmodel.signUpScreenUiState.value
 
         assert(!signUpUiState.isSuccess)
         assert(signUpUiState.error == UserAlreadyExitsException().message)
@@ -99,7 +95,7 @@ class AuthViewModelTest {
 
         viewmodel.signInUser(FakeDataProvider.user1.userName, FakeDataProvider.user1.password ?: "")
 
-        val signUpUiState = viewmodel.signInScreenUiStateLiveData.getOrAwaitValue()
+        val signUpUiState = viewmodel.signInScreenUiState.value
 
         assert(signUpUiState.isSuccess)
         assert(signUpUiState.error.isNullOrEmpty())
@@ -114,7 +110,7 @@ class AuthViewModelTest {
             FakeDataProvider.myUser.password ?: ""
         )
 
-        val signUpUiState = viewmodel.signInScreenUiStateLiveData.getOrAwaitValue()
+        val signUpUiState = viewmodel.signInScreenUiState.value
 
         assert(!signUpUiState.isSuccess)
         assert(signUpUiState.error != null && signUpUiState.error == NoSuchUserException().message)

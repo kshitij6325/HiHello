@@ -24,6 +24,8 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
     private var p: ProgressDialog? = null
 
+    val uiScope by lazy { viewLifecycleOwner.lifecycleScope }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
