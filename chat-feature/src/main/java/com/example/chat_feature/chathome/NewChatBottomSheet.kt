@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.distinctUntilChanged
-import androidx.lifecycle.map
+import androidx.lifecycle.lifecycleScope
 import com.example.basefeature.showToast
 import com.example.chat_feature.ChatHomeViewModel
 import com.example.chat_feature.databinding.BottomsheetFragmentAddChatBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class NewChatBottomSheet : BottomSheetDialogFragment() {
@@ -40,17 +43,17 @@ class NewChatBottomSheet : BottomSheetDialogFragment() {
         viewModel.newChatUiStateLiveData
             .map { it.isSuccess }
             .distinctUntilChanged()
-            .observe(this) {
+            .onEach {
                 if (it) {
                     dismiss()
                 }
-            }
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.newChatUiStateLiveData
             .map { it.error }
             .distinctUntilChanged()
-            .observe(this) {
+            .onEach {
                 showToast(it)
-            }
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
     }
 }

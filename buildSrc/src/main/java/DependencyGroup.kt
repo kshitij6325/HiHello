@@ -41,7 +41,6 @@ internal val room =
 
 internal val lifecycle =
     listOf(
-        Dependency.MainSetDependency.LiveData,
         Dependency.MainSetDependency.ViewModel,
         Dependency.MainSetDependency.LifeCycleKTX,
         Dependency.MainSetDependency.ActivityKTX,

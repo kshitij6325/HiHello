@@ -32,7 +32,6 @@ class HomeViewModelTest {
         val logoutUseCase = LogoutUseCase(repo)
         viewmodel = HomeViewModel(
             getUserLoggedInUseCase = isUserLoggedInUseCase,
-            logoutUseCase = logoutUseCase,
         )
     }
 
@@ -40,7 +39,7 @@ class HomeViewModelTest {
     @Test
     fun loggedLiveDataTest() = runBlockingTest {
         viewmodel.isUserLoggedIn()
-        val getHomeActivityUiState = viewmodel.homeActivityUiStateLiveData.getOrAwaitValue()
+        val getHomeActivityUiState = viewmodel.homeActivityUiStateLiveData.value
         assert(getHomeActivityUiState.isLoggedIn == false)
     }
 

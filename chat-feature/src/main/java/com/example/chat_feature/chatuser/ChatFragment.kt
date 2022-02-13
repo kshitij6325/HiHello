@@ -13,9 +13,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-import androidx.lifecycle.distinctUntilChanged
+
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.map
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.example.basefeature.*
@@ -25,6 +24,10 @@ import com.example.chat_feature.databinding.FragmentChatBinding
 import com.example.media_data.MediaSource
 import com.example.media_data.MediaType
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -56,26 +59,27 @@ class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
         viewModel.chatUserUiStateLiveData
             .map { it.chatList }
             .distinctUntilChanged()
-            .observe(this) {
+            .onEach {
                 adapter.submitList(it) {
                     if (it.isNotEmpty())
                         binding?.recyclerView?.scrollToPosition(it.size - 1)
                 }
-            }
+            }.launchIn(uiScope)
 
         viewModel.chatUserUiStateLiveData
             .map { it.chatSentSuccess }
-            .observe(this) {
+            .onEach {
                 binding?.etMessage?.text?.clear()
-            }
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.chatUserUiStateLiveData
             .map { it.mediaSource }
-            .distinctUntilChanged().observe(this) {
+            .distinctUntilChanged()
+            .onEach {
                 binding?.ivAttachPrev?.visibleIf(it != null)
                 binding?.ivRemoveAttach?.visibleIf(it != null)
                 binding?.ivAttachPrev?.setImageURI(it?.file?.toUri())
-            }
+            }.launchIn(uiScope)
 
         binding?.fabSent?.setOnClickListener {
             viewModel.sendChat(args.userName ?: "", binding?.etMessage?.text?.toString() ?: "")

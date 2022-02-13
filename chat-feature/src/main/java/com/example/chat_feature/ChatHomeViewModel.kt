@@ -27,9 +27,7 @@ import com.example.media_data.MediaSource
 import com.example.media_data.MediaType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -45,14 +43,14 @@ class ChatHomeViewModel @Inject constructor(
     private val getAllUserChatUseCase: GetAllUserChatUseCase,
 ) : ViewModel() {
 
-    private val _chatHomeUiState = MutableLiveData(ChatHomeUI())
-    val chatHomeUiStateLiveData: LiveData<ChatHomeUI> = _chatHomeUiState
+    private val _chatHomeUiState = MutableStateFlow(ChatHomeUI())
+    val chatHomeUiStateLiveData = _chatHomeUiState.asStateFlow()
 
-    private val _newChatUiState = MutableLiveData(NewChatBsUI())
-    val newChatUiStateLiveData: LiveData<NewChatBsUI> = _newChatUiState
+    private val _newChatUiState = MutableStateFlow(NewChatBsUI())
+    val newChatUiStateLiveData = _newChatUiState.asStateFlow()
 
-    private val _chatUserUiState = MutableLiveData(ChatUserUI())
-    val chatUserUiStateLiveData: LiveData<ChatUserUI> = _chatUserUiState
+    private val _chatUserUiState = MutableStateFlow(ChatUserUI())
+    val chatUserUiStateLiveData = _chatUserUiState.asStateFlow()
 
     private val syncUserWorkRequest by lazy {
         OneTimeWorkRequestBuilder<SyncUserWorker>()
@@ -81,7 +79,7 @@ class ChatHomeViewModel @Inject constructor(
     private fun syncUsersAndRetryChats(context: Context) {
         with(WorkManager.getInstance(context)) {
             _chatHomeUiState.update {
-                it?.copy(
+                it.copy(
                     userSyncing = true,
                     userSyncSuccess = null
                 )
@@ -90,7 +88,7 @@ class ChatHomeViewModel @Inject constructor(
             getWorkInfoByIdLiveData(syncUserWorkRequest.id)
                 .observeForever { wf ->
                     _chatHomeUiState.update {
-                        it?.copy(
+                        it.copy(
                             userSyncing = false,
                             userSyncSuccess = wf?.state == WorkInfo.State.SUCCEEDED
                         )
@@ -120,25 +118,25 @@ class ChatHomeViewModel @Inject constructor(
             }
             .collect { list ->
                 _chatUserUiState.update {
-                    it?.copy(chatList = list)
+                    it.copy(chatList = list)
                 }
             }
     }
 
 
     fun sendChat(userName: String, message: String) = viewModelScope.launch {
-        val mediaSrc = _chatUserUiState.value?.mediaSource
+        val mediaSrc = _chatUserUiState.value.mediaSource
         removeAttachment()
         sendChatUseCase.apply {
             onSuccess = {
                 _newChatUiState.update {
-                    it?.copy(isSuccess = true)
+                    it.copy(isSuccess = true)
                 }
             }
 
             onFailure = { ex ->
                 _newChatUiState.update {
-                    it?.copy(error = ex.message)
+                    it.copy(error = ex.message)
                 }
             }
         }.invoke(message, userName, mediaSrc)
@@ -149,7 +147,7 @@ class ChatHomeViewModel @Inject constructor(
         getLoggedInUseCase.apply {
             onSuccess = { user ->
                 _chatHomeUiState.update {
-                    it?.copy(
+                    it.copy(
                         welcomeString = "Welcome, ${user?.userName}",
                         userAvatar = user?.profileUrl
                     )
@@ -162,21 +160,21 @@ class ChatHomeViewModel @Inject constructor(
     private fun fetchUserChats() = viewModelScope.launch {
         getAllChatsUseCase.get().collect { list ->
             _chatHomeUiState.update {
-                it?.copy(loading = false, userChatList = list)
+                it.copy(loading = false, userChatList = list)
             }
         }
     }
 
     fun removeAttachment() {
         _chatUserUiState.update {
-            it?.copy(mediaSource = null)
+            it.copy(mediaSource = null)
         }
     }
 
     suspend fun createAndSetImageFile(uri: Uri, resolver: ContentResolver) {
         val file = uri.getFile(resolver)
-        _chatUserUiState.postValue(
-            _chatUserUiState.value?.copy(mediaSource = MediaSource.File(file, MediaType.IMAGE))
-        )
+        _chatUserUiState.update {
+            it.copy(mediaSource = MediaSource.File(file, MediaType.IMAGE))
+        }
     }
 }

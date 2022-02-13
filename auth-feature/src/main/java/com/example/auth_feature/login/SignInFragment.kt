@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.R
 import com.example.auth_feature.databinding.FragmentSignInBinding

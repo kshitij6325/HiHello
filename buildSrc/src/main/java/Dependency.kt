@@ -35,7 +35,6 @@ internal sealed class Dependency(val dependency: String) {
 
         //livedata + view-model
         object ViewModel : MainSetDependency("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
-        object LiveData : MainSetDependency("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
         object LifeCycleKTX : MainSetDependency("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
         object FragmentKTX : MainSetDependency("androidx.fragment:fragment-ktx:1.4.0")
         object ActivityKTX : MainSetDependency("androidx.activity:activity-ktx:1.4.0")
