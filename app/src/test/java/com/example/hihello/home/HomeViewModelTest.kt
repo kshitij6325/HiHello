@@ -1,11 +1,10 @@
 package com.example.hihello.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.auth.usecase.GetUserLoggedInUseCase
+import com.example.auth.usecase.GetLoggedInUserUseCase
 import com.example.auth.usecase.LogoutUseCase
 import com.example.hihello.MainDispatcherRule
 import com.example.hihello.data.FakeDataProvider
-import com.example.hihello.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
@@ -28,7 +27,7 @@ class HomeViewModelTest {
     @After
     fun initialize() {
         val repo = FakeDataProvider.initDataAndRepo()
-        val isUserLoggedInUseCase = GetUserLoggedInUseCase(repo)
+        val isUserLoggedInUseCase = GetLoggedInUserUseCase(repo)
         val logoutUseCase = LogoutUseCase(repo)
         viewmodel = HomeViewModel(
             getUserLoggedInUseCase = isUserLoggedInUseCase,

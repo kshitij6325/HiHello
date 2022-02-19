@@ -1,12 +1,9 @@
 package com.example.hihello.home
 
 import androidx.lifecycle.*
-import com.example.auth.usecase.GetUserLoggedInUseCase
-import com.example.auth.usecase.LogoutUseCase
-import com.example.basefeature.update
+import com.example.auth.usecase.GetLoggedInUserUseCase
 import com.example.hihello.home.homeactivity.HomeUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
+    private val getLoggedInUserUseCase: GetLoggedInUserUseCase,
 ) : ViewModel() {
 
     private val _homeActivityUiState = MutableStateFlow(HomeUIState())
@@ -25,7 +22,7 @@ class HomeViewModel @Inject constructor(
         _homeActivityUiState.update {
             it.copy(isLoading = true)
         }
-        getUserLoggedInUseCase.apply {
+        getLoggedInUserUseCase.apply {
             onSuccess = { user ->
                 _homeActivityUiState.update {
                     it.copy(isLoading = false, isLoggedIn = user != null)

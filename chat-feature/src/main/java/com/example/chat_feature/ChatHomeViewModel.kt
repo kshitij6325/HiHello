@@ -4,16 +4,11 @@ import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import androidx.work.*
-import com.example.auth.usecase.GetUserLoggedInUseCase
+import com.example.auth.usecase.GetLoggedInUserUseCase
 import com.example.basefeature.getFile
-import com.example.basefeature.update
-import com.example.chat_data.Chat
-import com.example.chat_data.datasource.ChatDate
 import com.example.chat_data.datasource.ChatType
 import com.example.chat_data.usecase.GetAllChatsUseCase
 import com.example.chat_data.usecase.GetAllUserChatUseCase
@@ -27,22 +22,17 @@ import com.example.chat_feature.work.SyncUserWorker
 import com.example.media_data.MediaSource
 import com.example.media_data.MediaType
 import com.example.pojo.Result
-import com.example.pojo.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
 import javax.inject.Inject
-import kotlin.io.path.outputStream
 
 @HiltViewModel
 class ChatHomeViewModel @Inject constructor(
     application: Application,
     private val getAllChatsUseCase: GetAllChatsUseCase,
-    private val getLoggedInUseCase: GetUserLoggedInUseCase,
+    private val getLoggedInUserUseCase: GetLoggedInUserUseCase,
     private val sendChatUseCase: SendChatUseCase,
     private val getAllUserChatUseCase: GetAllUserChatUseCase,
 ) : ViewModel() {
@@ -198,7 +188,7 @@ class ChatHomeViewModel @Inject constructor(
 
 
     private fun fetchWelcomeMessage() = viewModelScope.launch {
-        getLoggedInUseCase.apply {
+        getLoggedInUserUseCase.apply {
             onSuccess = { user ->
                 _chatHomeUiState.update {
                     it.copy(

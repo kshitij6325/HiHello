@@ -106,7 +106,7 @@ class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
                 super.onScrolled(recyclerView, dx, dy)
                 val firstVisibleItemPosition =
                     (binding?.recyclerView?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                if (dy <= 0 && firstVisibleItemPosition == 0) {
+                if (dy <= 0 && firstVisibleItemPosition <= 5) {
                     lifecycleScope.launch {
                         viewModel.fetchMoreUserChat(args.userName ?: "")
                     }

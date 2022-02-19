@@ -11,6 +11,7 @@ data class ChatUserUI(
     val currentUser: User? = null,
     val chatSentSuccess: Boolean = false,
     val mediaSource: MediaSource.File? = null,
+    val isScrolled: Boolean = false,
     val newChatAdded: Long? = null
 )
 

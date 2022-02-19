@@ -10,7 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetUserLoggedInUseCase @Inject constructor(private val userRepositoryImpl: UserRepository) :
+class GetLoggedInUserUseCase @Inject constructor(private val userRepositoryImpl: UserRepository) :
     BaseUseCase<User?>() {
 
     suspend operator fun invoke() {

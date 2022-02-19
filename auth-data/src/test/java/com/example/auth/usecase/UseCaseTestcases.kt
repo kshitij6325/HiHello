@@ -6,9 +6,7 @@ import com.example.auth.data.*
 import com.example.auth.datasource.FirebaseDataSource
 import com.example.auth.datasource.UserDataSource
 import com.example.auth.repo.FirebaseDataRepository
-import com.example.auth.repo.UserRepository
 import com.example.auth.repo.UserRepositoryImpl
-import com.example.media_data.FirebaseStorageDataSource
 import com.example.media_data.MediaRepository
 import com.example.media_data.MediaSource
 import com.example.media_data.MediaType
@@ -20,7 +18,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import java.io.File
 
@@ -41,7 +38,7 @@ class UseCaseTestcases {
     private lateinit var firebaseDataSrc: FakeFirebaseDataSource
     private lateinit var mediaSource: FakeMediaSource
 
-    private lateinit var getUserLoggedInUseCase: GetUserLoggedInUseCase
+    private lateinit var getLoggedInUserUseCase: GetLoggedInUserUseCase
     private lateinit var loginUseCase: LoginUseCase
     private lateinit var logoutUseCase: LogoutUseCase
     private lateinit var signUpUseCase: SignUpUseCase
@@ -67,7 +64,7 @@ class UseCaseTestcases {
             userRoomDataSource = userRoomDataSource
         )
 
-        getUserLoggedInUseCase = GetUserLoggedInUseCase(repo)
+        getLoggedInUserUseCase = GetLoggedInUserUseCase(repo)
         firebaseDataSrc = FakeFirebaseDataSource()
         val firebaseDataRepository = FirebaseDataRepository(firebaseDataSrc)
         loginUseCase = LoginUseCase(repo, firebaseDataRepository)
@@ -125,7 +122,7 @@ class UseCaseTestcases {
 
     @Test
     fun checkIsLoggedIn_withoutLogin() = runTest {
-        getUserLoggedInUseCase.apply {
+        getLoggedInUserUseCase.apply {
             onSuccess = {
                 assert(it == null)
             }
@@ -148,7 +145,7 @@ class UseCaseTestcases {
 
         }.invoke(FakeDataProvider.user1.userName, FakeDataProvider.user1.password!!)
 
-        getUserLoggedInUseCase.apply {
+        getLoggedInUserUseCase.apply {
             onSuccess = {
                 assert(it != null && it.userName == FakeDataProvider.user1.userName)
             }
@@ -183,7 +180,7 @@ class UseCaseTestcases {
 
         }.invoke(FakeDataProvider.myUser, activity)
 
-        getUserLoggedInUseCase.apply {
+        getLoggedInUserUseCase.apply {
             onSuccess = {
                 assert(it != null)
             }
@@ -331,7 +328,7 @@ class UseCaseTestcases {
 
         }.invoke(FakeDataProvider.myUser.copy(fcmToken = "new token"))
 
-        getUserLoggedInUseCase.apply {
+        getLoggedInUserUseCase.apply {
             onSuccess = {
                 assert(it != null && it.fcmToken == "new token")
             }

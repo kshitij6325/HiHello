@@ -1,7 +1,6 @@
 package com.example.hihello
 
-import android.util.Log
-import com.example.auth.usecase.GetUserLoggedInUseCase
+import com.example.auth.usecase.GetLoggedInUserUseCase
 import com.example.auth.usecase.UpdateLoggedInUserUseCase
 import com.example.chat_data.repo.CHAT_DATA
 import com.example.chat_data.usecase.ReceiveChatUseCase
@@ -20,7 +19,7 @@ class FCMCloudMessaging : FirebaseMessagingService() {
     lateinit var userUpdateLoggedInUseCase: UpdateLoggedInUserUseCase
 
     @Inject
-    lateinit var getLoggedInUser: GetUserLoggedInUseCase
+    lateinit var getLoggedInUser: GetLoggedInUserUseCase
 
     private var scope = CoroutineScope(SupervisorJob())
 

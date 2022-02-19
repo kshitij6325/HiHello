@@ -60,11 +60,6 @@ class ChatHomeFragment : BaseFragment<FragmentChatHomeBinding>() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.e("Desoryy home", "Des")
-    }
-
     private fun setUpRecyclerView() {
         binding?.rvHome?.adapter = adapter
         viewModel.chatHomeUiStateLiveData
