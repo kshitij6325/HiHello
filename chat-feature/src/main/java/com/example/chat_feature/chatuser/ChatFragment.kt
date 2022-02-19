@@ -1,31 +1,18 @@
 package com.example.chat_feature.chatuser
 
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.AbsListView
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.basefeature.*
 import com.example.chat_feature.ChatHomeViewModel
-import com.example.chat_feature.R
 import com.example.chat_feature.databinding.FragmentChatBinding
-import com.example.media_data.MediaSource
-import com.example.media_data.MediaType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -52,9 +39,8 @@ class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
 
         binding?.recyclerView?.adapter = adapter
 
-        viewModel.subscribeToLatestUserChat(viewLifecycleOwner.lifecycleScope, args.userName ?: "")
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.fetchMoreUserChat(args.userName ?: "")
+            viewModel.initUserChats(this, args.userName ?: "")
         }
 
         viewModel.chatUserUiStateLiveData
@@ -101,15 +87,12 @@ class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
         }
 
         binding?.recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val firstVisibleItemPosition =
                     (binding?.recyclerView?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                if (dy <= 0 && firstVisibleItemPosition <= 5) {
-                    lifecycleScope.launch {
-                        viewModel.fetchMoreUserChat(args.userName ?: "")
-                    }
+                lifecycleScope.launch {
+                    viewModel.fetchMore(dy, firstVisibleItemPosition)
                 }
             }
 

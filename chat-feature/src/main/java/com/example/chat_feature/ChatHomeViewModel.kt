@@ -7,6 +7,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.work.*
+import com.example.auth.User
+import com.example.auth.repo.UserRepository
 import com.example.auth.usecase.GetLoggedInUserUseCase
 import com.example.basefeature.getFile
 import com.example.chat_data.datasource.ChatType
@@ -35,6 +37,7 @@ class ChatHomeViewModel @Inject constructor(
     private val getLoggedInUserUseCase: GetLoggedInUserUseCase,
     private val sendChatUseCase: SendChatUseCase,
     private val getAllUserChatUseCase: GetAllUserChatUseCase,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     private val _chatHomeUiState = MutableStateFlow(ChatHomeUI())
@@ -49,6 +52,7 @@ class ChatHomeViewModel @Inject constructor(
     private var offset = 0
     private var isLoading = false
     private var isInitialChatLoaded = false
+    private val paginationPreFetchThreshold = 5
 
     private val syncUserWorkRequest by lazy {
         OneTimeWorkRequestBuilder<SyncUserWorker>()
@@ -74,6 +78,17 @@ class ChatHomeViewModel @Inject constructor(
         fetchWelcomeMessage()
     }
 
+    suspend fun initUserChats(scope: CoroutineScope, userName: String) {
+        val userRes = userRepository.getLocalUser(userName)
+        if (userRes is Result.Success) {
+            _chatUserUiState.update {
+                it.copy(currentUser = userRes.data)
+            }
+        }
+        subscribeToLatestUserChat(userName).launchIn(scope)
+        fetchMoreUserChat(userName)
+    }
+
     private fun syncUsersAndRetryChats(context: Context) {
         with(WorkManager.getInstance(context)) {
             _chatHomeUiState.update {
@@ -93,6 +108,12 @@ class ChatHomeViewModel @Inject constructor(
                     }
                 }
 
+        }
+    }
+
+    suspend fun fetchMore(dy: Int, firstItemPos: Int) {
+        if (dy <= 0 && firstItemPos <= paginationPreFetchThreshold) {
+            fetchMoreUserChat(_chatUserUiState.value.currentUser?.userName ?: "")
         }
     }
 
@@ -133,7 +154,7 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
-    fun subscribeToLatestUserChat(scope: CoroutineScope, userName: String) {
+    private fun subscribeToLatestUserChat(userName: String) =
         getAllUserChatUseCase.getLatestChatFlow(userName)
             .map { newChat ->
                 val newChatList = mutableListOf<ChatUI>()
@@ -164,8 +185,7 @@ class ChatHomeViewModel @Inject constructor(
                     offset += list.filterIsInstance<ChatUI.ChatItem>().size
                 }
                 isInitialChatLoaded = true
-            }.launchIn(scope)
-    }
+            }
 
 
     fun sendChat(userName: String, message: String) = viewModelScope.launch {
