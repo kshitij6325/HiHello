@@ -51,6 +51,7 @@ class ChatHomeViewModel @Inject constructor(
 
     private var offset = 0
     private var isLoading = false
+    private var isFullChatLoaded = false
     private var isInitialChatLoaded = false
     private val paginationPreFetchThreshold = 5
 
@@ -117,8 +118,8 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun fetchMoreUserChat(userName: String) {
-        if (isLoading) {
+    private suspend fun fetchMoreUserChat(userName: String) {
+        if (isLoading || isFullChatLoaded) {
             return
         }
         isLoading = true
@@ -127,6 +128,12 @@ class ChatHomeViewModel @Inject constructor(
                 val newChatList = mutableListOf<ChatUI>()
                 var oldChat = _chatUserUiState.value.chatList.filterIsInstance<ChatUI.ChatItem>()
                     .firstOrNull()?.chat
+
+                // reached the top of conversation
+                if (res.data.isEmpty() && oldChat != null && !isFullChatLoaded) {
+                    newChatList.add(0, ChatUI.DateItem(oldChat.date.getDateString()))
+                    isFullChatLoaded = true
+                }
 
                 for (newChat in res.data) {
                     if (oldChat != null && !newChat.date.isSameDay(oldChat.date)) {
