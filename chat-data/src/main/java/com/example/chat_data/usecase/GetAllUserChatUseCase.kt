@@ -13,5 +13,8 @@ import javax.inject.Inject
 class GetAllUserChatUseCase @Inject constructor(private val chatRepository: ChatRepository) :
     BaseUseCase<LiveData<List<Chat>>>() {
 
-    fun get(userId: String) = chatRepository.getAllUserChatLiveData(userId)
+    fun getLatestChatFlow(userId: String) = chatRepository.getAllUserChatLiveData(userId)
+
+    suspend fun getUserChat(userId: String, limit: Int) =
+        chatRepository.getAllUserChat(userId, limit)
 }

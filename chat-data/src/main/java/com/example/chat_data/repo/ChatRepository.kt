@@ -3,8 +3,6 @@ package com.example.chat_data.repo
 import com.example.auth.User
 import com.example.chat_data.Chat
 import com.example.chat_data.datasource.ChatDatasource
-import com.example.pojo.Result
-import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -28,7 +26,7 @@ class ChatRepository @Inject constructor(
         chatRoomDatasource.getAllUserChat(userId, limit)
 
     fun getAllUserChatLiveData(userId: String) =
-        chatRoomDatasource.getAllUserChatLiveData(userId)
+        chatRoomDatasource.getLatestUserChatFlow(userId)
 
     suspend fun getAllUnSendChats() = chatRoomDatasource.getAllUnSendChat()
 

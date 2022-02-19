@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.R
@@ -36,7 +37,7 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
                 if (it) {
                     viewModel.navigateToChat(requireActivity(), this@SignInFragment::navigate)
                 }
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         //observe signIn state
         viewModel.signInScreenUiState
@@ -44,13 +45,13 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
             .distinctUntilChanged()
             .onEach {
                 showLoaderIf("Signing in...", it)
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         //show error toast
         viewModel.toastError
             .onEach {
                 showToast(it)
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun signIn(view: View) {

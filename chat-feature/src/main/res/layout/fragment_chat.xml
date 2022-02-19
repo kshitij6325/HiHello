@@ -15,6 +15,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/et_message"
         app:layout_constraintTop_toTopOf="parent"
+        app:stackFromEnd="true"
         tools:listitem="@layout/item_chat" />
 
     <EditText
@@ -72,5 +73,16 @@
         app:layout_constraintEnd_toEndOf="@id/et_message"
         app:layout_constraintTop_toTopOf="@id/et_message"
         app:srcCompat="@drawable/abc_vector_test" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/new_chat_count"
+        style="@style/SendHeroButtonStyle"
+        android:rotation="270"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/et_message"
+        app:layout_constraintEnd_toEndOf="@id/et_message"
+        app:srcCompat="@drawable/abc_vector_test"
+        tools:text="4"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

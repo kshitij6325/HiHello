@@ -11,11 +11,11 @@ interface ChatDao {
     @Query("select * from chats")
     suspend fun getAllChats(): List<Chat>
 
-    @Query("select * from chats where user_id = :userId order by time_stamp desc limit :limit")
+    @Query("select * from chats where user_id = :userId order by time_stamp desc limit 10 offset :limit")
     suspend fun getAllUserChats(userId: String, limit: Int): List<Chat>
 
-    @Query("select * from chats where user_id=:userId")
-    fun getAllUserChatLiveData(userId: String): Flow<List<Chat>>
+    @Query("select * from chats where user_id=:userId order by time_stamp desc limit 1")
+    fun getAllUserChatLiveData(userId: String): Flow<Chat>
 
     @Query("select * from chats where chat_id=:chatId")
     suspend fun getChat(chatId: String): Chat

@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import androidx.work.*
@@ -25,7 +26,10 @@ import com.example.chat_feature.work.RetryFailedChatsWorker
 import com.example.chat_feature.work.SyncUserWorker
 import com.example.media_data.MediaSource
 import com.example.media_data.MediaType
+import com.example.pojo.Result
+import com.example.pojo.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -51,6 +55,10 @@ class ChatHomeViewModel @Inject constructor(
 
     private val _chatUserUiState = MutableStateFlow(ChatUserUI())
     val chatUserUiStateLiveData = _chatUserUiState.asStateFlow()
+
+    private var offset = 0
+    private var isLoading = false
+    private var isInitialChatLoaded = false
 
     private val syncUserWorkRequest by lazy {
         OneTimeWorkRequestBuilder<SyncUserWorker>()
@@ -98,29 +106,75 @@ class ChatHomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun subscribeToUserChat(userName: String) {
-        getAllUserChatUseCase.get(userName)
-            .map {
-                val transformedList = mutableListOf<ChatUI>()
-                var date: ChatDate? = null
-                for (chat in it) {
-                    if (date == null || !date.isSameDay(chat.date)) {
-                        date = chat.date
-                        transformedList.add(ChatUI.DateItem(chat.date.getDateString()))
+    suspend fun fetchMoreUserChat(userName: String) {
+        if (isLoading) {
+            return
+        }
+        isLoading = true
+        when (val res = getAllUserChatUseCase.getUserChat(userId = userName, offset)) {
+            is Result.Success -> {
+                val newChatList = mutableListOf<ChatUI>()
+                var oldChat = _chatUserUiState.value.chatList.filterIsInstance<ChatUI.ChatItem>()
+                    .firstOrNull()?.chat
+
+                for (newChat in res.data) {
+                    if (oldChat != null && !newChat.date.isSameDay(oldChat.date)) {
+                        newChatList.add(0, ChatUI.DateItem(oldChat.date.getDateString()))
                     }
-                    transformedList.add(
-                        if (chat.type == ChatType.SENT) ChatUI.ChatItem.ChatItemSent(chat) else ChatUI.ChatItem.ChatItemReceived(
-                            chat
+                    val chatToAdd =
+                        if (newChat.type == ChatType.SENT) ChatUI.ChatItem.ChatItemSent(
+                            newChat
+                        ) else ChatUI.ChatItem.ChatItemReceived(
+                            newChat
                         )
-                    )
+                    newChatList.add(0, chatToAdd)
+                    oldChat = newChat
+
                 }
-                return@map transformedList
-            }
-            .collect { list ->
                 _chatUserUiState.update {
-                    it.copy(chatList = list)
+                    it.copy(chatList = newChatList + it.chatList)
                 }
+                offset += 10
+                Log.e("NEXT OFFSET IS::", offset.toString())
+                isLoading = false
             }
+            else -> {
+            }
+        }
+    }
+
+    fun subscribeToLatestUserChat(scope: CoroutineScope, userName: String) {
+        getAllUserChatUseCase.getLatestChatFlow(userName)
+            .map { newChat ->
+                val newChatList = mutableListOf<ChatUI>()
+
+                val oldChat = _chatUserUiState.value.chatList.filterIsInstance<ChatUI.ChatItem>()
+                    .lastOrNull()?.chat
+
+                if (oldChat != null && !newChat.date.isSameDay(oldChat.date)
+                ) {
+                    newChatList.add(ChatUI.DateItem(newChat.date.getDateString()))
+                }
+                val chatToAdd = if (newChat.type == ChatType.SENT) ChatUI.ChatItem.ChatItemSent(
+                    newChat
+                ) else ChatUI.ChatItem.ChatItemReceived(
+                    newChat
+                )
+                newChatList.add(chatToAdd)
+                return@map newChatList
+            }.onEach { list ->
+                if (isInitialChatLoaded) {
+                    val chatNew = list.filterIsInstance<ChatUI.ChatItem>()
+                    _chatUserUiState.update {
+                        it.copy(
+                            chatList = it.chatList + list,
+                            newChatAdded = chatNew[0].chat.chatId
+                        )
+                    }
+                    offset += list.filterIsInstance<ChatUI.ChatItem>().size
+                }
+                isInitialChatLoaded = true
+            }.launchIn(scope)
     }
 
 

@@ -1,9 +1,11 @@
 package com.example.chat_feature.chathome
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.basefeature.BaseFragment
 import com.example.basefeature.gone
@@ -13,10 +15,7 @@ import com.example.chat_feature.ChatHomeViewModel
 import com.example.chat_feature.R
 import com.example.chat_feature.databinding.FragmentChatHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 
 @AndroidEntryPoint
 class ChatHomeFragment : BaseFragment<FragmentChatHomeBinding>() {
@@ -37,14 +36,13 @@ class ChatHomeFragment : BaseFragment<FragmentChatHomeBinding>() {
 
         viewModel.chatHomeUiStateLiveData
             .map { it.welcomeString to it.userAvatar }
-            .distinctUntilChanged()
             .onEach {
                 binding?.tvWelcome?.text = it.first
                 binding?.ivAvatar?.let { iv ->
                     Glide.with(requireActivity()).load(it.second).into(iv)
                 }
 
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.chatHomeUiStateLiveData
             .map { it.userSyncing to it.userSyncSuccess }
@@ -55,20 +53,24 @@ class ChatHomeFragment : BaseFragment<FragmentChatHomeBinding>() {
                     it.second != null -> binding?.tvSync?.gone()
                     it.second == false -> showToast("User sync failed")
                 }
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         binding?.fabCreateChat?.setOnClickListener {
             NewChatBottomSheet().show(childFragmentManager, "NewChatBottomSheet")
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("Desoryy home", "Des")
+    }
+
     private fun setUpRecyclerView() {
         binding?.rvHome?.adapter = adapter
         viewModel.chatHomeUiStateLiveData
             .map { it.userChatList }
-            .distinctUntilChanged()
             .onEach {
                 adapter.list = it
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
     }
 }

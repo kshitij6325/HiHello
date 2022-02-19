@@ -310,8 +310,8 @@ class UsecaseTests {
                 )
         }.forEach { chatRepo.addChat(it) }
 
-        getAllUserChatUseCase.get(user2.userName).collect {
-            assert(it.size == 10)
+        getAllUserChatUseCase.getUserChat(user2.userName, 2000).run {
+            assert(this is Result.Success && data.size == 10)
         }
     }
 
@@ -327,8 +327,8 @@ class UsecaseTests {
             )
         }.forEach { chatRepo.addChat(it) }
 
-        getAllUserChatUseCase.get("user2").collect {
-            assert(it.isEmpty())
+        getAllUserChatUseCase.getUserChat("user2",1000).run {
+            assert(this is Result.Success && this.data.isEmpty())
         }
     }
 

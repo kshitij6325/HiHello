@@ -39,7 +39,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
                     }
                 }
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
 
         // show error message toast when lifecycle state it at-least started
@@ -48,6 +48,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             .distinctUntilChanged()
             .onEach {
                 showToast(it)
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
     }
 }

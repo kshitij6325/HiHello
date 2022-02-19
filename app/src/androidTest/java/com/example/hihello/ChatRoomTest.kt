@@ -7,6 +7,7 @@ import com.example.chat_data.Chat
 import com.example.chat_data.datasource.ChatType
 import com.example.chat_data.datasource.getChatDate
 import com.example.chat_data.room.ChatDao
+import com.example.pojo.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -131,11 +132,11 @@ class ChatRoomTest {
             assert(chatRes == i.toLong())
         }
         val job = launch {
-            chatDao.getAllUserChatLiveData("userId").collect {
+            chatDao.getAllUserChats("userId", 1000).run {
                 if (newValueUpdated) {
-                    assert(it.size == 51)
+                    assert(size == 51)
                 } else {
-                    assert(it.size == 50)
+                    assert(size == 50)
                 }
             }
         }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.auth.User
 import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.R
@@ -34,7 +35,7 @@ class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
         viewModel.toastError
             .onEach { message ->
                 message?.let { showToast(it) }
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         //observe signUp state
         viewModel.signUpScreenUiState
@@ -43,20 +44,20 @@ class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
                 if (it) {
                     viewModel.navigateToChat(requireActivity(), this@SignUpFragment::navigate)
                 }
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.signUpScreenUiState
             .map { it.isLoading }
             .distinctUntilChanged().onEach {
                 showLoaderIf("Signing up...", it)
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.signUpScreenUiState
             .map { it.imageUri }
             .distinctUntilChanged()
             .onEach {
                 binding?.ivAvatar?.setImageURI(it)
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.signUpScreenUiState
             .map { it.goToOtp }
@@ -64,7 +65,7 @@ class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
             .onEach {
                 if (it)
                     viewModel.navigateToOtp(this@SignUpFragment::navigate)
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         binding?.ivAvatar?.setOnClickListener {
             openFilePicker()

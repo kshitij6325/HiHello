@@ -15,7 +15,7 @@ abstract class MediaBaseFragment<VB : ViewBinding> : BaseFragment<VB>() {
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                lifecycleScope.launch {
+                viewLifecycleOwner.lifecycleScope.launch {
                     onFileSelected(result)
                 }
             }

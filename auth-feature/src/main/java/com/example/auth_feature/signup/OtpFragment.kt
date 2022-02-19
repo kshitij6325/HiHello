@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.R
 import com.example.auth_feature.databinding.FragmentOtpBinding
@@ -32,7 +33,7 @@ class OtpFragment : MediaBaseFragment<FragmentOtpBinding>() {
         viewModel.toastError
             .onEach { message ->
                 message?.let { showToast(it) }
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         //observe signUp state
         viewModel.otpScreenUiState
@@ -45,14 +46,14 @@ class OtpFragment : MediaBaseFragment<FragmentOtpBinding>() {
                         R.id.auth_nav
                     )
                 }
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.otpScreenUiState
             .map { it.isLoading }
             .distinctUntilChanged()
             .onEach {
                 showLoaderIf("Verifying otp...", it)
-            }.launchIn(uiScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
     }
 

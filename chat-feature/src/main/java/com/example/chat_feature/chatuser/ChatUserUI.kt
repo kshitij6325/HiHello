@@ -10,7 +10,8 @@ data class ChatUserUI(
     val chatList: List<ChatUI> = listOf(),
     val currentUser: User? = null,
     val chatSentSuccess: Boolean = false,
-    val mediaSource: MediaSource.File? = null
+    val mediaSource: MediaSource.File? = null,
+    val newChatAdded: Long? = null
 )
 
 sealed class ChatUI(val type: Int) {

@@ -90,7 +90,7 @@ class ChatRoomDatasource @Inject constructor(private val chatDao: ChatDao) : Cha
         }
     }
 
-    override fun getAllUserChatLiveData(userId: String): Flow<List<Chat>> {
+    override fun getLatestUserChatFlow(userId: String): Flow<Chat> {
         return chatDao.getAllUserChatLiveData(userId)
     }
 
