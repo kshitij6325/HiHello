@@ -1,7 +1,6 @@
 package com.example.chat_feature.chathome
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
@@ -11,7 +10,6 @@ import com.example.basefeature.BaseFragment
 import com.example.basefeature.gone
 import com.example.basefeature.showToast
 import com.example.basefeature.visible
-import com.example.chat_feature.ChatHomeViewModel
 import com.example.chat_feature.R
 import com.example.chat_feature.databinding.FragmentChatHomeBinding
 import dagger.hilt.android.AndroidEntryPoint

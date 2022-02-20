@@ -11,7 +11,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.basefeature.*
-import com.example.chat_feature.ChatHomeViewModel
+import com.example.chat_feature.chathome.ChatHomeViewModel
 import com.example.chat_feature.databinding.FragmentChatBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.*
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
 
-    private val viewModel by viewModels<ChatHomeViewModel>()
+    private val viewModel by viewModels<ChatViewModel>()
     private val adapter by lazy { ChatUserListAdapter() }
     private val args by navArgs<ChatFragmentArgs>()
 
@@ -40,7 +40,7 @@ class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
         binding?.recyclerView?.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.initUserChats(this, args.userName ?: "")
+            viewModel.init(this, args.userName ?: "")
         }
 
         viewModel.chatUserUiStateLiveData
