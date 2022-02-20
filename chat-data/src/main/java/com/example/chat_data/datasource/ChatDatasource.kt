@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChatDatasource {
     suspend fun addChats(chat: Chat): Result<Long>
-    suspend fun getAllUserChat(userId: String, limit: Int): Result<List<Chat>>
+    suspend fun getAllUserChat(userId: String, limit: Int, offset: Int): Result<List<Chat>>
     suspend fun getChat(chatId: String): Result<Chat>
     suspend fun updateChat(chat: Chat): Result<Boolean>
     suspend fun updateChatSuccessState(chatId: String, success: Boolean): Result<Boolean>

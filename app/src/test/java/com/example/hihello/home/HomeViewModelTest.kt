@@ -29,9 +29,7 @@ class HomeViewModelTest {
         val repo = FakeDataProvider.initDataAndRepo()
         val isUserLoggedInUseCase = GetLoggedInUserUseCase(repo)
         val logoutUseCase = LogoutUseCase(repo)
-        viewmodel = HomeViewModel(
-            getUserLoggedInUseCase = isUserLoggedInUseCase,
-        )
+        viewmodel = HomeViewModel(getLoggedInUserUseCase = isUserLoggedInUseCase)
     }
 
 

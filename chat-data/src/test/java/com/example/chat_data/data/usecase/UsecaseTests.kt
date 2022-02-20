@@ -310,7 +310,7 @@ class UsecaseTests {
                 )
         }.forEach { chatRepo.addChat(it) }
 
-        getAllUserChatUseCase.getUserChat(user2.userName, 2000).run {
+        getAllUserChatUseCase.getUserChat(user2.userName, 2000, 0).run {
             assert(this is Result.Success && data.size == 10)
         }
     }
@@ -327,7 +327,7 @@ class UsecaseTests {
             )
         }.forEach { chatRepo.addChat(it) }
 
-        getAllUserChatUseCase.getUserChat("user2",1000).run {
+        getAllUserChatUseCase.getUserChat("user2", 1000, 0).run {
             assert(this is Result.Success && this.data.isEmpty())
         }
     }
@@ -396,7 +396,7 @@ class UsecaseTests {
 
         //check if chat has correct media data
 
-        val res = chatRepo.getAllUserChat(user2.userName)
+        val res = chatRepo.getAllUserChat(user2.userName, 2000, 0)
         assert(res is Result.Success)
 
         val chatList = (res as Result.Success).data

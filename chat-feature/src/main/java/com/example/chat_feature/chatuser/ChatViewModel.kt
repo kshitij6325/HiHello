@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val PAGINATION_ITEM_THRESHOLD = 5
+private const val PAGE_SIZE = 10
+
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val sendChatUseCase: SendChatUseCase,
@@ -32,8 +35,8 @@ class ChatViewModel @Inject constructor(
     private var offset = 0
     private var isLoading = false
     private var isFullChatLoaded = false
-    private var isInitialChatLoaded = false
-    private val paginationPreFetchThreshold = 5
+    private var canSubscribeToNewChatFlow = false
+    private val paginationPreFetchThreshold = PAGINATION_ITEM_THRESHOLD
 
     suspend fun init(scope: CoroutineScope, userName: String) {
         val userRes = userRepository.getLocalUser(userName)
@@ -57,7 +60,7 @@ class ChatViewModel @Inject constructor(
             return
         }
         isLoading = true
-        when (val res = getAllUserChatUseCase.getUserChat(userId = userName, offset)) {
+        when (val res = getAllUserChatUseCase.getUserChat(userId = userName, PAGE_SIZE, offset)) {
             is Result.Success -> {
                 val newChatList = mutableListOf<ChatUI>()
                 var oldChat = _chatUserUiState.value.chatList.filterIsInstance<ChatUI.ChatItem>()
@@ -86,7 +89,7 @@ class ChatViewModel @Inject constructor(
                 _chatUserUiState.update {
                     it.copy(chatList = newChatList + it.chatList)
                 }
-                offset += 10
+                offset += PAGE_SIZE
                 Log.e("NEXT OFFSET IS::", offset.toString())
                 isLoading = false
             }
@@ -112,7 +115,7 @@ class ChatViewModel @Inject constructor(
                 newChatList.add(chatToAdd)
                 return@map newChatList
             }.onEach { list ->
-                if (isInitialChatLoaded) {
+                if (canSubscribeToNewChatFlow) {
                     val chatNew = list.filterIsInstance<ChatUI.ChatItem>()
                     _chatUserUiState.update {
                         it.copy(
@@ -122,7 +125,7 @@ class ChatViewModel @Inject constructor(
                     }
                     offset += list.filterIsInstance<ChatUI.ChatItem>().size
                 }
-                isInitialChatLoaded = true
+                canSubscribeToNewChatFlow = true
             }
 
 

@@ -15,6 +15,6 @@ class GetAllUserChatUseCase @Inject constructor(private val chatRepository: Chat
 
     fun getLatestChatFlow(userId: String) = chatRepository.getAllUserChatLiveData(userId)
 
-    suspend fun getUserChat(userId: String, limit: Int) =
-        chatRepository.getAllUserChat(userId, limit)
+    suspend fun getUserChat(userId: String, limit: Int, offset: Int) =
+        chatRepository.getAllUserChat(userId, limit, offset)
 }

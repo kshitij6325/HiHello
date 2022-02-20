@@ -24,7 +24,11 @@ class FakeChatDataSource(private val mutableChatList: MutableList<Chat>) : ChatD
         }
     }
 
-    override suspend fun getAllUserChat(userId: String, limit: Int): Result<List<Chat>> {
+    override suspend fun getAllUserChat(
+        userId: String,
+        limit: Int,
+        offset: Int
+    ): Result<List<Chat>> {
         return if (error) Result.Failure(Exception("Issue while fetching chat.."))
         else {
             val chatList = mutableChatList.filter { it.userId == userId }.take(limit)

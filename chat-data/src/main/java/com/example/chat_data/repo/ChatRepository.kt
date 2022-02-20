@@ -22,8 +22,8 @@ class ChatRepository @Inject constructor(
 
     suspend fun updateChat(chat: Chat) = chatRoomDatasource.updateChat(chat)
 
-    suspend fun getAllUserChat(userId: String, limit: Int = 10) =
-        chatRoomDatasource.getAllUserChat(userId, limit)
+    suspend fun getAllUserChat(userId: String, limit: Int = 10, offset: Int) =
+        chatRoomDatasource.getAllUserChat(userId, limit, offset)
 
     fun getAllUserChatLiveData(userId: String) =
         chatRoomDatasource.getLatestUserChatFlow(userId)
