@@ -1,22 +1,19 @@
 package com.example.auth_feature
 
 import android.app.Activity
-import android.content.ContentResolver
 import android.net.Uri
-import androidx.annotation.IdRes
 import androidx.lifecycle.*
 import androidx.navigation.NavDirections
-import androidx.room.PrimaryKey
 import com.example.auth.User
+import com.example.auth.datasource.State
+import com.example.auth.repo.FirebaseDataRepository
 import com.example.auth.usecase.LoginUseCase
 import com.example.auth.usecase.SignUpUseCase
-import com.example.auth.usecase.State
 import com.example.auth_feature.login.SignInFragmentDirections
 import com.example.auth_feature.login.SignInUiState
 import com.example.auth_feature.signup.SignUpFragmentDirections
 import com.example.auth_feature.signup.SignUpUiState
 import com.example.basefeature.getFile
-import com.example.basefeature.update
 import com.example.media_data.MediaSource
 import com.example.media_data.MediaType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,6 +40,7 @@ class AuthViewModel @Inject constructor(
     val toastError = _toastError.asSharedFlow()
 
     private var cachedUserForOtp: User? = null
+    private var isFromLogin = true
 
     fun setUserAvatar(uri: Uri?) {
         _signUpScreenUiState.update {
@@ -59,21 +57,43 @@ class AuthViewModel @Inject constructor(
                 MediaSource.File(it, MediaType.IMAGE)
             }
         cachedUserForOtp?.let {
-            signUpUseCase.apply {
-                onSuccess = {
-                    _otpUiState.update {
-                        it.copy(isSuccess = true, isLoading = false)
+            if (isFromLogin) {
+                loginUseCase.apply {
+                    onSuccess = {
+                        _otpUiState.update {
+                            it.copy(isSuccess = true, isLoading = false)
+                        }
                     }
-                }
-                onFailure = { ex ->
-                    _otpUiState.update {
-                        it.copy(error = ex.message, isLoading = false)
+                    onFailure = { ex ->
+                        _otpUiState.update {
+                            it.copy(error = ex.message, isLoading = false)
+                        }
+                        _toastError.emit(ex.message)
+
                     }
-                    _toastError.emit(ex.message)
+                }.invoke(user = it, activity, otp)
+            } else {
+                signUpUseCase.apply {
+                    onSuccess = {
+                        _otpUiState.update {
+                            it.copy(isSuccess = true, isLoading = false)
+                        }
+                    }
+                    onFailure = { ex ->
+                        _otpUiState.update {
+                            it.copy(error = ex.message, isLoading = false)
+                        }
+                        _toastError.emit(ex.message)
 
-                }
+                    }
 
-            }.invoke(user = it, activity = activity, otp = otp, avatarMediaSource = avatarMediaSrc)
+                }.invoke(
+                    user = it,
+                    activity = activity,
+                    otp = otp,
+                    avatarMediaSource = avatarMediaSrc
+                )
+            }
         }
     }
 
@@ -93,6 +113,7 @@ class AuthViewModel @Inject constructor(
                     }
                     is State.Otp -> {
                         cachedUserForOtp = it.user
+                        isFromLogin = false
                         _signUpScreenUiState.update {
                             it.copy(goToOtp = true, isLoading = false)
                         }
@@ -110,25 +131,46 @@ class AuthViewModel @Inject constructor(
     }
 
 
-    fun signInUser(userId: String, password: String) = viewModelScope.launch {
+    fun signInUser(phoneNumber: String, activity: Activity) = viewModelScope.launch {
         _signInScreenUiState.update {
             it.copy(isLoading = true)
         }
         loginUseCase.apply {
             onSuccess = {
-                _signInScreenUiState.update { it.copy(isLoading = false, isSuccess = true) }
+                when (it) {
+                    is State.Complete -> _signInScreenUiState.update {
+                        it.copy(isSuccess = true, isLoading = false)
+                    }
+                    is State.Otp -> {
+                        cachedUserForOtp = it.user
+                        isFromLogin = true
+                        _signInScreenUiState.update {
+                            it.copy(goToOtpScreen = true, isLoading = false)
+                        }
+                    }
+                }
             }
             onFailure = { error ->
                 _signInScreenUiState.update { it.copy(isLoading = false, error = error.message) }
                 _toastError.emit(error.message)
             }
-        }.invoke(userId, password)
+        }.invoke(User(mobileNumber = phoneNumber.toLongOrNull()), activity)
     }
 
     fun navigateToOtp(navigator: (NavDirections) -> Unit) {
-        navigator(SignUpFragmentDirections.actionSignUpFragmentToOtpFragment())
-        _signUpScreenUiState.update {
-            SignUpUiState()
+        navigator(
+            if (isFromLogin) SignInFragmentDirections.actionSignInFragmentToOtpFragment()
+            else
+                SignUpFragmentDirections.actionSignUpFragmentToOtpFragment()
+        )
+        if (isFromLogin) {
+            _signInScreenUiState.update {
+                SignInUiState()
+            }
+        } else {
+            _signUpScreenUiState.update {
+                SignUpUiState()
+            }
         }
     }
 

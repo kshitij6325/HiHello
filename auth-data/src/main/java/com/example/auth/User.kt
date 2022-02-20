@@ -14,5 +14,4 @@ data class User(
     @ColumnInfo(name = "fcm_token") var fcmToken: String? = null,
     @ColumnInfo(name = "mobile_number") var mobileNumber: Long? = null,
     @ColumnInfo(name = "profile_url") var profileUrl: String? = null,
-    @Ignore var password: String? = null
 )

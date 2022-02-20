@@ -16,6 +16,10 @@ interface FirebaseDataSource {
 
     suspend fun getFirebaseToken(): Result<String>
 
+    suspend fun createAnonymousUser(): Result<Boolean> {
+        return Result.Success(true)
+    }
+
     suspend fun verifyPhoneNumber(
         phoneNumber: String, activity: Activity
     ): Result<PhoneVerification>

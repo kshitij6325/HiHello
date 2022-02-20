@@ -3,6 +3,7 @@ package com.example.auth.usecase
 import android.app.Activity
 import com.example.auth.*
 import com.example.auth.datasource.PhoneVerification
+import com.example.auth.datasource.State
 import com.example.auth.repo.FirebaseDataRepository
 import com.example.auth.repo.UserRepository
 import com.example.media_data.MediaRepository
@@ -10,11 +11,6 @@ import com.example.media_data.MediaSource
 import com.example.pojo.BaseUseCase
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
-
-sealed class State(val user: User) {
-    class Otp(val mUser: User) : State(mUser)
-    class Complete(val mUser: User) : State(mUser)
-}
 
 @ViewModelScoped
 class SignUpUseCase @Inject constructor(
@@ -41,27 +37,32 @@ class SignUpUseCase @Inject constructor(
             when {
                 user.userName.isEmpty() -> onFailure?.invoke(EmptyUserNameException())
                 !validateMobileNumber(user) -> onFailure?.invoke(InvalidPhoneNumberException())
-                user.password.isNullOrEmpty() -> onFailure?.invoke(EmptyPasswordException())
                 else -> {
-                    userRepositoryImpl.isNewUser(user).map {
-                        firebaseDataRepository.verifyPhoneNumber(
-                            "+91${user.mobileNumber.toString()}",
-                            activity
-                        ).onSuccess {
-                            when (it) {
-                                is PhoneVerification.CodeSent -> {
-                                    this.phoneAuthId = it.id
-                                    onSuccess?.invoke(State.Otp(user))
+                    firebaseDataRepository.createAnonymousUser().map {
+                        userRepositoryImpl.isNewUser(user).map {
+                            firebaseDataRepository.verifyPhoneNumber(
+                                "+91${user.mobileNumber.toString()}",
+                                activity
+                            ).onSuccess {
+                                when (it) {
+                                    is PhoneVerification.CodeSent -> {
+                                        this.phoneAuthId = it.id
+                                        onSuccess?.invoke(State.Otp(user))
+                                    }
+                                    is PhoneVerification.Success -> createUser(
+                                        user,
+                                        avatarMediaSource
+                                    )
                                 }
-                                is PhoneVerification.Success -> createUser(user, avatarMediaSource)
                             }
                         }
                     }.catch {
                         onFailure?.invoke(it)
                     }
                 }
-
             }
+
+
         }
     }
 

@@ -62,7 +62,9 @@ class UserFirebaseDataSource @Inject constructor() : UserDataSource {
                 firebaseInstanceRef.orderByChild("mobileNumber").equalTo(mobile.toDouble()).get()
                     .run {
                         addOnSuccessListener { snapshot ->
-                            val res = snapshot.getValue(User::class.java)
+                            val iterator = snapshot.children.iterator()
+                            val res = if (iterator.hasNext()) iterator.next()
+                                .getValue(User::class.java) else null
                             if (res != null) {
                                 it.resume(Result.Success(res))
                             } else it.resume(Result.Failure(NoSuchUserException()))

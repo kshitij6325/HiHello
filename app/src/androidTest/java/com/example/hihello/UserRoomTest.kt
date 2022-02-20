@@ -22,14 +22,12 @@ class UserRoomTest {
         userName = "harshit3344",
         mobileNumber = 9953319605,
         profileUrl = "https://google.com.jpeg",
-        password = "abcd"
     )
 
     private val user2 = User(
         userName = "kshitij",
         mobileNumber = 9953819605,
         profileUrl = "https://google.com.jpeg",
-        password = "abcdttt"
     )
 
     @Before

@@ -25,6 +25,8 @@ class FirebaseDataRepository @Inject constructor(private val firebaseDataSource:
         }
     }
 
+    suspend fun createAnonymousUser() = firebaseDataSource.createAnonymousUser()
+
     suspend fun verifyPhoneNumber(
         phoneNumber: String,
         activity: Activity

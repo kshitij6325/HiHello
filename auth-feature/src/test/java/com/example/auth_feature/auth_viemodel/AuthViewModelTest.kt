@@ -93,11 +93,16 @@ class AuthViewModelTest {
     @Test
     fun loginUser_success() = runBlockingTest {
 
-        viewmodel.signInUser(FakeDataProvider.user1.userName, FakeDataProvider.user1.password ?: "")
+        viewmodel.signInUser(FakeDataProvider.user1.mobileNumber.toString(), activity)
 
         val signUpUiState = viewmodel.signInScreenUiState.value
 
-        assert(signUpUiState.isSuccess)
+        assert(signUpUiState.goToOtpScreen)
+
+        viewmodel.submitOtp("otp", activity)
+
+        assert(viewmodel.otpScreenUiState.value.isSuccess)
+
         assert(signUpUiState.error.isNullOrEmpty())
 
     }
@@ -106,8 +111,8 @@ class AuthViewModelTest {
     fun loginUser_noSuchUser() = runBlockingTest {
 
         viewmodel.signInUser(
-            FakeDataProvider.myUser.userName,
-            FakeDataProvider.myUser.password ?: ""
+            FakeDataProvider.myUser.mobileNumber.toString(),
+            activity
         )
 
         val signUpUiState = viewmodel.signInScreenUiState.value

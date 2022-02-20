@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.R
 import com.example.auth_feature.databinding.FragmentSignInBinding
@@ -47,6 +45,16 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
                 showLoaderIf("Signing in...", it)
             }.launchIn(viewLifecycleOwner.lifecycleScope)
 
+
+        viewModel.signInScreenUiState
+            .map { it.goToOtpScreen }
+            .distinctUntilChanged()
+            .onEach {
+                if (it)
+                    viewModel.navigateToOtp(this::navigate)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
+
+
         //show error toast
         viewModel.toastError
             .onEach {
@@ -55,9 +63,8 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>() {
     }
 
     private fun signIn(view: View) {
-        val userName = binding?.tvUserName?.text.toString()
-        val password = binding?.tvPassword?.text.toString()
-        viewModel.signInUser(userId = userName, password = password)
+        val phone = binding?.tvPhoneNumber?.text.toString()
+        viewModel.signInUser(phone, requireActivity())
     }
 
     private fun moveToSignUp(view: View) {

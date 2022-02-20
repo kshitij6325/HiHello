@@ -38,7 +38,7 @@ class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
 
         binding?.recyclerView?.adapter = adapter
 
-        viewLifecycleOwner.lifecycleScope.launch {
+        launch {
             viewModel.init(this, args.userName ?: "")
         }
 
@@ -96,7 +96,7 @@ class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
                 super.onScrolled(recyclerView, dx, dy)
                 val firstVisibleItemPosition =
                     (binding?.recyclerView?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                viewLifecycleOwner.lifecycleScope.launch {
+                launch {
                     viewModel.onScroll(
                         dy,
                         firstVisibleItemPosition,

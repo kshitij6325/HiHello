@@ -1,6 +1,7 @@
 package com.example.auth.datasource
 
 import android.app.Activity
+import android.util.Log
 import com.example.pojo.Result
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
@@ -11,6 +12,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -40,6 +42,19 @@ class FirebaseDataSourceImpl @Inject constructor() : FirebaseDataSource {
                 .addOnFailureListener {
                     continuation.resume(Result.Failure(it))
                 }
+        }
+    }
+
+    override suspend fun createAnonymousUser(): Result<Boolean> = withContext(Dispatchers.IO) {
+        return@withContext suspendCancellableCoroutine { continuation ->
+            FirebaseAuth.getInstance().signInAnonymously().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    continuation.resume(Result.Success(true))
+                } else {
+                    it.exception?.run { continuation.resume(Result.Failure(this)) }
+
+                }
+            }
         }
     }
 
@@ -86,14 +101,17 @@ class FirebaseDataSourceImpl @Inject constructor() : FirebaseDataSource {
     ): Result<Boolean> = withContext(Dispatchers.IO) {
         return@withContext suspendCancellableCoroutine { cont ->
             val pro = PhoneAuthProvider.getCredential(id, otp)
-            FirebaseAuth.getInstance().signInWithCredential(pro)
-                .addOnCompleteListener(activity) { task ->
-                    if (task.isSuccessful) {
-                        task.result?.user?.let { cont.resume(Result.Success(true)) }
-                    } else {
-                        task.exception?.let { cont.resume(Result.Failure(it)) }
+            with(FirebaseAuth.getInstance()) {
+                currentUser?.delete()
+                FirebaseAuth.getInstance().signInWithCredential(pro)
+                    .addOnCompleteListener(activity) { task ->
+                        if (task.isSuccessful) {
+                            cont.resume(Result.Success(true))
+                        } else {
+                            task.exception?.let { cont.resume(Result.Failure(it)) }
+                        }
                     }
-                }
+            }
         }
     }
 }

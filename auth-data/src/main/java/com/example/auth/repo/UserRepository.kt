@@ -12,6 +12,8 @@ interface UserRepository {
 
     suspend fun getRemoteUser(userName: String): Result<User>
 
+    suspend fun getUserByMobile(mobile: Long): Result<User>
+
     suspend fun getAllLocalUsers(): Result<List<User>>
 
     suspend fun deleteLocalUser(): Result<Boolean>

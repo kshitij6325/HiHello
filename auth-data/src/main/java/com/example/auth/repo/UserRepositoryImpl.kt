@@ -35,6 +35,10 @@ class UserRepositoryImpl @Inject constructor(
         return userFirebaseDataSource.getUser(userId = userName)
     }
 
+    override suspend fun getUserByMobile(mobile: Long): Result<User> {
+        return userFirebaseDataSource.getUserByMobile(mobile)
+    }
+
     override suspend fun getAllLocalUsers(): Result<List<User>> {
         return userRoomDataSource.getAllUsers()
     }

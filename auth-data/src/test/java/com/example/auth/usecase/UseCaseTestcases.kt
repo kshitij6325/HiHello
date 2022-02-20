@@ -4,6 +4,7 @@ import android.app.Activity
 import com.example.auth.*
 import com.example.auth.data.*
 import com.example.auth.datasource.FirebaseDataSource
+import com.example.auth.datasource.State
 import com.example.auth.datasource.UserDataSource
 import com.example.auth.repo.FirebaseDataRepository
 import com.example.auth.repo.UserRepositoryImpl
@@ -85,20 +86,7 @@ class UseCaseTestcases {
                 assert(it is NoSuchUserException)
             }
 
-        }.invoke("Rajdeep", "112233")
-    }
-
-    @Test
-    fun loggInUser_IfUserExists_wrongPassword() = runTest {
-        loginUseCase.apply {
-            onSuccess = {
-                assert(false)
-            }
-            onFailure = {
-                assert(it is WrongPasswordException)
-            }
-
-        }.invoke(FakeDataProvider.user1.userName, "Wrong password")
+        }.invoke(User(mobileNumber = 9993456767), activity)
     }
 
     @Test
@@ -109,15 +97,29 @@ class UseCaseTestcases {
         assert(res is Result.Success && res.data == "token")
 
         firebaseDataSrc.firebaseToken = "token2"
+
         loginUseCase.apply {
             onSuccess = {
-                assert(it.fcmToken == "token2")
+                when (it) {
+                    is State.Complete -> assert(false)
+                    is State.Otp -> loginUseCase.apply {
+                        onSuccess = {
+                            when (it) {
+                                is State.Complete -> assert(it.user.fcmToken == "token2")
+                                is State.Otp -> assert(false)
+                            }
+                        }
+                        onFailure = {
+                            assert(false)
+                        }
+                    }.invoke(FakeDataProvider.user1, otp = "otp", activity = activity)
+                }
             }
             onFailure = {
                 assert(false)
             }
 
-        }.invoke(FakeDataProvider.user1.userName, FakeDataProvider.user1.password ?: "")
+        }.invoke(user = FakeDataProvider.user1, activity)
     }
 
     @Test
@@ -134,20 +136,32 @@ class UseCaseTestcases {
 
     @Test
     fun checkIsLoggedIn_withLogin() = runTest {
-
         loginUseCase.apply {
             onSuccess = {
-                assert(true)
+                when (it) {
+                    is State.Complete -> assert(false)
+                    is State.Otp -> loginUseCase.apply {
+                        onSuccess = {
+                            when (it) {
+                                is State.Complete -> assert(true)
+                                is State.Otp -> assert(false)
+                            }
+                        }
+                        onFailure = {
+                            assert(false)
+                        }
+                    }.invoke(FakeDataProvider.myUser, otp = "otp", activity = activity)
+                }
             }
             onFailure = {
                 assert(false)
             }
 
-        }.invoke(FakeDataProvider.user1.userName, FakeDataProvider.user1.password!!)
+        }.invoke(user = FakeDataProvider.myUser, activity)
 
         getLoggedInUserUseCase.apply {
             onSuccess = {
-                assert(it != null && it.userName == FakeDataProvider.user1.userName)
+                assert(it != null && it.userName == FakeDataProvider.myUser.userName)
             }
             onFailure = {
                 assert(false)
@@ -225,15 +239,6 @@ class UseCaseTestcases {
 
         }.invoke(User("Tanjiro", mobileNumber = 6677858), activity)
 
-        signUpUseCase.apply {
-            onSuccess = {
-                assert(false)
-            }
-            onFailure = {
-                assert(it is EmptyPasswordException)
-            }
-
-        }.invoke(User("Tanjiro", mobileNumber = 8865534256), activity)
     }
 
     @Test

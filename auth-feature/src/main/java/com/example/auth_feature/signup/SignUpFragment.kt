@@ -76,15 +76,9 @@ class SignUpFragment : MediaBaseFragment<FragmentSignUpBinding>() {
     private fun signUp(view: View) {
         val userName = binding?.tvUserName?.text.toString()
         val mobile = binding?.tvMobile?.text.toString()
-        val password = binding?.tvPassword?.text.toString()
 
         viewModel.signUpUser(
-            User(
-                userName = userName,
-                mobileNumber = mobile.toLongOrNull(),
-                password = password
-            ),
-            requireActivity()
+            User(userName = userName, mobileNumber = mobile.toLongOrNull()), requireActivity()
         )
     }
 

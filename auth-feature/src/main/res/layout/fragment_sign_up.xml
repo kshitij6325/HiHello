@@ -46,16 +46,6 @@
         android:hint="Mobile"
         android:inputType="phone" />
 
-    <EditText
-        android:id="@+id/tv_password"
-        style="@style/EditTextStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:hint="password"
-        android:inputType="numberPassword" />
-
     <TextView
         android:id="@+id/tv_login"
         android:layout_width="wrap_content"

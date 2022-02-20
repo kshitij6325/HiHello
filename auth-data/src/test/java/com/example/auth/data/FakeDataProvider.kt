@@ -11,28 +11,24 @@ object FakeDataProvider {
         userName = "kshitij6325",
         mobileNumber = 9953319602,
         profileUrl = "https://google.com.jpeg",
-        password = "abcd"
     )
 
     val user1 = User(
         userName = "harshit3344",
         mobileNumber = 9953319605,
         profileUrl = "https://google.com.jpeg",
-        password = "abcd"
     )
 
     val user2 = User(
         userName = "beena345",
         mobileNumber = 9953219602,
         profileUrl = "https://google.com.jpeg",
-        password = "abcd"
     )
 
     val user3 = User(
         userName = "surendra6677",
         mobileNumber = 9151319602,
         profileUrl = "https://google.com.jpeg",
-        password = "abcd"
     )
 
     private val remoteUserList =

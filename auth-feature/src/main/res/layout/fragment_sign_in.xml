@@ -20,23 +20,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/tv_user_name"
+        android:id="@+id/tv_phone_number"
         style="@style/EditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:hint="User name" />
-
-    <EditText
-        android:id="@+id/tv_password"
-        style="@style/EditTextStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:hint="password"
-        android:inputType="numberPassword" />
+        android:hint="Phone number"
+        android:inputType="phone" />
 
     <TextView
         android:id="@+id/tv_sign_up"
