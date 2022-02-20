@@ -49,7 +49,10 @@ class ChatViewModel @Inject constructor(
         fetchMoreUserChat(userName)
     }
 
-    suspend fun fetchMore(dy: Int, firstItemPos: Int) {
+    suspend fun onScroll(dy: Int, firstItemPos: Int, canScrollDown: Boolean) {
+        _chatUserUiState.update {
+            it.copy(scrollToLatestChat = !canScrollDown)
+        }
         if (dy <= 0 && firstItemPos <= paginationPreFetchThreshold) {
             fetchMoreUserChat(_chatUserUiState.value.currentUser?.userName ?: "")
         }
@@ -116,11 +119,10 @@ class ChatViewModel @Inject constructor(
                 return@map newChatList
             }.onEach { list ->
                 if (canSubscribeToNewChatFlow) {
-                    val chatNew = list.filterIsInstance<ChatUI.ChatItem>()
                     _chatUserUiState.update {
                         it.copy(
                             chatList = it.chatList + list,
-                            newChatAdded = chatNew[0].chat.chatId
+                            clearEditText = it.clearEditText + 1,
                         )
                     }
                     offset += list.filterIsInstance<ChatUI.ChatItem>().size

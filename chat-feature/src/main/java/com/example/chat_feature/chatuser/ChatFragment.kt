@@ -11,7 +11,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.basefeature.*
-import com.example.chat_feature.chathome.ChatHomeViewModel
 import com.example.chat_feature.databinding.FragmentChatBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.*
@@ -51,13 +50,19 @@ class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
 
 
         viewModel.chatUserUiStateLiveData
-            .map { it.newChatAdded }
+            .map { it.scrollToLatestChat }
             .debounce(200)
             .onEach {
-                it?.let {
+                if (it) {
                     binding?.recyclerView?.scrollToPosition(adapter.itemCount - 1)
-                    binding?.etMessage?.text?.clear()
                 }
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
+
+        viewModel.chatUserUiStateLiveData
+            .map { it.clearEditText }
+            .distinctUntilChanged()
+            .onEach {
+                binding?.etMessage?.text?.clear()
             }.launchIn(viewLifecycleOwner.lifecycleScope)
 
         viewModel.chatUserUiStateLiveData
@@ -91,8 +96,12 @@ class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
                 super.onScrolled(recyclerView, dx, dy)
                 val firstVisibleItemPosition =
                     (binding?.recyclerView?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                lifecycleScope.launch {
-                    viewModel.fetchMore(dy, firstVisibleItemPosition)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.onScroll(
+                        dy,
+                        firstVisibleItemPosition,
+                        recyclerView.canScrollVertically(1)
+                    )
                 }
             }
 
