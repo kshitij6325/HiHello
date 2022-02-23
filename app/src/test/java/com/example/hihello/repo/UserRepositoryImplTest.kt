@@ -1,7 +1,7 @@
 package com.example.hihello.repo
 
 import com.example.auth.NoSuchUserException
-import com.example.auth.repo.UserRepository
+import com.example.auth.data.repo.UserRepository
 import com.example.hihello.data.FakeDataProvider
 import com.example.pojo.Result
 import kotlinx.coroutines.runBlocking

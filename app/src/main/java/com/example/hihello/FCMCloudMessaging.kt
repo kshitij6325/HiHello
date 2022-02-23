@@ -1,9 +1,9 @@
 package com.example.hihello
 
-import com.example.auth.usecase.GetLoggedInUserUseCase
-import com.example.auth.usecase.UpdateLoggedInUserUseCase
-import com.example.chat_data.repo.CHAT_DATA
-import com.example.chat_data.usecase.ReceiveChatUseCase
+import com.example.auth.domain.GetLoggedInUserUseCase
+import com.example.auth.domain.UpdateLoggedInUserUseCase
+import com.example.chat_data.data.repo.CHAT_DATA
+import com.example.chat_data.domain.ReceiveChatUseCase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint

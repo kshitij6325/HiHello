@@ -1,7 +1,7 @@
 package com.example.hihello.home
 
 import androidx.lifecycle.*
-import com.example.auth.usecase.GetLoggedInUserUseCase
+import com.example.auth.domain.GetLoggedInUserUseCase
 import com.example.hihello.home.homeactivity.HomeUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

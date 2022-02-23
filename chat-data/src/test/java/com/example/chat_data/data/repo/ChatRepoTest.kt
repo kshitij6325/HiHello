@@ -1,12 +1,11 @@
 package com.example.chat_data.data.repo
 
-import com.example.auth.User
-import com.example.chat_data.Chat
+import com.example.auth.data.User
+import com.example.chat_data.data.Chat
 import com.example.chat_data.data.FakeChatDataSource
 import com.example.chat_data.data.FakeRemoteChatHelper
-import com.example.chat_data.datasource.ChatType
-import com.example.chat_data.datasource.getChatDate
-import com.example.chat_data.repo.ChatRepository
+import com.example.chat_data.data.datasource.ChatType
+import com.example.chat_data.data.datasource.getChatDate
 import com.example.pojo.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

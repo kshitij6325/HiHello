@@ -4,11 +4,10 @@ import android.app.Activity
 import android.net.Uri
 import androidx.lifecycle.*
 import androidx.navigation.NavDirections
-import com.example.auth.User
-import com.example.auth.datasource.State
-import com.example.auth.repo.FirebaseDataRepository
-import com.example.auth.usecase.LoginUseCase
-import com.example.auth.usecase.SignUpUseCase
+import com.example.auth.data.User
+import com.example.auth.data.datasource.State
+import com.example.auth.domain.LoginUseCase
+import com.example.auth.domain.SignUpUseCase
 import com.example.auth_feature.login.SignInFragmentDirections
 import com.example.auth_feature.login.SignInUiState
 import com.example.auth_feature.signup.SignUpFragmentDirections

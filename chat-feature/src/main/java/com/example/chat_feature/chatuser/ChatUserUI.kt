@@ -1,9 +1,8 @@
 package com.example.chat_feature.chatuser
 
-import com.example.auth.User
-import com.example.chat_data.Chat
+import com.example.auth.data.User
+import com.example.chat_data.data.Chat
 import com.example.media_data.MediaSource
-import java.io.File
 
 data class ChatUserUI(
     val error: String? = null,

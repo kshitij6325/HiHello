@@ -3,13 +3,11 @@ package com.example.hihello
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.example.chat_data.Chat
-import com.example.chat_data.datasource.ChatType
-import com.example.chat_data.datasource.getChatDate
-import com.example.chat_data.room.ChatDao
-import com.example.pojo.Result
+import com.example.chat_data.data.Chat
+import com.example.chat_data.data.datasource.ChatType
+import com.example.chat_data.data.datasource.getChatDate
+import com.example.chat_data.app.room.ChatDao
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Before

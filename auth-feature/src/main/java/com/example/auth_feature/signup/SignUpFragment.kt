@@ -7,7 +7,7 @@ import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.lifecycleScope
-import com.example.auth.User
+import com.example.auth.data.User
 import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.R
 import com.example.auth_feature.databinding.FragmentSignUpBinding

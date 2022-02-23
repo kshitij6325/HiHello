@@ -5,11 +5,11 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.work.*
-import com.example.auth.repo.UserRepository
+import com.example.auth.data.repo.UserRepository
 import com.example.basefeature.getFile
-import com.example.chat_data.datasource.ChatType
-import com.example.chat_data.usecase.GetAllUserChatUseCase
-import com.example.chat_data.usecase.SendChatUseCase
+import com.example.chat_data.data.datasource.ChatType
+import com.example.chat_data.domain.GetAllUserChatUseCase
+import com.example.chat_data.domain.SendChatUseCase
 import com.example.media_data.MediaSource
 import com.example.media_data.MediaType
 import com.example.pojo.Result

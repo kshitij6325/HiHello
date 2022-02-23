@@ -49,18 +49,18 @@ class ChatSentViewHolder(private val binding: ItemChatBinding) :
     }
 
     override fun onBind(data: ChatUI.ChatItem) {
-        val data = data.chat
-        binding.tvMessage.setTextWithVisibility(data.message)
+        val chatData = data.chat
+        binding.tvMessage.setTextWithVisibility(chatData.message)
 
-        binding.ivMessageState.setImageResource(if (data.success) R.drawable.ic_outline_done_24 else R.drawable.ic_baseline_access_time_24)
+        binding.ivMessageState.setImageResource(if (chatData.success) R.drawable.ic_outline_done_24 else R.drawable.ic_baseline_access_time_24)
 
-        binding.tvTime.text = data.date.getTimeString()
+        binding.tvTime.text = chatData.date.getTimeString()
 
-        binding.ivMedia.visibleIf(data.media != null)
-        if (data.media?.type == MediaType.IMAGE) {
+        binding.ivMedia.visibleIf(chatData.media != null)
+        if (chatData.media?.type == MediaType.IMAGE) {
             Glide.with(binding.root.context).apply {
-                (data.media?.url?.let { load(it) }
-                    ?: data.media?.localPath?.let { load(File(it)) })?.into(binding.ivMedia)
+                (chatData.media?.url?.let { load(it) }
+                    ?: chatData.media?.localPath?.let { load(File(it)) })?.into(binding.ivMedia)
             }
         }
     }

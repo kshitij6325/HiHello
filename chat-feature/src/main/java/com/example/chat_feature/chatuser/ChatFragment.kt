@@ -13,9 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.basefeature.*
 import com.example.chat_feature.databinding.FragmentChatBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+@FlowPreview
 @AndroidEntryPoint
 class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
 
@@ -44,6 +46,7 @@ class ChatFragment : MediaBaseFragment<FragmentChatBinding>() {
 
         viewModel.chatUserUiStateLiveData
             .map { it.chatList }
+            .distinctUntilChanged()
             .onEach {
                 adapter.submitList(it)
             }.launchIn(viewLifecycleOwner.lifecycleScope)

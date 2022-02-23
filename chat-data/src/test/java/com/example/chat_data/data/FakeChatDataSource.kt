@@ -1,8 +1,7 @@
 package com.example.chat_data.data
 
-import com.example.auth.User
-import com.example.chat_data.Chat
-import com.example.chat_data.datasource.ChatDatasource
+import com.example.auth.data.User
+import com.example.chat_data.data.datasource.ChatDatasource
 import com.example.pojo.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

@@ -1,8 +1,7 @@
 package com.example.chat_feature.chathome
 
-import com.example.auth.User
-import com.example.chat_data.Chat
-import java.io.File
+import com.example.auth.data.User
+import com.example.chat_data.data.Chat
 
 data class ChatHomeUI(
     val error: String? = null,

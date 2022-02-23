@@ -4,9 +4,9 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.*
 import androidx.work.*
-import com.example.auth.usecase.GetLoggedInUserUseCase
-import com.example.chat_data.usecase.GetAllChatsUseCase
-import com.example.chat_data.usecase.SendChatUseCase
+import com.example.auth.domain.GetLoggedInUserUseCase
+import com.example.chat_data.domain.GetAllChatsUseCase
+import com.example.chat_data.domain.SendChatUseCase
 import com.example.chat_feature.work.RetryFailedChatsWorker
 import com.example.chat_feature.work.SyncUserWorker
 import dagger.hilt.android.lifecycle.HiltViewModel

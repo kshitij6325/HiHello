@@ -1,11 +1,9 @@
 package com.example.auth.data
 
 import android.app.Activity
-import android.net.Uri
-import com.example.auth.datasource.FirebaseDataSource
-import com.example.auth.datasource.PhoneVerification
+import com.example.auth.data.datasource.FirebaseDataSource
+import com.example.auth.data.datasource.PhoneVerification
 import com.example.pojo.Result
-import com.google.firebase.auth.UserInfo
 import java.lang.Exception
 
 class FakeFirebaseDataSource : FirebaseDataSource {

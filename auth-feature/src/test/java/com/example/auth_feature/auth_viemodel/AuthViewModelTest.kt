@@ -4,9 +4,9 @@ import android.app.Activity
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.auth.NoSuchUserException
 import com.example.auth.UserAlreadyExitsException
-import com.example.auth.repo.FirebaseDataRepository
-import com.example.auth.usecase.LoginUseCase
-import com.example.auth.usecase.SignUpUseCase
+import com.example.auth.data.repo.FirebaseDataRepository
+import com.example.auth.domain.LoginUseCase
+import com.example.auth.domain.SignUpUseCase
 import com.example.auth_feature.AuthViewModel
 import com.example.auth_feature.MainDispatcherRule
 import com.example.auth_feature.data.FakeDataProvider

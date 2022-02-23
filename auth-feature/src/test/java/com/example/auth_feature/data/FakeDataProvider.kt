@@ -1,9 +1,9 @@
 package com.example.auth_feature.data
 
-import com.example.auth.User
-import com.example.auth.datasource.FirebaseDataSource
-import com.example.auth.datasource.UserDataSource
-import com.example.auth.repo.*
+import com.example.auth.data.User
+import com.example.auth.data.datasource.FirebaseDataSource
+import com.example.auth.data.datasource.UserDataSource
+import com.example.auth.data.repo.*
 
 object FakeDataProvider {
 

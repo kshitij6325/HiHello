@@ -1,8 +1,7 @@
 package com.example.auth.data
 
 import com.example.auth.NoSuchUserException
-import com.example.auth.User
-import com.example.auth.datasource.UserDataSource
+import com.example.auth.data.datasource.UserDataSource
 import com.example.pojo.Result
 import java.lang.Exception
 

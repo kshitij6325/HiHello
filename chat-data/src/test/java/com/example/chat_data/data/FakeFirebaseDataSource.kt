@@ -1,8 +1,8 @@
 package com.example.auth_feature.data
 
 import android.app.Activity
-import com.example.auth.datasource.FirebaseDataSource
-import com.example.auth.datasource.PhoneVerification
+import com.example.auth.data.datasource.FirebaseDataSource
+import com.example.auth.data.datasource.PhoneVerification
 import com.example.pojo.Result
 import java.lang.Exception
 

@@ -1,11 +1,10 @@
 package com.example.hihello
 
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.auth.User
-import com.example.auth.room.UserDao
+import com.example.auth.data.User
+import com.example.auth.app.room.UserDao
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before

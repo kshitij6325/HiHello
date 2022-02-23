@@ -3,13 +3,8 @@ package com.example.chat_feature.chathome
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.auth.User
-import com.example.basefeature.BaseViewHolder
-import com.example.basefeature.visibleIf
-import com.example.chat_data.Chat
-import com.example.chat_data.datasource.ChatType
-import com.example.chat_feature.R
+import com.example.auth.data.User
+import com.example.chat_data.data.Chat
 import com.example.chat_feature.databinding.ItemChatHomeBinding
 
 class ChatHomeListAdapter(private val onItemClick: ((User) -> Unit)) :

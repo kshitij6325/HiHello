@@ -1,12 +1,10 @@
 package com.example.chat_data.data
 
-import com.example.auth.User
-import com.example.chat_data.Chat
-import com.example.chat_data.repo.IRemoteChatHelper
+import com.example.auth.data.User
+import com.example.chat_data.data.repo.IRemoteChatHelper
 import com.example.pojo.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.lang.Exception
 

@@ -1,8 +1,8 @@
 package com.example.hihello.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.auth.usecase.GetLoggedInUserUseCase
-import com.example.auth.usecase.LogoutUseCase
+import com.example.auth.domain.GetLoggedInUserUseCase
+import com.example.auth.domain.LogoutUseCase
 import com.example.hihello.MainDispatcherRule
 import com.example.hihello.data.FakeDataProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
